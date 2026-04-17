@@ -6,6 +6,7 @@ import { compareLatex } from './latexCompare'
 import { practiceCategories, practiceSet, type PracticeCategory, type PracticeItem } from './practiceSet'
 
 const customCategoryPrefix = '업로드:'
+const uploadedSetsStorageKey = 'latex-typing-trainer-uploaded-sets'
 
 type UploadedItem = {
   title: string
@@ -60,7 +61,16 @@ function shuffleIndices(items: number[], excludeIndex?: number) {
 }
 
 function App() {
-  const [uploadedSets, setUploadedSets] = useState<UploadedSet[]>([])
+  const [uploadedSets, setUploadedSets] = useState<UploadedSet[]>(() => {
+    try {
+      const raw = window.localStorage.getItem(uploadedSetsStorageKey)
+      if (!raw) return []
+      const parsed = JSON.parse(raw) as UploadedSet[]
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  })
   const [uploadMessage, setUploadMessage] = useState('JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.')
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -96,6 +106,10 @@ function App() {
       setStartedAt(Date.now())
     }
   }, [input, startedAt])
+
+  useEffect(() => {
+    window.localStorage.setItem(uploadedSetsStorageKey, JSON.stringify(uploadedSets))
+  }, [uploadedSets])
 
   const elapsedMinutes = useMemo(() => {
     if (!startedAt) return 0
