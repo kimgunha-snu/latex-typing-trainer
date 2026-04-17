@@ -19,6 +19,12 @@ type UploadedPracticeFile = {
   items: UploadedItem[]
 }
 
+type UploadedSet = {
+  key: string
+  label: string
+  items: PracticeItem[]
+}
+
 function isUploadedPracticeFile(value: unknown): value is UploadedPracticeFile {
   if (!value || typeof value !== 'object') return false
 
@@ -54,15 +60,15 @@ function shuffleIndices(items: number[], excludeIndex?: number) {
 }
 
 function App() {
-  const [uploadedItems, setUploadedItems] = useState<PracticeItem[]>([])
-  const [uploadedCategory, setUploadedCategory] = useState<string | null>(null)
+  const [uploadedSets, setUploadedSets] = useState<UploadedSet[]>([])
   const [uploadMessage, setUploadMessage] = useState('JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.')
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [category, setCategory] = useState<PracticeCategory | string>('전체')
-  const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedItems], [uploadedItems])
+  const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedSets.flatMap((set) => set.items)], [uploadedSets])
   const allCategories = useMemo(
-    () => [...practiceCategories, ...(uploadedCategory ? [`${customCategoryPrefix}${uploadedCategory}`] : [])],
-    [uploadedCategory],
+    () => [...practiceCategories, ...uploadedSets.map((set) => set.key)],
+    [uploadedSets],
   )
   const queueRef = useRef<number[]>(shuffleIndices(allPracticeItems.map((_, index) => index), 0))
   const [input, setInput] = useState('')
@@ -75,7 +81,7 @@ function App() {
     category === '전체'
       ? allPracticeItems
       : allPracticeItems.filter((item) => item.category === category)
-  const current = visibleSet[currentIndex] ?? visibleSet[0]
+  const current = visibleSet[currentIndex] ?? visibleSet[0] ?? practiceSet[0]
   const target = current.latex
   const comparison = useMemo(() => compareLatex(input, target), [input, target])
   const { normalizedInput, normalizedTarget, isComplete, mismatchIndex, correctChars, targetDisplayStates } = comparison
@@ -104,6 +110,22 @@ function App() {
     setInput(value)
   }
 
+  const resetSessionState = () => {
+    setInput('')
+    setStartedAt(null)
+    setShowAnswer(false)
+  }
+
+  const selectCategory = (nextCategory: string) => {
+    const nextVisibleSet = nextCategory === '전체' ? allPracticeItems : allPracticeItems.filter((p) => p.category === nextCategory)
+    const initialQueue = shuffleIndices(nextVisibleSet.map((_, index) => index))
+    const [firstIndex, ...rest] = initialQueue
+    setCategory(nextCategory)
+    setCurrentIndex(firstIndex ?? 0)
+    queueRef.current = rest
+    resetSessionState()
+  }
+
   const goNext = () => {
     setFinishedCount((count) => count + 1)
     if (queueRef.current.length > 0) {
@@ -117,9 +139,7 @@ function App() {
       queueRef.current = rest
       setCurrentIndex(nextIndex ?? 0)
     }
-    setInput('')
-    setStartedAt(null)
-    setShowAnswer(false)
+    resetSessionState()
   }
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -135,32 +155,39 @@ function App() {
         return
       }
 
-      const normalizedCategory = `${customCategoryPrefix}${parsed.category.trim()}`
+      const label = parsed.category.trim()
+      const key = `${customCategoryPrefix}${label}`
       const nextUploadedItems: PracticeItem[] = parsed.items.map((item, index) => ({
-        id: 100000 + index,
-        category: normalizedCategory,
+        id: Date.now() + index,
+        category: key,
         title: item.title.trim(),
         latex: item.latex.trim(),
         note: item.note?.trim() || '업로드한 문제',
         meaning: item.meaning?.trim() || undefined,
       }))
 
-      setUploadedItems(nextUploadedItems)
-      setUploadedCategory(parsed.category.trim())
-      setUploadMessage(`업로드 완료, ${parsed.category.trim()} 카테고리 ${nextUploadedItems.length}문항 추가됨.`)
-
-      const initialQueue = shuffleIndices(nextUploadedItems.map((_, index) => index))
-      const [firstIndex, ...rest] = initialQueue
-      setCategory(normalizedCategory)
-      setCurrentIndex(firstIndex ?? 0)
-      queueRef.current = rest
-      setInput('')
-      setStartedAt(null)
-      setShowAnswer(false)
+      setUploadedSets((prev) => [...prev.filter((set) => set.key !== key), { key, label, items: nextUploadedItems }])
+      setUploadMessage(`업로드 완료, ${label} 카테고리 ${nextUploadedItems.length}문항 추가됨.`)
+      setIsUploadModalOpen(false)
+      setCategory(key)
+      setCurrentIndex(0)
+      queueRef.current = shuffleIndices(nextUploadedItems.map((_, index) => index), 0)
+      resetSessionState()
     } catch {
       setUploadMessage('파일을 읽지 못했어. JSON 문법이 맞는지 확인해줘.')
     } finally {
       event.target.value = ''
+    }
+  }
+
+  const removeUploadedSet = (key: string) => {
+    setUploadedSets((prev) => prev.filter((set) => set.key !== key))
+
+    if (category === key) {
+      setCategory('전체')
+      setCurrentIndex(0)
+      queueRef.current = shuffleIndices(practiceSet.map((_, index) => index), 0)
+      resetSessionState()
     }
   }
 
@@ -183,6 +210,11 @@ function App() {
         <div className="hero-copy">
           <p className="eyebrow">Web LaTeX Typing Trainer</p>
           <h1>LaTeX 타자연습기</h1>
+        </div>
+        <div className="hero-actions">
+          <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(true)}>
+            문제 업로드 관리
+          </button>
         </div>
         <div className="hero-stats compact">
           <div>
@@ -221,35 +253,94 @@ function App() {
               key={item}
               type="button"
               className={category === item ? 'primary' : 'secondary'}
-              onClick={() => {
-                const nextVisibleSet = item === '전체' ? allPracticeItems : allPracticeItems.filter((p) => p.category === item)
-                const initialQueue = shuffleIndices(nextVisibleSet.map((_, index) => index))
-                const [firstIndex, ...rest] = initialQueue
-                setCategory(item)
-                setCurrentIndex(firstIndex ?? 0)
-                queueRef.current = rest
-                setInput('')
-                setStartedAt(null)
-                setShowAnswer(false)
-              }}
+              onClick={() => selectCategory(item)}
             >
-              {item}
+              {item.startsWith(customCategoryPrefix) ? item.replace(customCategoryPrefix, '') : item}
             </button>
           ))}
         </div>
         <div className="category-meta">현재 선택된 분야 문제 수, {visibleSet.length}개</div>
-        <div className="upload-panel">
-          <label className="upload-label" htmlFor="practice-upload">
-            사용자 문제셋 업로드 (JSON)
-          </label>
-          <input id="practice-upload" type="file" accept="application/json,.json" onChange={handleUpload} />
-          <div className="upload-help">
-            {uploadMessage}
-            <br />
-            형식 예시, {`{"category":"사용자문제","items":[{"title":"문제명","latex":"x^2+y^2","note":"메모","meaning":"짧은 설명"}]}`}
+      </section>
+
+      {isUploadModalOpen ? (
+        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="문제 업로드 관리 창">
+          <div className="modal-card panel">
+            <div className="panel-head">
+              <div>
+                <p className="label">업로드</p>
+                <h2>사용자 문제셋 관리</h2>
+              </div>
+              <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(false)}>
+                닫기
+              </button>
+            </div>
+
+            <div className="upload-section">
+              <label className="upload-label" htmlFor="practice-upload">
+                JSON 파일 업로드
+              </label>
+              <input id="practice-upload" type="file" accept="application/json,.json" onChange={handleUpload} />
+              <div className="upload-help">{uploadMessage}</div>
+            </div>
+
+            <div className="upload-section">
+              <p className="label">형식 안내</p>
+              <div className="format-box">
+                <pre>{`{
+  "category": "사용자문제",
+  "items": [
+    {
+      "title": "문제명",
+      "latex": "x^2+y^2",
+      "note": "짧은 메모",
+      "meaning": "짧은 설명"
+    },
+    {
+      "title": "다음 문제",
+      "latex": "\\frac{a}{b}",
+      "note": "분수",
+      "meaning": "a를 b로 나눈 분수야."
+    }
+  ]
+}`}</pre>
+              </div>
+              <div className="upload-help">
+                필수 필드, category, items[].title, items[].latex
+                <br />
+                선택 필드, items[].note, items[].meaning
+                <br />
+                같은 category 이름으로 다시 올리면 기존 업로드 세트를 새 파일 내용으로 교체해.
+              </div>
+            </div>
+
+            <div className="upload-section">
+              <p className="label">업로드된 문제셋</p>
+              {uploadedSets.length === 0 ? (
+                <div className="empty-uploaded">아직 업로드된 사용자 문제셋이 없어.</div>
+              ) : (
+                <div className="uploaded-set-list">
+                  {uploadedSets.map((set) => (
+                    <div key={set.key} className="uploaded-set-item">
+                      <div>
+                        <strong>{set.label}</strong>
+                        <div className="upload-help">문항 수, {set.items.length}개</div>
+                      </div>
+                      <div className="button-row">
+                        <button type="button" className="secondary" onClick={() => selectCategory(set.key)}>
+                          바로 풀기
+                        </button>
+                        <button type="button" className="secondary" onClick={() => removeUploadedSet(set.key)}>
+                          삭제
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </section>
+      ) : null}
 
       <section className="trainer-grid">
         <article className="panel reference-panel">
