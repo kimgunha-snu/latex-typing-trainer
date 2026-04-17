@@ -306,7 +306,7 @@ function App() {
     },
     {
       "title": "다음 문제",
-      "latex": "\\frac{a}{b}",
+      "latex": "\\\\frac{a}{b}",
       "note": "분수",
       "meaning": "a를 b로 나눈 분수야."
     }
