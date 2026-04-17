@@ -122,6 +122,9 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalizeScriptSpacing(normalized)
   normalized = normalizeGammaScripts(normalized)
+  normalized = normalized.replace(/R\^\{?\\rho\}?_\{?([^{}]+)\}?/g, 'R_{$1}^{\\rho}')
+  normalized = normalized.replace(/\\partial_\{?([^{}]+)\}?\\Gamma_\{?([^{}]+)\}?\^\{?\\rho\}?/g, '\\partial_{$1}\\Gamma_{$2}^{\\rho}')
+  normalized = normalized.replace(/\\partial_\{?([^{}]+)\}?\\Gamma\^\{?\\rho\}?_\{?([^{}]+)\}?/g, '\\partial_{$1}\\Gamma_{$2}^{\\rho}')
   normalized = normalized.replace(/\{([^{}=]+)=([^{}=]+)\}/g, (_, left: string, right: string) => {
     const a = left.trim()
     const b = right.trim()
