@@ -1,9 +1,46 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react'
 import { MathJax } from 'better-react-mathjax'
 import './App.css'
 
 import { compareLatex } from './latexCompare'
-import { practiceCategories, practiceSet, type PracticeCategory } from './practiceSet'
+import { practiceCategories, practiceSet, type PracticeCategory, type PracticeItem } from './practiceSet'
+
+const customCategoryPrefix = '업로드:'
+
+type UploadedItem = {
+  title: string
+  latex: string
+  note?: string
+  meaning?: string
+}
+
+type UploadedPracticeFile = {
+  category: string
+  items: UploadedItem[]
+}
+
+function isUploadedPracticeFile(value: unknown): value is UploadedPracticeFile {
+  if (!value || typeof value !== 'object') return false
+
+  const candidate = value as UploadedPracticeFile
+  return (
+    typeof candidate.category === 'string' &&
+    candidate.category.trim().length > 0 &&
+    Array.isArray(candidate.items) &&
+    candidate.items.length > 0 &&
+    candidate.items.every(
+      (item) =>
+        item &&
+        typeof item === 'object' &&
+        typeof item.title === 'string' &&
+        item.title.trim().length > 0 &&
+        typeof item.latex === 'string' &&
+        item.latex.trim().length > 0 &&
+        (item.note === undefined || typeof item.note === 'string') &&
+        (item.meaning === undefined || typeof item.meaning === 'string'),
+    )
+  )
+}
 
 function shuffleIndices(items: number[], excludeIndex?: number) {
   const indices = items.filter((index) => index !== excludeIndex)
@@ -17,16 +54,27 @@ function shuffleIndices(items: number[], excludeIndex?: number) {
 }
 
 function App() {
+  const [uploadedItems, setUploadedItems] = useState<PracticeItem[]>([])
+  const [uploadedCategory, setUploadedCategory] = useState<string | null>(null)
+  const [uploadMessage, setUploadMessage] = useState('JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.')
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [category, setCategory] = useState<PracticeCategory>('전체')
-  const queueRef = useRef<number[]>(shuffleIndices(practiceSet.map((_, index) => index), 0))
+  const [category, setCategory] = useState<PracticeCategory | string>('전체')
+  const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedItems], [uploadedItems])
+  const allCategories = useMemo(
+    () => [...practiceCategories, ...(uploadedCategory ? [`${customCategoryPrefix}${uploadedCategory}`] : [])],
+    [uploadedCategory],
+  )
+  const queueRef = useRef<number[]>(shuffleIndices(allPracticeItems.map((_, index) => index), 0))
   const [input, setInput] = useState('')
   const [startedAt, setStartedAt] = useState<number | null>(null)
   const [finishedCount, setFinishedCount] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
-  const visibleSet = category === '전체' ? practiceSet : practiceSet.filter((item) => item.category === category)
+  const visibleSet =
+    category === '전체'
+      ? allPracticeItems
+      : allPracticeItems.filter((item) => item.category === category)
   const current = visibleSet[currentIndex] ?? visibleSet[0]
   const target = current.latex
   const comparison = useMemo(() => compareLatex(input, target), [input, target])
@@ -67,11 +115,53 @@ function App() {
       const reshuffledQueue = shuffleIndices(nextItems, currentIndex)
       const [nextIndex, ...rest] = reshuffledQueue
       queueRef.current = rest
-      setCurrentIndex(nextIndex)
+      setCurrentIndex(nextIndex ?? 0)
     }
     setInput('')
     setStartedAt(null)
     setShowAnswer(false)
+  }
+
+  const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      const raw = await file.text()
+      const parsed = JSON.parse(raw) as unknown
+
+      if (!isUploadedPracticeFile(parsed)) {
+        setUploadMessage('형식이 맞지 않아. category 문자열과 items 배열이 있는 JSON이어야 해.')
+        return
+      }
+
+      const normalizedCategory = `${customCategoryPrefix}${parsed.category.trim()}`
+      const nextUploadedItems: PracticeItem[] = parsed.items.map((item, index) => ({
+        id: 100000 + index,
+        category: normalizedCategory,
+        title: item.title.trim(),
+        latex: item.latex.trim(),
+        note: item.note?.trim() || '업로드한 문제',
+        meaning: item.meaning?.trim() || undefined,
+      }))
+
+      setUploadedItems(nextUploadedItems)
+      setUploadedCategory(parsed.category.trim())
+      setUploadMessage(`업로드 완료, ${parsed.category.trim()} 카테고리 ${nextUploadedItems.length}문항 추가됨.`)
+
+      const initialQueue = shuffleIndices(nextUploadedItems.map((_, index) => index))
+      const [firstIndex, ...rest] = initialQueue
+      setCategory(normalizedCategory)
+      setCurrentIndex(firstIndex ?? 0)
+      queueRef.current = rest
+      setInput('')
+      setStartedAt(null)
+      setShowAnswer(false)
+    } catch {
+      setUploadMessage('파일을 읽지 못했어. JSON 문법이 맞는지 확인해줘.')
+    } finally {
+      event.target.value = ''
+    }
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -105,7 +195,7 @@ function App() {
           </div>
           <div>
             <span>전체</span>
-            <strong>{practiceSet.length}</strong>
+            <strong>{allPracticeItems.length}</strong>
           </div>
           <div>
             <span>정확도</span>
@@ -126,13 +216,13 @@ function App() {
           </div>
         </div>
         <div className="category-row">
-          {practiceCategories.map((item) => (
+          {allCategories.map((item) => (
             <button
               key={item}
               type="button"
               className={category === item ? 'primary' : 'secondary'}
               onClick={() => {
-                const nextVisibleSet = item === '전체' ? practiceSet : practiceSet.filter((p) => p.category === item)
+                const nextVisibleSet = item === '전체' ? allPracticeItems : allPracticeItems.filter((p) => p.category === item)
                 const initialQueue = shuffleIndices(nextVisibleSet.map((_, index) => index))
                 const [firstIndex, ...rest] = initialQueue
                 setCategory(item)
@@ -148,6 +238,17 @@ function App() {
           ))}
         </div>
         <div className="category-meta">현재 선택된 분야 문제 수, {visibleSet.length}개</div>
+        <div className="upload-panel">
+          <label className="upload-label" htmlFor="practice-upload">
+            사용자 문제셋 업로드 (JSON)
+          </label>
+          <input id="practice-upload" type="file" accept="application/json,.json" onChange={handleUpload} />
+          <div className="upload-help">
+            {uploadMessage}
+            <br />
+            형식 예시, {`{"category":"사용자문제","items":[{"title":"문제명","latex":"x^2+y^2","note":"메모","meaning":"짧은 설명"}]}`}
+          </div>
+        </div>
       </section>
 
       <section className="trainer-grid">
