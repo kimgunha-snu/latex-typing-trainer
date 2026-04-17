@@ -2,12 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { MathJax } from 'better-react-mathjax'
 import './App.css'
 
-type PracticeItem = {
-  id: number
-  title: string
-  latex: string
-  note: string
-}
+import { practiceSet } from './practiceSet'
 
 type DisplayCharState = 'pending' | 'correct' | 'wrong' | 'current'
 
@@ -20,38 +15,6 @@ type ComparisonResult = {
   targetDisplayStates: DisplayCharState[]
 }
 
-const practiceSet: PracticeItem[] = [
-  {
-    id: 1,
-    title: '기본 분수',
-    latex: String.raw`\frac{a+b}{c+d}`,
-    note: '분자와 분모를 정확히 닫는 감각 익히기',
-  },
-  {
-    id: 2,
-    title: '제곱근과 지수',
-    latex: String.raw`\sqrt{x^2 + y^2}`,
-    note: '중괄호와 공백 없이도 구조를 읽는 연습',
-  },
-  {
-    id: 3,
-    title: '합 기호',
-    latex: String.raw`\sum_{i=1}^{n} i^2`,
-    note: '위첨자와 아래첨자의 순서 차이까지 허용',
-  },
-  {
-    id: 4,
-    title: '적분식',
-    latex: String.raw`\int_{0}^{\pi} \sin x \, dx`,
-    note: '간격 명령과 기본 토큰의 동치 처리 포함',
-  },
-  {
-    id: 5,
-    title: '행렬',
-    latex: String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}`,
-    note: 'environment와 줄바꿈 처리 연습',
-  },
-]
 
 function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, '')
@@ -318,6 +281,10 @@ function App() {
           <div>
             <span>완료</span>
             <strong>{finishedCount}</strong>
+          </div>
+          <div>
+            <span>문제 수</span>
+            <strong>{practiceSet.length}</strong>
           </div>
           <div>
             <span>정확도</span>
