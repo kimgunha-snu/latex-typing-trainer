@@ -117,7 +117,6 @@ function App() {
   }, [startedAt, input, currentIndex])
 
   const cpm = startedAt ? Math.round(normalizedInput.length / elapsedMinutes) : 0
-  const accuracy = normalizedInput.length === 0 ? 100 : Math.round((correctChars / normalizedInput.length) * 100)
 
   const handleChange = (value: string) => {
     if (isComplete) return
@@ -242,10 +241,6 @@ function App() {
           <div>
             <span>전체</span>
             <strong>{allPracticeItems.length}</strong>
-          </div>
-          <div>
-            <span>정확도</span>
-            <strong>{accuracy}%</strong>
           </div>
           <div>
             <span>CPM</span>
