@@ -184,7 +184,7 @@ function App() {
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const [symbolQuizIndex, setSymbolQuizIndex] = useState(() => Math.floor(Math.random() * symbolQuizItems.length))
   const [symbolQuizInput, setSymbolQuizInput] = useState('\\')
-  const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong'>('idle')
+  const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong' | 'revealed'>('idle')
 
   const visibleSet =
     category === '전체'
@@ -335,8 +335,12 @@ function App() {
       return
     }
 
-    setSymbolQuizInput(currentSymbolQuiz.latex)
     setSymbolQuizResult('wrong')
+  }
+
+  const revealSymbolQuizAnswer = () => {
+    setSymbolQuizInput(currentSymbolQuiz.latex)
+    setSymbolQuizResult('revealed')
   }
 
   return (
@@ -436,7 +440,10 @@ function App() {
               />
               <div className="button-row">
                 <button type="button" className="primary" onClick={checkSymbolQuizAnswer}>
-                  정답 확인
+                  채점
+                </button>
+                <button type="button" className="secondary" onClick={revealSymbolQuizAnswer}>
+                  정답 보기
                 </button>
                 <button type="button" className="secondary" onClick={nextSymbolQuiz}>
                   다음 문제
@@ -446,8 +453,10 @@ function App() {
                 {symbolQuizResult === 'correct'
                   ? '정답! Enter를 누르거나 다음 문제 버튼으로 계속 갈 수 있어.'
                   : symbolQuizResult === 'wrong'
-                    ? '정답을 입력창에 채워뒀어.'
-                    : ''}
+                    ? '아직 아니야. 다시 입력해보거나 정답 보기를 눌러봐.'
+                    : symbolQuizResult === 'revealed'
+                      ? '정답을 입력창에 채워뒀어.'
+                      : ''}
               </div>
             </div>
           </div>
