@@ -33,6 +33,7 @@ function preprocessLatex(value: string) {
   normalized = normalized.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac')
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
+  normalized = normalized.replace(/\\\|/g, '\\Vert')
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
   return normalized
