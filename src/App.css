@@ -126,6 +126,10 @@
   color: #4ade80;
 }
 
+.char.space {
+  color: #64748b;
+}
+
 .char.wrong {
   color: #f87171;
   background: rgba(239, 68, 68, 0.15);
@@ -159,6 +163,12 @@
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.helper-text {
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 0.9rem;
 }
 
 .status-row {

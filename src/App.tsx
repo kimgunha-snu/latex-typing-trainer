@@ -9,6 +9,17 @@ type PracticeItem = {
   note: string
 }
 
+type DisplayCharState = 'pending' | 'correct' | 'wrong' | 'current'
+
+type ComparisonResult = {
+  normalizedInput: string
+  normalizedTarget: string
+  isComplete: boolean
+  mismatchIndex: number
+  correctChars: number
+  targetDisplayStates: DisplayCharState[]
+}
+
 const practiceSet: PracticeItem[] = [
   {
     id: 1,
@@ -42,14 +53,58 @@ const practiceSet: PracticeItem[] = [
   },
 ]
 
-function getMismatchIndex(input: string, target: string) {
-  const minLength = Math.min(input.length, target.length)
+function normalizeLatex(value: string) {
+  return value.replace(/[\t\n\r ]+/g, '')
+}
+
+function compareLatex(input: string, target: string): ComparisonResult {
+  const normalizedInput = normalizeLatex(input)
+  const normalizedTarget = normalizeLatex(target)
+  const minLength = Math.min(normalizedInput.length, normalizedTarget.length)
+
+  let mismatchIndex = -1
 
   for (let i = 0; i < minLength; i += 1) {
-    if (input[i] !== target[i]) return i
+    if (normalizedInput[i] !== normalizedTarget[i]) {
+      mismatchIndex = i
+      break
+    }
   }
 
-  return input.length > target.length ? target.length : -1
+  const correctChars = mismatchIndex === -1 ? minLength : mismatchIndex
+  const isComplete = mismatchIndex === -1 && normalizedInput.length === normalizedTarget.length
+
+  const targetDisplayStates: DisplayCharState[] = []
+  let normalizedCursor = 0
+
+  for (const char of target) {
+    if (/\s/.test(char)) {
+      targetDisplayStates.push('pending')
+      continue
+    }
+
+    let state: DisplayCharState = 'pending'
+
+    if (mismatchIndex >= 0 && normalizedCursor === mismatchIndex) {
+      state = 'wrong'
+    } else if (normalizedCursor < correctChars) {
+      state = 'correct'
+    } else if (mismatchIndex === -1 && normalizedCursor === normalizedInput.length) {
+      state = 'current'
+    }
+
+    targetDisplayStates.push(state)
+    normalizedCursor += 1
+  }
+
+  return {
+    normalizedInput,
+    normalizedTarget,
+    isComplete,
+    mismatchIndex,
+    correctChars,
+    targetDisplayStates,
+  }
 }
 
 function App() {
@@ -61,10 +116,9 @@ function App() {
 
   const current = practiceSet[currentIndex]
   const target = current.latex
-  const isComplete = input === target
-  const mismatchIndex = getMismatchIndex(input, target)
-  const correctChars = mismatchIndex === -1 ? Math.min(input.length, target.length) : mismatchIndex
-  const progress = (correctChars / target.length) * 100
+  const comparison = useMemo(() => compareLatex(input, target), [input, target])
+  const { normalizedInput, normalizedTarget, isComplete, mismatchIndex, correctChars, targetDisplayStates } = comparison
+  const progress = normalizedTarget.length === 0 ? 0 : (correctChars / normalizedTarget.length) * 100
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -81,8 +135,8 @@ function App() {
     return Math.max((Date.now() - startedAt) / 1000 / 60, 1 / 60)
   }, [startedAt, input, currentIndex])
 
-  const cpm = Math.round(input.length / elapsedMinutes)
-  const accuracy = input.length === 0 ? 100 : Math.round((correctChars / input.length) * 100)
+  const cpm = Math.round(normalizedInput.length / elapsedMinutes)
+  const accuracy = normalizedInput.length === 0 ? 100 : Math.round((correctChars / normalizedInput.length) * 100)
 
   const handleChange = (value: string) => {
     if (isComplete) return
@@ -109,7 +163,7 @@ function App() {
           <p className="eyebrow">Web LaTeX Typing Trainer</p>
           <h1>LaTeX 타자연습기</h1>
           <p className="subtitle">
-            식을 눈으로 보고 그대로 타이핑하면서 수식 입력 속도와 정확도를 올리는 연습용 MVP.
+            의미 없는 공백은 무시하고, 실제 LaTeX 구조가 맞는지 중심으로 연습하는 수식 타자 연습기.
           </p>
         </div>
         <div className="hero-stats">
@@ -150,19 +204,17 @@ function App() {
 
           <div className="target-code" aria-label="target latex">
             {target.split('').map((char, index) => {
-              const typed = input[index]
-              const isCorrect = typed === char && index < input.length
-              const isWrong = typed !== undefined && typed !== char
-              const isCurrent = index === input.length
+              const state = char.trim() === '' ? 'space' : targetDisplayStates[index]
 
               return (
                 <span
                   key={`${char}-${index}`}
                   className={[
                     'char',
-                    isCorrect ? 'correct' : '',
-                    isWrong ? 'wrong' : '',
-                    isCurrent ? 'current' : '',
+                    state === 'space' ? 'space' : '',
+                    state === 'correct' ? 'correct' : '',
+                    state === 'wrong' ? 'wrong' : '',
+                    state === 'current' ? 'current' : '',
                   ]
                     .filter(Boolean)
                     .join(' ')}
@@ -195,12 +247,14 @@ function App() {
             placeholder="여기에 LaTeX를 그대로 입력"
           />
 
+          <div className="helper-text">공백, 탭, 줄바꿈은 정답 판정에서 무시됨</div>
+
           <div className="status-row">
             <div className={`status ${isComplete ? 'success' : mismatchIndex >= 0 ? 'error' : 'idle'}`}>
               {isComplete
-                ? '완벽해. 다음 문제로 넘어갈 수 있어.'
+                ? '좋아, 공백 차이는 무시하고 정답 처리했어.'
                 : mismatchIndex >= 0
-                  ? `${mismatchIndex + 1}번째 문자부터 다름`
+                  ? `${mismatchIndex + 1}번째 유효 문자부터 다름`
                   : '좋아, 그대로 이어서 입력하면 돼.'}
             </div>
             <div className="button-row">
