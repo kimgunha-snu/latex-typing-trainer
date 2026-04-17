@@ -37,13 +37,13 @@ const practiceSet: PracticeItem[] = [
     id: 3,
     title: '합 기호',
     latex: String.raw`\sum_{i=1}^{n} i^2`,
-    note: '위첨자/아래첨자 순서가 달라도 정답으로 인정',
+    note: '위첨자와 아래첨자의 순서 차이까지 허용',
   },
   {
     id: 4,
     title: '적분식',
     latex: String.raw`\int_{0}^{\pi} \sin x \, dx`,
-    note: '이스케이프와 간격 명령까지 포함한 식',
+    note: '간격 명령과 기본 토큰의 동치 처리 포함',
   },
   {
     id: 5,
@@ -55,6 +55,19 @@ const practiceSet: PracticeItem[] = [
 
 function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, '')
+}
+
+function stripOuterBraces(value: string) {
+  if (!value.startsWith('{') || !value.endsWith('}')) return value
+
+  let depth = 0
+  for (let index = 0; index < value.length; index += 1) {
+    if (value[index] === '{') depth += 1
+    if (value[index] === '}') depth -= 1
+    if (depth === 0 && index < value.length - 1) return value
+  }
+
+  return value.slice(1, -1)
 }
 
 function extractGroup(value: string, startIndex: number) {
@@ -80,8 +93,31 @@ function extractGroup(value: string, startIndex: number) {
   }
 }
 
+function normalizeEquationOrder(value: string) {
+  const match = value.match(/^([A-Za-z0-9\\]+)=([A-Za-z0-9\\]+)$/)
+  if (!match) return value
+
+  const [, left, right] = match
+  return [left, right].sort().join('=')
+}
+
+function normalizeTokenGroup(value: string) {
+  let normalized = stripOuterBraces(value)
+  normalized = normalized.replace(/\\left/g, '').replace(/\\right/g, '')
+  normalized = normalized.replace(/\\,/g, '').replace(/\\!/g, '').replace(/\\:/g, '')
+  normalized = normalized.replace(/\\;/g, '').replace(/\\quad/g, '').replace(/\\qquad/g, '')
+  normalized = normalized.replace(/\\mathrm\{([^{}]*)\}/g, '\\text{$1}')
+  normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\text{$1}')
+  normalized = normalizeEquationOrder(normalized)
+  return normalized
+}
+
+function collapseSingleArgumentBraces(value: string) {
+  return value.replace(/([_^])\{([A-Za-z0-9])\}/g, '$1$2')
+}
+
 function canonicalizeBigOperatorScripts(value: string) {
-  const operators = ['\\sum', '\\prod', '\\int']
+  const operators = ['\\sum', '\\prod', '\\int', '\\lim']
   let result = ''
   let index = 0
 
@@ -103,8 +139,10 @@ function canonicalizeBigOperatorScripts(value: string) {
       if (token !== '_' && token !== '^') break
 
       const group = extractGroup(value, cursor + 1)
-      if (token === '_') lower = group.content
-      if (token === '^') upper = group.content
+      const normalizedGroup = normalizeTokenGroup(group.content)
+
+      if (token === '_') lower = normalizedGroup
+      if (token === '^') upper = normalizedGroup
       cursor = group.endIndex
     }
 
@@ -118,7 +156,17 @@ function canonicalizeBigOperatorScripts(value: string) {
 }
 
 function normalizeSemanticLatex(value: string) {
-  return canonicalizeBigOperatorScripts(normalizeWhitespace(value))
+  let normalized = normalizeWhitespace(value)
+  normalized = normalized.replace(/\\left/g, '').replace(/\\right/g, '')
+  normalized = normalized.replace(/\\,/g, '').replace(/\\!/g, '').replace(/\\:/g, '')
+  normalized = normalized.replace(/\\;/g, '').replace(/\\quad/g, '').replace(/\\qquad/g, '')
+  normalized = normalized.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac')
+  normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
+  normalized = normalized.replace(/\\mathrm\{([^{}]*)\}/g, '\\text{$1}')
+  normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\text{$1}')
+  normalized = collapseSingleArgumentBraces(normalized)
+  normalized = canonicalizeBigOperatorScripts(normalized)
+  return normalized
 }
 
 function compareLatex(input: string, target: string): ComparisonResult {
@@ -139,7 +187,7 @@ function compareLatex(input: string, target: string): ComparisonResult {
   const isComplete = mismatchIndex === -1 && normalizedInput.length === normalizedTarget.length
 
   const targetDisplayStates: DisplayCharState[] = []
-  let normalizedCursor = 0
+  let visibleCursor = 0
 
   for (const char of target) {
     if (/\s/.test(char)) {
@@ -149,16 +197,16 @@ function compareLatex(input: string, target: string): ComparisonResult {
 
     let state: DisplayCharState = 'pending'
 
-    if (mismatchIndex >= 0 && normalizedCursor === mismatchIndex) {
+    if (mismatchIndex >= 0 && visibleCursor === mismatchIndex) {
       state = 'wrong'
-    } else if (normalizedCursor < correctChars) {
+    } else if (visibleCursor < correctChars) {
       state = 'correct'
-    } else if (mismatchIndex === -1 && normalizedCursor === normalizeWhitespace(input).length) {
+    } else if (mismatchIndex === -1 && visibleCursor === normalizeWhitespace(input).length) {
       state = 'current'
     }
 
     targetDisplayStates.push(state)
-    normalizedCursor += 1
+    visibleCursor += 1
   }
 
   return {
@@ -175,11 +223,9 @@ function getRandomNextIndex(currentIndex: number) {
   if (practiceSet.length <= 1) return currentIndex
 
   let nextIndex = currentIndex
-
   while (nextIndex === currentIndex) {
     nextIndex = Math.floor(Math.random() * practiceSet.length)
   }
-
   return nextIndex
 }
 
@@ -188,6 +234,7 @@ function App() {
   const [input, setInput] = useState('')
   const [startedAt, setStartedAt] = useState<number | null>(null)
   const [finishedCount, setFinishedCount] = useState(0)
+  const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
   const current = practiceSet[currentIndex]
@@ -224,6 +271,7 @@ function App() {
     setCurrentIndex((index) => getRandomNextIndex(index))
     setInput('')
     setStartedAt(null)
+    setShowAnswer(false)
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -246,7 +294,7 @@ function App() {
           <p className="eyebrow">Web LaTeX Typing Trainer</p>
           <h1>LaTeX 타자연습기</h1>
           <p className="subtitle">
-            의미 없는 공백은 무시하고, 일부 수식은 구조적으로 같은 표현도 정답으로 인정하는 수식 타자 연습기.
+            답안은 숨겨두고, 필요할 때만 펼쳐 보면서 연습하는 웹 기반 LaTeX 타자연습기.
           </p>
         </div>
         <div className="hero-stats">
@@ -283,28 +331,38 @@ function App() {
             <MathJax inline dynamic>{`\\(${target}\\)`}</MathJax>
           </div>
 
-          <div className="target-code" aria-label="target latex">
-            {target.split('').map((char, index) => {
-              const state = char.trim() === '' ? 'space' : targetDisplayStates[index]
-
-              return (
-                <span
-                  key={`${char}-${index}`}
-                  className={[
-                    'char',
-                    state === 'space' ? 'space' : '',
-                    state === 'correct' ? 'correct' : '',
-                    state === 'wrong' ? 'wrong' : '',
-                    state === 'current' ? 'current' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                >
-                  {char === ' ' ? '␣' : char}
-                </span>
-              )
-            })}
+          <div className="answer-toggle-row">
+            <button type="button" className="secondary" onClick={() => setShowAnswer((value) => !value)}>
+              {showAnswer ? '정답 가리기' : '정답 보기'}
+            </button>
           </div>
+
+          {showAnswer ? (
+            <div className="target-code" aria-label="target latex">
+              {target.split('').map((char, index) => {
+                const state = char.trim() === '' ? 'space' : targetDisplayStates[index]
+
+                return (
+                  <span
+                    key={`${char}-${index}`}
+                    className={[
+                      'char',
+                      state === 'space' ? 'space' : '',
+                      state === 'correct' ? 'correct' : '',
+                      state === 'wrong' ? 'wrong' : '',
+                      state === 'current' ? 'current' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    {char === ' ' ? '␣' : char}
+                  </span>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="answer-hidden">정답은 숨겨져 있어. 필요하면 버튼 눌러서 확인해.</div>
+          )}
         </article>
 
         <article className="panel input-panel">
@@ -326,17 +384,17 @@ function App() {
             autoCapitalize="off"
             autoCorrect="off"
             autoComplete="off"
-            placeholder="여기에 LaTeX를 그대로 입력"
+            placeholder="여기에 LaTeX를 입력"
           />
 
           <div className="helper-text">
-            틀렸을 때 Enter는 줄바꿈으로 유지되고, 정답이면 Enter로 랜덤 다음 문제로 넘어감
+            공백, 간격 명령, 일부 큰 연산자 표기 순서, 단일 토큰 중괄호, left/right 차이는 판정에서 완화됨
           </div>
 
           <div className="status-row">
             <div className={`status ${isComplete ? 'success' : mismatchIndex >= 0 ? 'error' : 'idle'}`}>
               {isComplete
-                ? '좋아, 공백과 일부 동치 표기는 무시하고 정답 처리했어.'
+                ? '좋아, 동치 처리까지 반영해서 정답이야.'
                 : mismatchIndex >= 0
                   ? `${mismatchIndex + 1}번째 유효 문자부터 다름`
                   : '좋아, 그대로 이어서 입력하면 돼.'}

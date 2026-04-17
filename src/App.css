@@ -108,13 +108,25 @@
   overflow-x: auto;
 }
 
-.target-code {
+.target-code,
+.answer-hidden {
   padding: 18px;
   line-height: 2;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-size: 1rem;
   color: #e2e8f0;
   word-break: break-word;
+}
+
+.answer-hidden {
+  color: #94a3b8;
+  border-radius: 20px;
+  border: 1px dashed rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.answer-toggle-row {
+  margin-bottom: 14px;
 }
 
 .char {
@@ -169,6 +181,7 @@
   margin-top: 12px;
   color: #94a3b8;
   font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .status-row {
