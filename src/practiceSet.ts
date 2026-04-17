@@ -532,6 +532,60 @@ const theoreticalComputerScience = makeCategory('컴퓨터과학 이론', [
   { id: 950, title: '컴퓨터과학 이론 종합', latex: String.raw`A\leq_p B`, note: '종합', meaning: '문제 난이도 비교와 NP-완전성 증명에서 핵심이 되는 환원 표기야.' },
 ])
 
-export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience]
-export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론'] as const
+
+const financialMathematics = makeCategory('금융수학', [
+  { id: 1001, title: '현재가치', latex: String.raw`PV=\frac{FV}{(1+r)^t}`, note: '할인', meaning: '미래 금액을 이자율 r로 할인해 현재 가치로 바꾼 식이야.' },
+  { id: 1002, title: '미래가치', latex: String.raw`FV=PV(1+r)^t`, note: '복리', meaning: '현재 금액이 시간이 지나며 복리로 얼마나 커지는지 나타내.' },
+  { id: 1003, title: '연속복리', latex: String.raw`FV=PV e^{rt}`, note: '연속복리', meaning: '이자가 연속적으로 붙는다고 가정한 미래가치 공식이야.' },
+  { id: 1004, title: '할인인자', latex: String.raw`D(t)=e^{-rt}`, note: 'discount factor', meaning: '시점 t의 현금흐름을 현재 가치로 바꾸는 할인인자야.' },
+  { id: 1005, title: '순현재가치', latex: String.raw`NPV=\sum_{t=0}^{T}\frac{CF_t}{(1+r)^t}`, note: 'NPV', meaning: '여러 시점 현금흐름을 현재가치로 환산해 모두 더한 값이야.' },
+  { id: 1006, title: '내부수익률', latex: String.raw`NPV(r)=0`, note: 'IRR', meaning: '순현재가치를 0으로 만드는 할인율이 내부수익률이야.' },
+  { id: 1007, title: '단리', latex: String.raw`FV=PV(1+rt)`, note: '단리', meaning: '이자에 이자가 붙지 않는 단리 방식의 미래가치야.' },
+  { id: 1008, title: '무위험 성장', latex: String.raw`B_t=B_0 e^{rt}`, note: '무위험자산', meaning: '무위험자산이 이자율 r로 성장하는 기본 모형이야.' },
+  { id: 1009, title: '수익률', latex: String.raw`R_t=\frac{S_t-S_{t-1}}{S_{t-1}}`, note: '단순수익률', meaning: '가격 변화분을 이전 가격으로 나눈 단순수익률이야.' },
+  { id: 1010, title: '로그수익률', latex: String.raw`r_t=\ln\frac{S_t}{S_{t-1}}`, note: 'log return', meaning: '시계열 분석에서 자주 쓰는 로그수익률 정의야.' },
+  { id: 1011, title: '기대수익률', latex: String.raw`E[R]=\sum_i p_i R_i`, note: '기대값', meaning: '가능한 수익률들을 확률 가중평균한 기대수익률이야.' },
+  { id: 1012, title: '분산', latex: String.raw`\operatorname{Var}(R)=E[(R-E[R])^2]`, note: '위험도', meaning: '수익률이 평균 주변에서 얼마나 흔들리는지 나타내는 위험 척도야.' },
+  { id: 1013, title: '표준편차', latex: String.raw`\sigma=\sqrt{\operatorname{Var}(R)}`, note: '변동성', meaning: '분산의 제곱근으로 수익률 변동성을 직관적으로 보여줘.' },
+  { id: 1014, title: '샤프비율', latex: String.raw`\operatorname{SR}=\frac{E[R]-r_f}{\sigma}`, note: 'Sharpe ratio', meaning: '무위험수익률 대비 초과수익을 변동성으로 나눈 성과 지표야.' },
+  { id: 1015, title: '포트폴리오 수익률', latex: String.raw`R_p=\sum_{i=1}^{n} w_i R_i`, note: '포트폴리오', meaning: '자산별 비중과 수익률을 합쳐 포트폴리오 수익률을 계산한 식이야.' },
+  { id: 1016, title: '비중합', latex: String.raw`\sum_{i=1}^{n} w_i=1`, note: '투자비중', meaning: '포트폴리오 비중의 총합은 1이어야 한다는 조건이야.' },
+  { id: 1017, title: '포트폴리오 분산', latex: String.raw`\sigma_p^2=w^T\Sigma w`, note: '공분산', meaning: '공분산행렬을 이용한 포트폴리오 전체 위험 계산식이야.' },
+  { id: 1018, title: '2자산 분산', latex: String.raw`\sigma_p^2=w_1^2\sigma_1^2+w_2^2\sigma_2^2+2w_1w_2\sigma_{12}`, note: '2자산 포트폴리오', meaning: '두 자산 포트폴리오의 분산을 직접 전개한 식이야.' },
+  { id: 1019, title: '공분산행렬', latex: String.raw`\Sigma=(\sigma_{ij})`, note: 'covariance matrix', meaning: '자산들 사이 동조 움직임을 담은 공분산행렬이야.' },
+  { id: 1020, title: '효율적 프런티어', latex: String.raw`\min_w w^T\Sigma w`, note: '최소분산', meaning: '주어진 조건에서 위험을 최소화하는 포트폴리오를 찾는 문제야.' },
+  { id: 1021, title: 'CAPM', latex: String.raw`E[R_i]=r_f+\beta_i(E[R_m]-r_f)`, note: 'CAPM', meaning: '자산 기대수익률이 시장위험에 따라 결정된다는 자본자산가격결정모형이야.' },
+  { id: 1022, title: '베타', latex: String.raw`\beta_i=\frac{\operatorname{Cov}(R_i,R_m)}{\operatorname{Var}(R_m)}`, note: '시장민감도', meaning: '자산이 시장수익률에 얼마나 민감한지 나타내는 계수야.' },
+  { id: 1023, title: '알파', latex: String.raw`\alpha_i=R_i-[r_f+\beta_i(R_m-r_f)]`, note: '초과성과', meaning: 'CAPM 기준 기대수익을 넘는 초과성과를 뜻해.' },
+  { id: 1024, title: '선물 가격', latex: String.raw`F_0=S_0 e^{rT}`, note: 'futures', meaning: '배당과 보유비용이 없을 때 선물가격의 기본 무차익 관계야.' },
+  { id: 1025, title: '선도 계약 가치', latex: String.raw`V_t=S_t-K e^{-r(T-t)}`, note: 'forward value', meaning: '시점 t에서 선도계약의 이론적 가치를 나타내는 식이야.' },
+  { id: 1026, title: '콜옵션 페이오프', latex: String.raw`C_T=\max(S_T-K,0)`, note: 'call payoff', meaning: '만기 시 콜옵션이 주는 실제 현금흐름이야.' },
+  { id: 1027, title: '풋옵션 페이오프', latex: String.raw`P_T=\max(K-S_T,0)`, note: 'put payoff', meaning: '만기 시 풋옵션이 주는 실제 현금흐름이야.' },
+  { id: 1028, title: '풋콜 패리티', latex: String.raw`C-P=S_0-K e^{-rT}`, note: 'put-call parity', meaning: '유럽형 콜과 풋 사이의 핵심 무차익 관계식이야.' },
+  { id: 1029, title: '블랙-숄즈 콜', latex: String.raw`C=S_0 N(d_1)-K e^{-rT}N(d_2)`, note: 'Black-Scholes', meaning: '블랙-숄즈 모형에서 유럽형 콜옵션 가격 공식이야.' },
+  { id: 1030, title: '블랙-숄즈 풋', latex: String.raw`P=K e^{-rT}N(-d_2)-S_0 N(-d_1)`, note: 'Black-Scholes', meaning: '블랙-숄즈 모형에서 유럽형 풋옵션 가격 공식이야.' },
+  { id: 1031, title: 'd1', latex: String.raw`d_1=\frac{\ln(S_0/K)+(r+\sigma^2/2)T}{\sigma\sqrt{T}}`, note: 'Black-Scholes parameter', meaning: '옵션 가격 공식에 들어가는 핵심 보조변수 d1이야.' },
+  { id: 1032, title: 'd2', latex: String.raw`d_2=d_1-\sigma\sqrt{T}`, note: 'Black-Scholes parameter', meaning: 'd1에서 변동성 항을 뺀 d2 정의야.' },
+  { id: 1033, title: '델타', latex: String.raw`\Delta=\frac{\partial V}{\partial S}`, note: 'Greek', meaning: '기초자산 가격 변화에 대한 옵션 가치 민감도를 뜻해.' },
+  { id: 1034, title: '감마', latex: String.raw`\Gamma=\frac{\partial^2 V}{\partial S^2}`, note: 'Greek', meaning: '델타가 얼마나 빠르게 변하는지 나타내는 2차 민감도야.' },
+  { id: 1035, title: '세타', latex: String.raw`\Theta=\frac{\partial V}{\partial t}`, note: 'Greek', meaning: '시간 경과에 따라 옵션 가치가 얼마나 변하는지 나타내는 민감도야.' },
+  { id: 1036, title: '베가', latex: String.raw`\nu=\frac{\partial V}{\partial \sigma}`, note: 'Greek', meaning: '변동성 변화에 대한 옵션 가치 민감도를 뜻해.' },
+  { id: 1037, title: '로', latex: String.raw`\rho=\frac{\partial V}{\partial r}`, note: 'Greek', meaning: '이자율 변화에 대한 옵션 가치 민감도야.' },
+  { id: 1038, title: '확률과정', latex: String.raw`dS_t=\mu S_t \, dt+\sigma S_t \, dW_t`, note: '기하브라운운동', meaning: '주가가 기하브라운운동을 따른다고 보는 연속시간 모형이야.' },
+  { id: 1039, title: '위너 과정', latex: String.raw`W_t`, note: 'Brownian motion', meaning: '연속시간 확률모형에서 기본이 되는 브라운운동이야.' },
+  { id: 1040, title: '이토 보조정리', latex: String.raw`df=\left(\frac{\partial f}{\partial t}+\mu\frac{\partial f}{\partial x}+\frac{1}{2}\sigma^2\frac{\partial^2 f}{\partial x^2}\right)dt+\sigma\frac{\partial f}{\partial x}dW_t`, note: 'Ito lemma', meaning: '확률미분방정식 위 함수의 변화를 계산하는 핵심 정리야.' },
+  { id: 1041, title: '위험중립기대', latex: String.raw`V_0=e^{-rT}E^Q[X]`, note: 'risk-neutral pricing', meaning: '위험중립확률 아래 할인된 기대값으로 가격을 매기는 식이야.' },
+  { id: 1042, title: '무차익', latex: String.raw`\Pi_0=0,\; \Pi_T\ge 0`, note: 'arbitrage', meaning: '초기비용 없이 손실 없이 이익을 얻는 무차익 기회를 나타내.' },
+  { id: 1043, title: '듀레이션', latex: String.raw`D=-\frac{1}{P}\frac{dP}{dy}`, note: 'duration', meaning: '채권 가격이 금리 변화에 얼마나 민감한지 나타내는 지표야.' },
+  { id: 1044, title: '볼록성', latex: String.raw`\mathcal{C}=\frac{1}{P}\frac{d^2P}{dy^2}`, note: 'convexity', meaning: '채권 가격과 금리 관계의 곡률을 나타내는 척도야.' },
+  { id: 1045, title: '채권 가격', latex: String.raw`P=\sum_{t=1}^{T}\frac{C_t}{(1+y)^t}`, note: 'bond pricing', meaning: '미래 쿠폰과 원금을 할인해 채권 가격을 계산한 식이야.' },
+  { id: 1046, title: '현물금리', latex: String.raw`P(0,T)=e^{-R(0,T)T}`, note: 'spot rate', meaning: '만기 T 할인채 가격과 현물금리 사이 관계를 나타내.' },
+  { id: 1047, title: '선도금리', latex: String.raw`f(0,T)=-\frac{\partial}{\partial T}\ln P(0,T)`, note: 'forward rate', meaning: '할인곡선으로부터 순간 선도금리를 구하는 식이야.' },
+  { id: 1048, title: '손실기대값', latex: String.raw`EL=PD\times LGD\times EAD`, note: 'credit risk', meaning: '신용위험에서 기대손실을 계산하는 대표 공식이야.' },
+  { id: 1049, title: 'VaR', latex: String.raw`\Pr(L>\operatorname{VaR}_{\alpha})=1-\alpha`, note: 'Value at Risk', meaning: '손실이 특정 수준을 넘을 확률을 기준으로 정의한 위험지표야.' },
+  { id: 1050, title: '금융수학 종합', latex: String.raw`V_0=e^{-rT}E^Q[X]`, note: '종합', meaning: '파생상품 가격결정의 핵심 아이디어인 위험중립 기대값 공식을 나타내.' },
+])
+
+export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics]
+export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학'] as const
 export type PracticeCategory = (typeof practiceCategories)[number]
