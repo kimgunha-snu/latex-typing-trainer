@@ -79,6 +79,17 @@ function collapseSingleArgumentBraces(value: string) {
   return value.replace(/([_^])\{([A-Za-z0-9])\}/g, '$1$2')
 }
 
+function normalizeFunctionArguments(value: string) {
+  return value.replace(
+    /\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g,
+    (_, fn: string, arg: string) => `\\${fn}${arg}`,
+  )
+}
+
+function normalizeDifferentials(value: string) {
+  return value.replace(/d([A-Za-z])/g, 'd$1').replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
+}
+
 function canonicalizeBigOperatorScripts(value: string) {
   const operators = ['\\sum', '\\prod', '\\int', '\\lim']
   let result = ''
@@ -128,6 +139,8 @@ function normalizeSemanticLatex(value: string) {
   normalized = normalized.replace(/\\mathrm\{([^{}]*)\}/g, '\\text{$1}')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\text{$1}')
   normalized = collapseSingleArgumentBraces(normalized)
+  normalized = normalizeFunctionArguments(normalized)
+  normalized = normalizeDifferentials(normalized)
   normalized = canonicalizeBigOperatorScripts(normalized)
   return normalized
 }
@@ -368,7 +381,7 @@ function App() {
           />
 
           <div className="helper-text">
-            공백, 간격 명령, 일부 큰 연산자 표기 순서, 단일 토큰 중괄호, left/right 차이는 판정에서 완화됨
+            공백, 간격 명령, 일부 큰 연산자 표기 순서, 단일 토큰 중괄호, left/right, 함수 인자 중괄호, dx 표기 차이는 판정에서 완화됨
           </div>
 
           <div className="status-row">
