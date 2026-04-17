@@ -133,9 +133,11 @@ function App() {
               className={category === item ? 'primary' : 'secondary'}
               onClick={() => {
                 const nextVisibleSet = item === '전체' ? practiceSet : practiceSet.filter((p) => p.category === item)
+                const initialQueue = shuffleIndices(nextVisibleSet.map((_, index) => index))
+                const [firstIndex, ...rest] = initialQueue
                 setCategory(item)
-                setCurrentIndex(0)
-                queueRef.current = shuffleIndices(nextVisibleSet.map((_, index) => index), 0)
+                setCurrentIndex(firstIndex ?? 0)
+                queueRef.current = rest
                 setInput('')
                 setStartedAt(null)
                 setShowAnswer(false)
@@ -161,6 +163,8 @@ function App() {
           <div className="formula-preview">
             <MathJax inline dynamic>{`\\(${target}\\)`}</MathJax>
           </div>
+
+          {current.meaning ? <div className="meaning-box">{current.meaning}</div> : null}
 
           <div className="answer-toggle-row">
             <button type="button" className="secondary" onClick={() => setShowAnswer((value) => !value)}>

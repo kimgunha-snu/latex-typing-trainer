@@ -4,6 +4,7 @@ export type PracticeItem = {
   title: string
   latex: string
   note: string
+  meaning?: string
 }
 
 function makeCategory(category: string, items: Omit<PracticeItem, 'category'>[]) {
@@ -64,7 +65,7 @@ const algebra = makeCategory('대수', [
 ])
 
 const calculus = makeCategory('미적분', [
-  { id: 101, title: '정적분 1', latex: String.raw`\int_{0}^{1} x^2 \, dx`, note: '기본 정적분' },
+  { id: 101, title: '정적분 1', latex: String.raw`\int_{0}^{1} x^2 \, dx`, note: '기본 정적분', meaning: '0부터 1까지 x² 아래 넓이를 구하는 정적분이야.' },
   { id: 102, title: '정적분 2', latex: String.raw`\int_{-\pi}^{\pi} \cos x \, dx`, note: '대칭 구간' },
   { id: 103, title: '부정적분', latex: String.raw`\int e^x \, dx=e^x+C`, note: '상수 포함' },
   { id: 104, title: '치환적분', latex: String.raw`\int f(g(x))g'(x) \, dx=\int f(u) \, du`, note: '치환' },
@@ -78,7 +79,7 @@ const calculus = makeCategory('미적분', [
   { id: 112, title: '적분 1', latex: String.raw`\int_0^\infty e^{-x} \, dx=1`, note: '무한적분' },
   { id: 113, title: '적분 2', latex: String.raw`\int_0^\pi \sin x \, dx=2`, note: '기본 삼각적분' },
   { id: 114, title: '적분 3', latex: String.raw`\int_0^1 \frac{1}{1+x^2} \, dx=\frac{\pi}{4}`, note: '아크탄젠트' },
-  { id: 115, title: '극한 1', latex: String.raw`\lim_{x\to 0}\frac{\sin x}{x}=1`, note: '대표 극한' },
+  { id: 115, title: '극한 1', latex: String.raw`\lim_{x\to 0}\frac{\sin x}{x}=1`, note: '대표 극한', meaning: '사인 함수의 가장 대표적인 기본 극한식이야.' },
   { id: 116, title: '극한 2', latex: String.raw`\lim_{x\to\infty}\frac{2x^2+1}{x^2-3}=2`, note: '유리함수 극한' },
   { id: 117, title: '극한 3', latex: String.raw`\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^n=e`, note: 'e' },
   { id: 118, title: '합 1', latex: String.raw`\sum_{n=1}^{\infty} \frac{1}{n^2}=\frac{\pi^2}{6}`, note: '바젤 문제' },
@@ -132,7 +133,7 @@ const linearAlgebra = makeCategory('선형대수', [
   { id: 201, title: '행렬 1', latex: String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}`, note: '2x2 행렬' },
   { id: 202, title: '행렬 2', latex: String.raw`\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}`, note: '단위행렬' },
   { id: 203, title: '벡터 1', latex: String.raw`\vec{v}=\begin{bmatrix} x \\ y \\ z \end{bmatrix}`, note: '벡터와 행렬' },
-  { id: 204, title: '벡터 2', latex: String.raw`\|x\|_2=\sqrt{\sum_{i=1}^{n} x_i^2}`, note: '노름' },
+  { id: 204, title: '벡터 2', latex: String.raw`\|x\|_2=\sqrt{\sum_{i=1}^{n} x_i^2}`, note: '노름', meaning: '벡터 x의 유클리드 길이, 즉 L2 노름을 뜻해.' },
   { id: 205, title: '내적', latex: String.raw`\langle u,v \rangle = \sum_{i=1}^{n} u_i v_i`, note: '내적' },
   { id: 206, title: '고유값', latex: String.raw`A\mathbf{x}=\lambda\mathbf{x}`, note: '고유값' },
   { id: 207, title: '대각화', latex: String.raw`A=PDP^{-1}`, note: '대각화' },
@@ -182,7 +183,7 @@ const linearAlgebra = makeCategory('선형대수', [
 ])
 
 const electromagnetism = makeCategory('전자기학', [
-  { id: 301, title: '가우스 법칙', latex: String.raw`\nabla \cdot \mathbf{E}=\frac{\rho}{\varepsilon_0}`, note: '전기장 발산' },
+  { id: 301, title: '가우스 법칙', latex: String.raw`\nabla \cdot \mathbf{E}=\frac{\rho}{\varepsilon_0}`, note: '전기장 발산', meaning: '전하 밀도가 전기장의 발산을 만든다는 맥스웰 방정식이야.' },
   { id: 302, title: '자기 가우스 법칙', latex: String.raw`\nabla \cdot \mathbf{B}=0`, note: '자기 단극자 없음' },
   { id: 303, title: '패러데이 법칙', latex: String.raw`\nabla \times \mathbf{E}=-\frac{\partial \mathbf{B}}{\partial t}`, note: '유도 전기장' },
   { id: 304, title: '암페어-맥스웰', latex: String.raw`\nabla \times \mathbf{B}=\mu_0\mathbf{J}+\mu_0\varepsilon_0\frac{\partial \mathbf{E}}{\partial t}`, note: '변위전류 포함' },
@@ -238,7 +239,7 @@ const quantum = makeCategory('양자역학', [
   { id: 401, title: '브라켓 1', latex: String.raw`\langle \psi | \phi \rangle`, note: '내적' },
   { id: 402, title: '파동함수', latex: String.raw`\Psi(x,t)=Ae^{i(kx-\omega t)}`, note: '파동함수' },
   { id: 403, title: '정규화', latex: String.raw`\int |\psi|^2 \, dx=1`, note: '정규화' },
-  { id: 404, title: '슈뢰딩거', latex: String.raw`i\hbar \frac{\partial}{\partial t}\Psi=\hat{H}\Psi`, note: '시간의존 슈뢰딩거 방정식' },
+  { id: 404, title: '슈뢰딩거', latex: String.raw`i\hbar \frac{\partial}{\partial t}\Psi=\hat{H}\Psi`, note: '시간의존 슈뢰딩거 방정식', meaning: '양자상태가 시간에 따라 어떻게 변하는지 보여주는 핵심 방정식이야.' },
   { id: 405, title: '운동량 연산자', latex: String.raw`\hat{p}=-i\hbar\nabla`, note: '연산자' },
   { id: 406, title: '에너지 연산자', latex: String.raw`\hat{E}=i\hbar\frac{\partial}{\partial t}`, note: '에너지 연산자' },
   { id: 407, title: '기댓값', latex: String.raw`\langle A\rangle=\int \psi^* \hat{A} \psi \, dx`, note: '기댓값' },
@@ -292,7 +293,7 @@ const statistics = makeCategory('확률통계', [
   { id: 502, title: '분산 1', latex: String.raw`\operatorname{Var}(X)=E[X^2]-E[X]^2`, note: '분산 정의' },
   { id: 503, title: '공분산', latex: String.raw`\operatorname{Cov}(X,Y)=E[XY]-E[X]E[Y]`, note: '공분산' },
   { id: 504, title: '조건부확률', latex: String.raw`P(A\mid B)=\frac{P(A\cap B)}{P(B)}`, note: '조건부' },
-  { id: 505, title: '베이즈', latex: String.raw`P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)}`, note: '베이즈 정리' },
+  { id: 505, title: '베이즈', latex: String.raw`P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)}`, note: '베이즈 정리', meaning: '관측 B가 주어졌을 때 A의 확률을 갱신하는 공식이야.' },
   { id: 506, title: '확률질량', latex: String.raw`\sum_x p(x)=1`, note: '정규화' },
   { id: 507, title: '연속확률', latex: String.raw`\int_{-\infty}^{\infty} f(x) \, dx=1`, note: '밀도함수' },
   { id: 508, title: '정규분포 1', latex: String.raw`f(x)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}`, note: '정규분포' },
@@ -342,7 +343,7 @@ const statistics = makeCategory('확률통계', [
 
 const differentialGeometry = makeCategory('미분기하', [
   { id: 601, title: '계량 1', latex: String.raw`ds^2=g_{ij}dx^idx^j`, note: '계량 텐서' },
-  { id: 602, title: '크리스토펠', latex: String.raw`\Gamma^k_{ij}=\frac{1}{2}g^{k\ell}(\partial_i g_{j\ell}+\partial_j g_{i\ell}-\partial_\ell g_{ij})`, note: '연결계수' },
+  { id: 602, title: '크리스토펠', latex: String.raw`\Gamma^k_{ij}=\frac{1}{2}g^{k\ell}(\partial_i g_{j\ell}+\partial_j g_{i\ell}-\partial_\ell g_{ij})`, note: '연결계수', meaning: '곡면이나 시공간에서 방향미분을 정의할 때 쓰는 연결계수야.' },
   { id: 603, title: '공변미분', latex: String.raw`\nabla_i V^j=\partial_i V^j+\Gamma^j_{ik}V^k`, note: '공변미분' },
   { id: 604, title: '곡률', latex: String.raw`R^\rho_{\sigma\mu\nu}=\partial_\mu\Gamma^\rho_{\nu\sigma}-\partial_\nu\Gamma^\rho_{\mu\sigma}+\cdots`, note: '리만 곡률' },
   { id: 605, title: '리치 텐서', latex: String.raw`R_{\mu\nu}=R^\rho_{\mu\rho\nu}`, note: 'Ricci' },
@@ -386,7 +387,7 @@ const differentialGeometry = makeCategory('미분기하', [
 const machineLearning = makeCategory('머신러닝', [
   { id: 701, title: '선형회귀', latex: String.raw`y=\beta_0+\beta_1x+\varepsilon`, note: '선형회귀' },
   { id: 702, title: '로지스틱', latex: String.raw`\sigma(z)=\frac{1}{1+e^{-z}}`, note: '시그모이드' },
-  { id: 703, title: '소프트맥스', latex: String.raw`p_i=\frac{e^{z_i}}{\sum_j e^{z_j}}`, note: 'softmax' },
+  { id: 703, title: '소프트맥스', latex: String.raw`p_i=\frac{e^{z_i}}{\sum_j e^{z_j}}`, note: 'softmax', meaning: '점수 벡터를 확률분포로 바꿔주는 분류용 함수야.' },
   { id: 704, title: '크로스엔트로피', latex: String.raw`L=-\sum_i y_i\log\hat{y}_i`, note: '손실함수' },
   { id: 705, title: 'MSE', latex: String.raw`\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2`, note: '평균제곱오차' },
   { id: 706, title: '정규방정식', latex: String.raw`\hat{\beta}=(X^TX)^{-1}X^Ty`, note: '정규방정식' },
