@@ -30,11 +30,25 @@ function preprocessLatex(value: string) {
   return normalized
 }
 
+function containsErrorNode(value: unknown): boolean {
+  if (Array.isArray(value)) {
+    if (value[0] === 'Error') return true
+    return value.some((item) => containsErrorNode(item))
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value).some((item) => containsErrorNode(item))
+  }
+
+  return false
+}
+
 function canonicalFromAst(value: string) {
   try {
     const expr = ce.parse(value)
     if (!expr) return null
     const json = expr.simplify().json
+    if (containsErrorNode(json)) return null
     return JSON.stringify(json)
   } catch {
     return null
