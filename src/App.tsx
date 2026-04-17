@@ -288,19 +288,47 @@ function App() {
               </button>
             </div>
 
-            <div className="cheatsheet-grid">
-              <div className="cheatsheet-item"><strong>분수</strong><code>{String.raw`\frac{a}{b}`}</code></div>
-              <div className="cheatsheet-item"><strong>제곱근</strong><code>{String.raw`\sqrt{x}, \sqrt[n]{x}`}</code></div>
-              <div className="cheatsheet-item"><strong>위첨자/아래첨자</strong><code>{String.raw`x^2, x_i, x_{ij}^{n+1}`}</code></div>
-              <div className="cheatsheet-item"><strong>합/적분</strong><code>{String.raw`\sum_{i=1}^n, \int_0^1`}</code></div>
-              <div className="cheatsheet-item"><strong>그리스 문자</strong><code>{String.raw`\alpha \beta \gamma \lambda \pi`}</code></div>
-              <div className="cheatsheet-item"><strong>벡터/스타일</strong><code>{String.raw`\vec{v}, \mathbf{x}, \mathbb{R}`}</code></div>
-              <div className="cheatsheet-item"><strong>행렬</strong><code>{String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}`}</code></div>
-              <div className="cheatsheet-item"><strong>논리기호</strong><code>{String.raw`\wedge, \vee, \Rightarrow, \forall, \exists`}</code></div>
-              <div className="cheatsheet-item"><strong>집합기호</strong><code>{String.raw`\in, \subseteq, \cup, \cap, \mid`}</code></div>
-              <div className="cheatsheet-item"><strong>노름/절댓값</strong><code>{String.raw`|x|, \|x\|`}</code></div>
-              <div className="cheatsheet-item"><strong>함수</strong><code>{String.raw`f(x), \sin x, \log x, e^x`}</code></div>
-              <div className="cheatsheet-item"><strong>미분</strong><code>{String.raw`\frac{d}{dx}, \frac{\partial u}{\partial t}`}</code></div>
+            <div className="cheatsheet-table" role="table" aria-label="LaTeX 치트시트 표">
+              {[
+                { latex: String.raw`\frac{a}{b}` },
+                { latex: String.raw`\sqrt{x}` },
+                { latex: String.raw`\sqrt[n]{x}` },
+                { latex: String.raw`x^2` },
+                { latex: String.raw`x_i` },
+                { latex: String.raw`x_{ij}^{n+1}` },
+                { latex: String.raw`\sum_{i=1}^n` },
+                { latex: String.raw`\int_0^1 x^2 \, dx` },
+                { latex: String.raw`\alpha, \beta, \gamma, \lambda, \pi` },
+                { latex: String.raw`\vec{v}` },
+                { latex: String.raw`\mathbf{x}` },
+                { latex: String.raw`\mathbb{R}` },
+                { latex: String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}` },
+                { latex: String.raw`P \wedge Q` },
+                { latex: String.raw`P \vee Q` },
+                { latex: String.raw`P \Rightarrow Q` },
+                { latex: String.raw`\forall x \in A` },
+                { latex: String.raw`\exists x \in A` },
+                { latex: String.raw`x \in A` },
+                { latex: String.raw`A \subseteq B` },
+                { latex: String.raw`A \cup B` },
+                { latex: String.raw`A \cap B` },
+                { latex: String.raw`\{x \mid x > 0\}` },
+                { latex: String.raw`|x|` },
+                { latex: String.raw`\|x\|` },
+                { latex: String.raw`f(x)` },
+                { latex: String.raw`\sin x` },
+                { latex: String.raw`\log x` },
+                { latex: String.raw`e^x` },
+                { latex: String.raw`\frac{d}{dx}` },
+                { latex: String.raw`\frac{\partial u}{\partial t}` },
+              ].map((item) => (
+                <div key={item.latex} className="cheatsheet-row" role="row">
+                  <div className="cheatsheet-render" role="cell">
+                    <MathJax inline dynamic>{`\\(${item.latex}\\)`}</MathJax>
+                  </div>
+                  <code className="cheatsheet-code" role="cell">{item.latex}</code>
+                </div>
+              ))}
             </div>
 
             <div className="upload-help">
