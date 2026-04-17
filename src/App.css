@@ -1,6 +1,6 @@
 .app-shell {
   min-height: 100vh;
-  padding: 40px 24px 64px;
+  padding: 18px 18px 40px;
   box-sizing: border-box;
 }
 
@@ -16,50 +16,60 @@
 .hero-card {
   display: flex;
   justify-content: space-between;
-  gap: 24px;
-  padding: 28px;
-  margin-bottom: 24px;
-  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.hero-card.compact {
+  position: sticky;
+  top: 10px;
+  z-index: 5;
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: 1.6rem;
 }
 
 .eyebrow,
 .label {
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #94a3b8;
-  margin-bottom: 8px;
-}
-
-.subtitle {
-  max-width: 640px;
-  color: #cbd5e1;
+  margin-bottom: 4px;
 }
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(96px, 1fr));
-  gap: 12px;
-  min-width: 240px;
+  grid-template-columns: repeat(5, minmax(72px, 1fr));
+  gap: 8px;
+  min-width: min(620px, 100%);
+}
+
+.hero-stats.compact {
+  flex: 1;
 }
 
 .hero-stats div,
 .progress-badge {
   background: rgba(30, 41, 59, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 16px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 10px 12px;
 }
 
 .hero-stats span {
   display: block;
   color: #94a3b8;
-  font-size: 0.8rem;
-  margin-bottom: 6px;
+  font-size: 0.72rem;
+  margin-bottom: 4px;
 }
 
 .hero-stats strong {
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: #f8fafc;
 }
 
@@ -246,15 +256,20 @@ button.secondary {
 
 @media (max-width: 900px) {
   .app-shell {
-    padding: 20px 14px 40px;
+    padding: 12px 12px 28px;
   }
 
   .hero-card,
   .panel-head {
     flex-direction: column;
+    align-items: stretch;
   }
 
-  .hero-stats,
+  .hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+  }
+
   .trainer-grid {
     grid-template-columns: 1fr;
   }

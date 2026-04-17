@@ -46,7 +46,7 @@ function App() {
     return Math.max((Date.now() - startedAt) / 1000 / 60, 1 / 60)
   }, [startedAt, input, currentIndex])
 
-  const cpm = Math.round(normalizedInput.length / elapsedMinutes)
+  const cpm = startedAt ? Math.round(normalizedInput.length / elapsedMinutes) : 0
   const accuracy = normalizedInput.length === 0 ? 100 : Math.round((correctChars / normalizedInput.length) * 100)
 
   const handleChange = (value: string) => {
@@ -88,17 +88,14 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="hero-card">
-        <div>
+      <section className="hero-card compact">
+        <div className="hero-copy">
           <p className="eyebrow">Web LaTeX Typing Trainer</p>
           <h1>LaTeX 타자연습기</h1>
-          <p className="subtitle">
-            답안은 숨겨두고, 필요할 때만 펼쳐 보면서 연습하는 웹 기반 LaTeX 타자연습기.
-          </p>
         </div>
-        <div className="hero-stats">
+        <div className="hero-stats compact">
           <div>
-            <span>현재 문제</span>
+            <span>문제</span>
             <strong>{current.title}</strong>
           </div>
           <div>
@@ -106,7 +103,7 @@ function App() {
             <strong>{finishedCount}</strong>
           </div>
           <div>
-            <span>문제 수</span>
+            <span>전체</span>
             <strong>{practiceSet.length}</strong>
           </div>
           <div>
