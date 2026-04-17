@@ -183,7 +183,7 @@ function App() {
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const [symbolQuizIndex, setSymbolQuizIndex] = useState(() => Math.floor(Math.random() * symbolQuizItems.length))
-  const [symbolQuizInput, setSymbolQuizInput] = useState('')
+  const [symbolQuizInput, setSymbolQuizInput] = useState('\\')
   const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong'>('idle')
 
   const visibleSet =
@@ -323,19 +323,19 @@ function App() {
       nextIndex = (nextIndex + 1) % symbolQuizItems.length
     }
     setSymbolQuizIndex(nextIndex)
-    setSymbolQuizInput('')
+    setSymbolQuizInput('\\')
     setSymbolQuizResult('idle')
   }
 
   const checkSymbolQuizAnswer = () => {
     const answer = symbolQuizInput.trim()
-    if (!answer) return
 
     if (answer === currentSymbolQuiz.latex) {
       setSymbolQuizResult('correct')
       return
     }
 
+    setSymbolQuizInput(currentSymbolQuiz.latex)
     setSymbolQuizResult('wrong')
   }
 
@@ -421,7 +421,8 @@ function App() {
                 className="symbol-quiz-input"
                 value={symbolQuizInput}
                 onChange={(event) => {
-                  setSymbolQuizInput(event.target.value)
+                  const nextValue = event.target.value
+                  setSymbolQuizInput(nextValue.startsWith('\\') || nextValue.length === 0 ? nextValue || '\\' : `\\${nextValue}`)
                   if (symbolQuizResult !== 'idle') setSymbolQuizResult('idle')
                 }}
                 onKeyDown={(event) => {
@@ -445,8 +446,8 @@ function App() {
                 {symbolQuizResult === 'correct'
                   ? '정답! Enter를 누르거나 다음 문제 버튼으로 계속 갈 수 있어.'
                   : symbolQuizResult === 'wrong'
-                    ? `아직 아니야. 정답은 ${currentSymbolQuiz.latex}`
-                    : '기호를 보고 정확한 명령어를 입력해봐.'}
+                    ? '정답을 입력창에 채워뒀어.'
+                    : ''}
               </div>
             </div>
           </div>
