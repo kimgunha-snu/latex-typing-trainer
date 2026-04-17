@@ -73,6 +73,7 @@ function App() {
   })
   const [uploadMessage, setUploadMessage] = useState('JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.')
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+  const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [category, setCategory] = useState<PracticeCategory | string>('전체')
   const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedSets.flatMap((set) => set.items)], [uploadedSets])
@@ -225,6 +226,9 @@ function App() {
           <h1>LaTeX 타자연습기</h1>
         </div>
         <div className="hero-actions">
+          <button type="button" className="secondary" onClick={() => setIsCheatsheetOpen(true)}>
+            LaTeX 치트시트
+          </button>
           <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(true)}>
             문제 업로드 관리
           </button>
@@ -270,6 +274,41 @@ function App() {
         </div>
         <div className="category-meta">현재 선택된 분야 문제 수, {visibleSet.length}개</div>
       </section>
+
+      {isCheatsheetOpen ? (
+        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="LaTeX 치트시트 창">
+          <div className="modal-card panel">
+            <div className="panel-head">
+              <div>
+                <p className="label">치트시트</p>
+                <h2>자주 쓰는 LaTeX 문법</h2>
+              </div>
+              <button type="button" className="secondary" onClick={() => setIsCheatsheetOpen(false)}>
+                닫기
+              </button>
+            </div>
+
+            <div className="cheatsheet-grid">
+              <div className="cheatsheet-item"><strong>분수</strong><code>{String.raw`\frac{a}{b}`}</code></div>
+              <div className="cheatsheet-item"><strong>제곱근</strong><code>{String.raw`\sqrt{x}, \sqrt[n]{x}`}</code></div>
+              <div className="cheatsheet-item"><strong>위첨자/아래첨자</strong><code>{String.raw`x^2, x_i, x_{ij}^{n+1}`}</code></div>
+              <div className="cheatsheet-item"><strong>합/적분</strong><code>{String.raw`\sum_{i=1}^n, \int_0^1`}</code></div>
+              <div className="cheatsheet-item"><strong>그리스 문자</strong><code>{String.raw`\alpha \beta \gamma \lambda \pi`}</code></div>
+              <div className="cheatsheet-item"><strong>벡터/스타일</strong><code>{String.raw`\vec{v}, \mathbf{x}, \mathbb{R}`}</code></div>
+              <div className="cheatsheet-item"><strong>행렬</strong><code>{String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}`}</code></div>
+              <div className="cheatsheet-item"><strong>논리기호</strong><code>{String.raw`\wedge, \vee, \Rightarrow, \forall, \exists`}</code></div>
+              <div className="cheatsheet-item"><strong>집합기호</strong><code>{String.raw`\in, \subseteq, \cup, \cap, \mid`}</code></div>
+              <div className="cheatsheet-item"><strong>노름/절댓값</strong><code>{String.raw`|x|, \|x\|`}</code></div>
+              <div className="cheatsheet-item"><strong>함수</strong><code>{String.raw`f(x), \sin x, \log x, e^x`}</code></div>
+              <div className="cheatsheet-item"><strong>미분</strong><code>{String.raw`\frac{d}{dx}, \frac{\partial u}{\partial t}`}</code></div>
+            </div>
+
+            <div className="upload-help">
+              JSON 업로드 예시처럼 문자열 안에 LaTeX를 넣을 땐 역슬래시를 두 번 써야 해. 예: <code>{String.raw`\\frac{a}{b}`}</code>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {isUploadModalOpen ? (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="문제 업로드 관리 창">
