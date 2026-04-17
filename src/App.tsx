@@ -214,6 +214,21 @@ function App() {
     window.localStorage.setItem(uploadedSetsStorageKey, JSON.stringify(uploadedSets))
   }, [uploadedSets])
 
+  useEffect(() => {
+    const hasOpenModal = isCheatsheetOpen || isSymbolQuizOpen || isUploadModalOpen
+    if (!hasOpenModal) return
+
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setIsCheatsheetOpen(false)
+      setIsSymbolQuizOpen(false)
+      setIsUploadModalOpen(false)
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isCheatsheetOpen, isSymbolQuizOpen, isUploadModalOpen])
+
   const elapsedMinutes = useMemo(() => {
     if (!startedAt) return 0
     return Math.max((Date.now() - startedAt) / 1000 / 60, 1 / 60)
