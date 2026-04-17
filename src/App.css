@@ -206,6 +206,55 @@
   width: min(680px, 100%);
 }
 
+.summary-modal {
+  width: min(760px, 100%);
+}
+
+.summary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.summary-stat-card,
+.summary-result-item {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.summary-stat-card span,
+.summary-result-index {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.summary-stat-card strong,
+.summary-result-item strong,
+.summary-result-cpm {
+  color: #f8fafc;
+}
+
+.ad-slot-card {
+  border-style: dashed;
+}
+
+.summary-result-list {
+  display: grid;
+  gap: 10px;
+}
+
+.summary-result-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
 .symbol-quiz-card {
   display: grid;
   gap: 16px;

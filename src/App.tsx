@@ -121,6 +121,11 @@ type UploadedSet = {
   items: PracticeItem[]
 }
 
+type RecentResult = {
+  title: string
+  cpm: number
+}
+
 function isUploadedPracticeFile(value: unknown): value is UploadedPracticeFile {
   if (!value || typeof value !== 'object') return false
 
@@ -185,6 +190,8 @@ function App() {
   const [finishedCount, setFinishedCount] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
+  const [recentResults, setRecentResults] = useState<RecentResult[]>([])
+  const [isSessionSummaryOpen, setIsSessionSummaryOpen] = useState(false)
   const [symbolQuizIndex, setSymbolQuizIndex] = useState(() => Math.floor(Math.random() * symbolQuizItems.length))
   const [symbolQuizInput, setSymbolQuizInput] = useState('\\')
   const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong' | 'revealed'>('idle')
@@ -216,7 +223,7 @@ function App() {
   }, [uploadedSets])
 
   useEffect(() => {
-    const hasOpenModal = isCheatsheetOpen || isSymbolQuizOpen || isUploadModalOpen
+    const hasOpenModal = isCheatsheetOpen || isSymbolQuizOpen || isUploadModalOpen || isSessionSummaryOpen
     if (!hasOpenModal) return
 
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -224,11 +231,12 @@ function App() {
       setIsCheatsheetOpen(false)
       setIsSymbolQuizOpen(false)
       setIsUploadModalOpen(false)
+      setIsSessionSummaryOpen(false)
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isCheatsheetOpen, isSymbolQuizOpen, isUploadModalOpen])
+  }, [isCheatsheetOpen, isSymbolQuizOpen, isUploadModalOpen, isSessionSummaryOpen])
 
   const elapsedMinutes = useMemo(() => {
     if (!startedAt) return 0
@@ -259,7 +267,15 @@ function App() {
   }
 
   const goNext = () => {
+    const currentCpm = startedAt ? Math.round(normalizedInput.length / elapsedMinutes) : 0
+    const nextResults = [...recentResults, { title: current.title, cpm: currentCpm }]
+
     setFinishedCount((count) => count + 1)
+    setRecentResults(nextResults.length >= 3 ? nextResults.slice(-3) : nextResults)
+    if (nextResults.length >= 3) {
+      setIsSessionSummaryOpen(true)
+    }
+
     if (queueRef.current.length > 0) {
       const [nextIndex, ...rest] = queueRef.current
       queueRef.current = rest
@@ -377,6 +393,11 @@ function App() {
   const revealSymbolQuizAnswer = () => {
     setSymbolQuizInput(currentSymbolQuiz.latex)
     setSymbolQuizResult('revealed')
+  }
+
+  const closeSessionSummary = () => {
+    setIsSessionSummaryOpen(false)
+    setRecentResults([])
   }
 
   return (
@@ -545,6 +566,53 @@ function App() {
               </div>
             ) : null}
 
+          </div>
+        </div>
+      ) : null}
+
+      {isSessionSummaryOpen ? (
+        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="최근 문제 결과 요약 창">
+          <div className="modal-card panel summary-modal">
+            <div className="panel-head">
+              <div>
+                <p className="label">세션 요약</p>
+                <h2>최근 3문제 결과</h2>
+              </div>
+              <button type="button" className="secondary" onClick={closeSessionSummary}>
+                닫기
+              </button>
+            </div>
+
+            <div className="summary-stats-grid">
+              <div className="summary-stat-card">
+                <span>문제 수</span>
+                <strong>{recentResults.length}</strong>
+              </div>
+              <div className="summary-stat-card">
+                <span>평균 CPM</span>
+                <strong>
+                  {recentResults.length > 0
+                    ? Math.round(recentResults.reduce((sum, item) => sum + item.cpm, 0) / recentResults.length)
+                    : 0}
+                </strong>
+              </div>
+              <div className="summary-stat-card ad-slot-card">
+                <span>추가 영역</span>
+                <strong>광고 / 추천 / 보상 자리</strong>
+              </div>
+            </div>
+
+            <div className="summary-result-list">
+              {recentResults.map((item, index) => (
+                <div key={`${item.title}-${index}`} className="summary-result-item">
+                  <div>
+                    <div className="summary-result-index">문제 {index + 1}</div>
+                    <strong>{item.title}</strong>
+                  </div>
+                  <div className="summary-result-cpm">{item.cpm} CPM</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
