@@ -37,7 +37,7 @@ const practiceSet: PracticeItem[] = [
     id: 3,
     title: '합 기호',
     latex: String.raw`\sum_{i=1}^{n} i^2`,
-    note: '아래첨자와 위첨자 순서에 익숙해지기',
+    note: '위첨자/아래첨자 순서가 달라도 정답으로 인정',
   },
   {
     id: 4,
@@ -53,13 +53,77 @@ const practiceSet: PracticeItem[] = [
   },
 ]
 
-function normalizeLatex(value: string) {
+function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, '')
 }
 
+function extractGroup(value: string, startIndex: number) {
+  if (value[startIndex] === '{') {
+    let depth = 0
+
+    for (let index = startIndex; index < value.length; index += 1) {
+      if (value[index] === '{') depth += 1
+      if (value[index] === '}') depth -= 1
+
+      if (depth === 0) {
+        return {
+          content: value.slice(startIndex + 1, index),
+          endIndex: index + 1,
+        }
+      }
+    }
+  }
+
+  return {
+    content: value[startIndex] ?? '',
+    endIndex: startIndex + 1,
+  }
+}
+
+function canonicalizeBigOperatorScripts(value: string) {
+  const operators = ['\\sum', '\\prod', '\\int']
+  let result = ''
+  let index = 0
+
+  while (index < value.length) {
+    const matchedOperator = operators.find((operator) => value.startsWith(operator, index))
+
+    if (!matchedOperator) {
+      result += value[index]
+      index += 1
+      continue
+    }
+
+    let cursor = index + matchedOperator.length
+    let lower = ''
+    let upper = ''
+
+    while (cursor < value.length) {
+      const token = value[cursor]
+      if (token !== '_' && token !== '^') break
+
+      const group = extractGroup(value, cursor + 1)
+      if (token === '_') lower = group.content
+      if (token === '^') upper = group.content
+      cursor = group.endIndex
+    }
+
+    result += matchedOperator
+    if (lower) result += `_{${lower}}`
+    if (upper) result += `^{${upper}}`
+    index = cursor
+  }
+
+  return result
+}
+
+function normalizeSemanticLatex(value: string) {
+  return canonicalizeBigOperatorScripts(normalizeWhitespace(value))
+}
+
 function compareLatex(input: string, target: string): ComparisonResult {
-  const normalizedInput = normalizeLatex(input)
-  const normalizedTarget = normalizeLatex(target)
+  const normalizedInput = normalizeSemanticLatex(input)
+  const normalizedTarget = normalizeSemanticLatex(target)
   const minLength = Math.min(normalizedInput.length, normalizedTarget.length)
 
   let mismatchIndex = -1
@@ -89,7 +153,7 @@ function compareLatex(input: string, target: string): ComparisonResult {
       state = 'wrong'
     } else if (normalizedCursor < correctChars) {
       state = 'correct'
-    } else if (mismatchIndex === -1 && normalizedCursor === normalizedInput.length) {
+    } else if (mismatchIndex === -1 && normalizedCursor === normalizeWhitespace(input).length) {
       state = 'current'
     }
 
@@ -105,6 +169,18 @@ function compareLatex(input: string, target: string): ComparisonResult {
     correctChars,
     targetDisplayStates,
   }
+}
+
+function getRandomNextIndex(currentIndex: number) {
+  if (practiceSet.length <= 1) return currentIndex
+
+  let nextIndex = currentIndex
+
+  while (nextIndex === currentIndex) {
+    nextIndex = Math.floor(Math.random() * practiceSet.length)
+  }
+
+  return nextIndex
 }
 
 function App() {
@@ -143,18 +219,18 @@ function App() {
     setInput(value)
   }
 
+  const goNext = () => {
+    setFinishedCount((count) => count + 1)
+    setCurrentIndex((index) => getRandomNextIndex(index))
+    setInput('')
+    setStartedAt(null)
+  }
+
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && isComplete) {
       event.preventDefault()
       goNext()
     }
-  }
-
-  const goNext = () => {
-    setFinishedCount((count) => count + 1)
-    setCurrentIndex((index) => (index + 1) % practiceSet.length)
-    setInput('')
-    setStartedAt(null)
   }
 
   const resetCurrent = () => {
@@ -170,15 +246,13 @@ function App() {
           <p className="eyebrow">Web LaTeX Typing Trainer</p>
           <h1>LaTeX 타자연습기</h1>
           <p className="subtitle">
-            의미 없는 공백은 무시하고, 실제 LaTeX 구조가 맞는지 중심으로 연습하는 수식 타자 연습기.
+            의미 없는 공백은 무시하고, 일부 수식은 구조적으로 같은 표현도 정답으로 인정하는 수식 타자 연습기.
           </p>
         </div>
         <div className="hero-stats">
           <div>
-            <span>문제</span>
-            <strong>
-              {currentIndex + 1}/{practiceSet.length}
-            </strong>
+            <span>현재 문제</span>
+            <strong>{current.title}</strong>
           </div>
           <div>
             <span>완료</span>
@@ -255,12 +329,14 @@ function App() {
             placeholder="여기에 LaTeX를 그대로 입력"
           />
 
-          <div className="helper-text">공백, 탭, 줄바꿈은 판정에서 무시되고, 정답이면 Enter로 바로 다음 문제로 넘어감</div>
+          <div className="helper-text">
+            틀렸을 때 Enter는 줄바꿈으로 유지되고, 정답이면 Enter로 랜덤 다음 문제로 넘어감
+          </div>
 
           <div className="status-row">
             <div className={`status ${isComplete ? 'success' : mismatchIndex >= 0 ? 'error' : 'idle'}`}>
               {isComplete
-                ? '좋아, 공백 차이는 무시하고 정답 처리했어.'
+                ? '좋아, 공백과 일부 동치 표기는 무시하고 정답 처리했어.'
                 : mismatchIndex >= 0
                   ? `${mismatchIndex + 1}번째 유효 문자부터 다름`
                   : '좋아, 그대로 이어서 입력하면 돼.'}
