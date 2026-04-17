@@ -12,6 +12,7 @@ export type ComparisonResult = {
 }
 
 const ce = new ComputeEngine()
+const styleCommands = 'vec|hat|bar|tilde|dot|ddot|overline|underline|mathbf|mathit|mathrm|mathsf|mathtt|mathcal|mathbb|boldsymbol'
 
 function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, ' ').trim()
@@ -26,7 +27,7 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac')
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
-  normalized = normalized.replace(/\\(vec|hat|bar|tilde|dot|ddot|overline|underline)\s+([A-Za-z0-9])/g, (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
+  normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s+([A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
   return normalized
@@ -41,7 +42,7 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac')
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
-  normalized = normalized.replace(/\\(vec|hat|bar|tilde|dot|ddot|overline|underline)\s+([A-Za-z0-9])/g, (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
+  normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s+([A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
   normalized = normalized.replace(/\{([^{}=]+)=([^{}=]+)\}/g, (_, left: string, right: string) => {
