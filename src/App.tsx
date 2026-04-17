@@ -3,10 +3,10 @@ import { MathJax } from 'better-react-mathjax'
 import './App.css'
 
 import { compareLatex } from './latexCompare'
-import { practiceSet } from './practiceSet'
+import { practiceCategories, practiceSet, type PracticeCategory } from './practiceSet'
 
-function shuffleIndices(excludeIndex?: number) {
-  const indices = practiceSet.map((_, index) => index).filter((index) => index !== excludeIndex)
+function shuffleIndices(items: number[], excludeIndex?: number) {
+  const indices = items.filter((index) => index !== excludeIndex)
 
   for (let i = indices.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -18,14 +18,16 @@ function shuffleIndices(excludeIndex?: number) {
 
 function App() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [, setQueue] = useState<number[]>(() => shuffleIndices(0))
+  const [category, setCategory] = useState<PracticeCategory>('전체')
+  const queueRef = useRef<number[]>(shuffleIndices(practiceSet.map((_, index) => index), 0))
   const [input, setInput] = useState('')
   const [startedAt, setStartedAt] = useState<number | null>(null)
   const [finishedCount, setFinishedCount] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
-  const current = practiceSet[currentIndex]
+  const visibleSet = category === '전체' ? practiceSet : practiceSet.filter((item) => item.category === category)
+  const current = visibleSet[currentIndex] ?? visibleSet[0]
   const target = current.latex
   const comparison = useMemo(() => compareLatex(input, target), [input, target])
   const { normalizedInput, normalizedTarget, isComplete, mismatchIndex, correctChars, targetDisplayStates } = comparison
@@ -33,7 +35,7 @@ function App() {
 
   useEffect(() => {
     inputRef.current?.focus()
-  }, [currentIndex])
+  }, [currentIndex, category])
 
   useEffect(() => {
     if (!startedAt && input.length > 0) {
@@ -56,18 +58,17 @@ function App() {
 
   const goNext = () => {
     setFinishedCount((count) => count + 1)
-    setQueue((currentQueue) => {
-      if (currentQueue.length > 0) {
-        const [nextIndex, ...rest] = currentQueue
-        setCurrentIndex(nextIndex)
-        return rest
-      }
-
-      const reshuffledQueue = shuffleIndices(currentIndex)
-      const [nextIndex, ...rest] = reshuffledQueue
+    if (queueRef.current.length > 0) {
+      const [nextIndex, ...rest] = queueRef.current
+      queueRef.current = rest
       setCurrentIndex(nextIndex)
-      return rest
-    })
+    } else {
+      const nextItems = visibleSet.map((_, index) => index)
+      const reshuffledQueue = shuffleIndices(nextItems, currentIndex)
+      const [nextIndex, ...rest] = reshuffledQueue
+      queueRef.current = rest
+      setCurrentIndex(nextIndex)
+    }
     setInput('')
     setStartedAt(null)
     setShowAnswer(false)
@@ -115,6 +116,36 @@ function App() {
             <strong>{cpm}</strong>
           </div>
         </div>
+      </section>
+
+      <section className="panel category-panel">
+        <div className="panel-head">
+          <div>
+            <p className="label">분야</p>
+            <h2>문제 범위 선택</h2>
+          </div>
+        </div>
+        <div className="category-row">
+          {practiceCategories.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={category === item ? 'primary' : 'secondary'}
+              onClick={() => {
+                const nextVisibleSet = item === '전체' ? practiceSet : practiceSet.filter((p) => p.category === item)
+                setCategory(item)
+                setCurrentIndex(0)
+                queueRef.current = shuffleIndices(nextVisibleSet.map((_, index) => index), 0)
+                setInput('')
+                setStartedAt(null)
+                setShowAnswer(false)
+              }}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+        <div className="category-meta">현재 선택된 분야 문제 수, {visibleSet.length}개</div>
       </section>
 
       <section className="trainer-grid">
