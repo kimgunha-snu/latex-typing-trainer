@@ -10,6 +10,8 @@ describe('compareLatex', () => {
     [String.raw`H(X)=-\sum_x p(x) \log p(x)`, String.raw`H(X) = -\sum_{x} p(x)\log p(x)`],
     [String.raw`\|x\|_2=\sqrt{\sum_{i=1}^{n} x_i^2}`, String.raw`\| x \|_2 = \sqrt {\sum^n_{i=1} x^2_i}`],
     [String.raw`\vec{v}=\begin{bmatrix} x \\ y \\ z \end{bmatrix}`, String.raw`\vec v = \begin{bmatrix} x \\ y \\ z \end{bmatrix}`],
+    [String.raw`P\wedge Q`, String.raw`P\land Q`],
+    [String.raw`P\vee Q`, String.raw`P\lor Q`],
   ]
 
   const nonEquivalentCases = [

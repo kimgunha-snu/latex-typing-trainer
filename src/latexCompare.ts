@@ -13,9 +13,28 @@ export type ComparisonResult = {
 
 const ce = new ComputeEngine()
 const styleCommands = 'vec|hat|bar|tilde|dot|ddot|overline|underline|mathbf|mathit|mathrm|mathsf|mathtt|mathcal|mathbb|boldsymbol'
+const greekCommands = 'Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Phi|Psi|Omega|alpha|beta|gamma|delta|epsilon|varepsilon|zeta|eta|theta|vartheta|iota|kappa|lambda|mu|nu|xi|pi|varpi|rho|varrho|sigma|varsigma|tau|upsilon|phi|varphi|chi|psi|omega'
 
 function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, ' ').trim()
+}
+
+function normalizeScriptSpacing(value: string) {
+  return value
+    .replace(/_\s*\{\s*/g, '_{')
+    .replace(/\^\s*\{\s*/g, '^{')
+    .replace(/_\s+([A-Za-z0-9\\])/g, '_$1')
+    .replace(/\^\s+([A-Za-z0-9\\])/g, '^$1')
+    .replace(/_\{([^{}]+)\}/g, (_match: string, inner: string) => `_{${inner.replace(/\s+/g, '')}}`)
+    .replace(/\^\{([^{}]+)\}/g, (_match: string, inner: string) => `^{${inner.replace(/\s+/g, '')}}`)
+}
+
+function reorderKnownGreekScripts(value: string) {
+  return value
+    .replace(new RegExp(`(\\\\(?:${greekCommands}))_\\{([^{}]+)\\}\\^\\{([^{}]+)\\}`, 'g'), '$1^{$3}_{$2}')
+    .replace(new RegExp(`(\\\\(?:${greekCommands}))_([A-Za-z0-9\\\\]+)\\^\\{([^{}]+)\\}`, 'g'), '$1^{$3}_{$2}')
+    .replace(new RegExp(`(\\\\(?:${greekCommands}))_\\{([^{}]+)\\}\\^([A-Za-z0-9\\\\]+)`, 'g'), '$1^{$3}_{$2}')
+    .replace(new RegExp(`(\\\\(?:${greekCommands}))_([A-Za-z0-9\\\\]+)\\^([A-Za-z0-9\\\\]+)`, 'g'), '$1^{$3}_{$2}')
 }
 
 function normalizeForParser(value: string) {
@@ -27,8 +46,11 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac')
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
+  normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s+([A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
+  normalized = normalizeScriptSpacing(normalized)
+  normalized = reorderKnownGreekScripts(normalized)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
   return normalized
 }
@@ -42,9 +64,11 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac')
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
+  normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s+([A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
-  normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
+  normalized = normalizeScriptSpacing(normalized)
+  normalized = reorderKnownGreekScripts(normalized)
   normalized = normalized.replace(/\{([^{}=]+)=([^{}=]+)\}/g, (_, left: string, right: string) => {
     const a = left.trim()
     const b = right.trim()
