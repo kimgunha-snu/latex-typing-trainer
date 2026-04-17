@@ -92,6 +92,16 @@ const cheatsheetSymbols = [
   String.raw`\hookrightarrow`, String.raw`\hookleftarrow`, String.raw`\multimap`, String.raw`\leftrightsquigarrow`, String.raw`\rightsquigarrow`, String.raw`\twoheadrightarrow`, String.raw`\twoheadleftarrow`,
 ] as const
 
+type SymbolQuizItem = {
+  symbol: string
+  latex: string
+}
+
+const symbolQuizItems: SymbolQuizItem[] = cheatsheetSymbols.map((latex) => ({
+  symbol: latex,
+  latex,
+}))
+
 type UploadedItem = {
   title: string
   latex: string
@@ -158,6 +168,7 @@ function App() {
   const [uploadMessage, setUploadMessage] = useState('JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.')
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false)
+  const [isSymbolQuizOpen, setIsSymbolQuizOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [category, setCategory] = useState<PracticeCategory | string>('전체')
   const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedSets.flatMap((set) => set.items)], [uploadedSets])
@@ -171,12 +182,16 @@ function App() {
   const [finishedCount, setFinishedCount] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
+  const [symbolQuizIndex, setSymbolQuizIndex] = useState(() => Math.floor(Math.random() * symbolQuizItems.length))
+  const [symbolQuizInput, setSymbolQuizInput] = useState('')
+  const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong'>('idle')
 
   const visibleSet =
     category === '전체'
       ? allPracticeItems
       : allPracticeItems.filter((item) => item.category === category)
   const current = visibleSet[currentIndex] ?? visibleSet[0] ?? practiceSet[0]
+  const currentSymbolQuiz = symbolQuizItems[symbolQuizIndex] ?? symbolQuizItems[0]
   const target = current.latex
   const comparison = useMemo(() => compareLatex(input, target), [input, target])
   const { normalizedInput, normalizedTarget, isComplete, mismatchIndex, correctChars, targetDisplayStates } = comparison
@@ -302,6 +317,28 @@ function App() {
     inputRef.current?.focus()
   }
 
+  const nextSymbolQuiz = () => {
+    let nextIndex = Math.floor(Math.random() * symbolQuizItems.length)
+    if (symbolQuizItems.length > 1 && nextIndex === symbolQuizIndex) {
+      nextIndex = (nextIndex + 1) % symbolQuizItems.length
+    }
+    setSymbolQuizIndex(nextIndex)
+    setSymbolQuizInput('')
+    setSymbolQuizResult('idle')
+  }
+
+  const checkSymbolQuizAnswer = () => {
+    const answer = symbolQuizInput.trim()
+    if (!answer) return
+
+    if (answer === currentSymbolQuiz.latex) {
+      setSymbolQuizResult('correct')
+      return
+    }
+
+    setSymbolQuizResult('wrong')
+  }
+
   return (
     <main className="app-shell">
       <section className="hero-card compact">
@@ -312,6 +349,9 @@ function App() {
         <div className="hero-actions">
           <button type="button" className="secondary" onClick={() => setIsCheatsheetOpen(true)}>
             LaTeX 치트시트
+          </button>
+          <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(true)}>
+            기호 퀴즈
           </button>
           <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(true)}>
             문제 업로드 관리
@@ -358,6 +398,60 @@ function App() {
         </div>
         <div className="category-meta">현재 선택된 분야 문제 수, {visibleSet.length}개</div>
       </section>
+
+      {isSymbolQuizOpen ? (
+        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="LaTeX 기호 퀴즈 창">
+          <div className="modal-card panel symbol-quiz-modal">
+            <div className="panel-head">
+              <div>
+                <p className="label">미니 게임</p>
+                <h2>기호 보고 명령어 맞히기</h2>
+              </div>
+              <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(false)}>
+                닫기
+              </button>
+            </div>
+
+            <div className="symbol-quiz-card">
+              <p className="symbol-quiz-label">이 기호의 LaTeX 명령어는?</p>
+              <div className="symbol-quiz-symbol">
+                <MathJax inline dynamic>{`\\(${currentSymbolQuiz.symbol}\\)`}</MathJax>
+              </div>
+              <input
+                className="symbol-quiz-input"
+                value={symbolQuizInput}
+                onChange={(event) => {
+                  setSymbolQuizInput(event.target.value)
+                  if (symbolQuizResult !== 'idle') setSymbolQuizResult('idle')
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    if (symbolQuizResult === 'correct') nextSymbolQuiz()
+                    else checkSymbolQuizAnswer()
+                  }
+                }}
+                placeholder="예: \\subseteq"
+              />
+              <div className="button-row">
+                <button type="button" className="primary" onClick={checkSymbolQuizAnswer}>
+                  정답 확인
+                </button>
+                <button type="button" className="secondary" onClick={nextSymbolQuiz}>
+                  다음 문제
+                </button>
+              </div>
+              <div className={`symbol-quiz-feedback ${symbolQuizResult}`}>
+                {symbolQuizResult === 'correct'
+                  ? '정답! Enter를 누르거나 다음 문제 버튼으로 계속 갈 수 있어.'
+                  : symbolQuizResult === 'wrong'
+                    ? `아직 아니야. 정답은 ${currentSymbolQuiz.latex}`
+                    : '기호를 보고 정확한 명령어를 입력해봐.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {isCheatsheetOpen ? (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="LaTeX 치트시트 창">
