@@ -14,11 +14,19 @@ export type ComparisonResult = {
 const ce = new ComputeEngine()
 
 function normalizeWhitespace(value: string) {
-  return value.replace(/[\t\n\r ]+/g, '')
+  return value.replace(/[\t\n\r ]+/g, ' ').trim()
+}
+
+function removeIgnorableSpaces(value: string) {
+  return value
+    .replace(/\s*([_^{}()[\],=+\-<>|&])\s*/g, '$1')
+    .replace(/\\\s+/g, '\\')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function preprocessLatex(value: string) {
-  let normalized = normalizeWhitespace(value)
+  let normalized = removeIgnorableSpaces(normalizeWhitespace(value))
   normalized = normalized.replace(/\\left/g, '').replace(/\\right/g, '')
   normalized = normalized.replace(/\\,/g, '').replace(/\\!/g, '').replace(/\\:/g, '')
   normalized = normalized.replace(/\\;/g, '').replace(/\\quad/g, '').replace(/\\qquad/g, '')
@@ -76,7 +84,7 @@ function buildDisplayStates(target: string, input: string, mismatchIndex: number
     let state: DisplayCharState = 'pending'
     if (mismatchIndex >= 0 && visibleCursor === mismatchIndex) state = 'wrong'
     else if (visibleCursor < correctChars) state = 'correct'
-    else if (mismatchIndex === -1 && visibleCursor === normalizeWhitespace(input).length) state = 'current'
+    else if (mismatchIndex === -1 && visibleCursor === removeIgnorableSpaces(normalizeWhitespace(input)).replace(/\s/g, '').length) state = 'current'
 
     targetDisplayStates.push(state)
     visibleCursor += 1
