@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { MathJax } from 'better-react-mathjax'
 import './App.css'
 
@@ -143,6 +143,13 @@ function App() {
     setInput(value)
   }
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && isComplete) {
+      event.preventDefault()
+      goNext()
+    }
+  }
+
   const goNext = () => {
     setFinishedCount((count) => count + 1)
     setCurrentIndex((index) => (index + 1) % practiceSet.length)
@@ -240,6 +247,7 @@ function App() {
             className="typing-input"
             value={input}
             onChange={(event) => handleChange(event.target.value)}
+            onKeyDown={handleKeyDown}
             spellCheck={false}
             autoCapitalize="off"
             autoCorrect="off"
@@ -247,7 +255,7 @@ function App() {
             placeholder="여기에 LaTeX를 그대로 입력"
           />
 
-          <div className="helper-text">공백, 탭, 줄바꿈은 정답 판정에서 무시됨</div>
+          <div className="helper-text">공백, 탭, 줄바꿈은 판정에서 무시되고, 정답이면 Enter로 바로 다음 문제로 넘어감</div>
 
           <div className="status-row">
             <div className={`status ${isComplete ? 'success' : mismatchIndex >= 0 ? 'error' : 'idle'}`}>
