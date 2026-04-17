@@ -13,7 +13,6 @@ export type ComparisonResult = {
 
 const ce = new ComputeEngine()
 const styleCommands = 'vec|hat|bar|tilde|dot|ddot|overline|underline|mathbf|mathit|mathrm|mathsf|mathtt|mathcal|mathbb|boldsymbol'
-const greekCommands = 'Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Phi|Psi|Omega|alpha|beta|gamma|delta|epsilon|varepsilon|zeta|eta|theta|vartheta|iota|kappa|lambda|mu|nu|xi|pi|varpi|rho|varrho|sigma|varsigma|tau|upsilon|phi|varphi|chi|psi|omega'
 
 function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, ' ').trim()
@@ -29,12 +28,66 @@ function normalizeScriptSpacing(value: string) {
     .replace(/\^\{([^{}]+)\}/g, (_match: string, inner: string) => `^{${inner.replace(/\s+/g, '')}}`)
 }
 
-function reorderKnownGreekScripts(value: string) {
-  return value
-    .replace(new RegExp(`(\\\\(?:${greekCommands}))_\\{([^{}]+)\\}\\^\\{([^{}]+)\\}`, 'g'), '$1^{$3}_{$2}')
-    .replace(new RegExp(`(\\\\(?:${greekCommands}))_([A-Za-z0-9\\\\]+)\\^\\{([^{}]+)\\}`, 'g'), '$1^{$3}_{$2}')
-    .replace(new RegExp(`(\\\\(?:${greekCommands}))_\\{([^{}]+)\\}\\^([A-Za-z0-9\\\\]+)`, 'g'), '$1^{$3}_{$2}')
-    .replace(new RegExp(`(\\\\(?:${greekCommands}))_([A-Za-z0-9\\\\]+)\\^([A-Za-z0-9\\\\]+)`, 'g'), '$1^{$3}_{$2}')
+function normalizeGammaScripts(value: string) {
+  let result = ''
+  let i = 0
+
+  const readToken = (source: string, start: number) => {
+    if (source[start] === '{') {
+      let depth = 0
+      let end = start
+      while (end < source.length) {
+        if (source[end] === '{') depth += 1
+        if (source[end] === '}') {
+          depth -= 1
+          if (depth === 0) break
+        }
+        end += 1
+      }
+      return { token: source.slice(start, end + 1), next: end + 1 }
+    }
+
+    if (source[start] === '\\') {
+      let end = start + 1
+      while (end < source.length && /[A-Za-z]/.test(source[end])) end += 1
+      return { token: source.slice(start, end), next: end }
+    }
+
+    return { token: source[start], next: start + 1 }
+  }
+
+  while (i < value.length) {
+    if (value.startsWith('\\Gamma', i)) {
+      let j = i + '\\Gamma'.length
+      let sub = ''
+      let sup = ''
+
+      for (let count = 0; count < 2; count += 1) {
+        const marker = value[j]
+        if (marker !== '_' && marker !== '^') break
+        const { token, next } = readToken(value, j + 1)
+        if (marker === '_') sub = token
+        else sup = token
+        j = next
+      }
+
+      result += `\\Gamma${sub ? `_${sub}` : ''}${sup ? `^${sup}` : ''}`
+      i = j
+      continue
+    }
+
+    if (value.startsWith('\\sqrt ', i)) {
+      const { token, next } = readToken(value, i + '\\sqrt '.length)
+      result += `\\sqrt{${token}}`
+      i = next
+      continue
+    }
+
+    result += value[i]
+    i += 1
+  }
+
+  return result
 }
 
 function normalizeForParser(value: string) {
@@ -50,7 +103,7 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s+([A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
   normalized = normalizeScriptSpacing(normalized)
-  normalized = reorderKnownGreekScripts(normalized)
+  normalized = normalizeGammaScripts(normalized)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
   return normalized
 }
@@ -68,7 +121,7 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s+([A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalizeScriptSpacing(normalized)
-  normalized = reorderKnownGreekScripts(normalized)
+  normalized = normalizeGammaScripts(normalized)
   normalized = normalized.replace(/\{([^{}=]+)=([^{}=]+)\}/g, (_, left: string, right: string) => {
     const a = left.trim()
     const b = right.trim()

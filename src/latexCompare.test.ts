@@ -4,6 +4,7 @@ import { compareLatex } from './latexCompare'
 describe('compareLatex', () => {
   const equivalentCases = [
     [String.raw`\sqrt{x^2+y^2}`, String.raw`\sqrt{x^2 + y^2}`],
+    [String.raw`\sqrt{2}`, String.raw`\sqrt 2`],
     [String.raw`\sum_{i=1}^{n} i^2`, String.raw`\sum^{n}_{1=i} i^2`],
     [String.raw`\int_{0}^{\pi} \sin x \, dx`, String.raw`\int ^ \pi _0 \sin x \, dx`],
     [String.raw`\int_{-\pi}^{\pi} \cos x \, dx`, String.raw`\int ^\pi _{-\pi} \cos x dx`],
@@ -12,6 +13,7 @@ describe('compareLatex', () => {
     [String.raw`\vec{v}=\begin{bmatrix} x \\ y \\ z \end{bmatrix}`, String.raw`\vec v = \begin{bmatrix} x \\ y \\ z \end{bmatrix}`],
     [String.raw`P\wedge Q`, String.raw`P\land Q`],
     [String.raw`P\vee Q`, String.raw`P\lor Q`],
+    [String.raw`\Gamma^\rho_{\nu\sigma}`, String.raw`\Gamma_{\nu\sigma}^\rho`],
   ]
 
   const nonEquivalentCases = [
