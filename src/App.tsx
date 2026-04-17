@@ -219,18 +219,20 @@ function compareLatex(input: string, target: string): ComparisonResult {
   }
 }
 
-function getRandomNextIndex(currentIndex: number) {
-  if (practiceSet.length <= 1) return currentIndex
+function shuffleIndices(excludeIndex?: number) {
+  const indices = practiceSet.map((_, index) => index).filter((index) => index !== excludeIndex)
 
-  let nextIndex = currentIndex
-  while (nextIndex === currentIndex) {
-    nextIndex = Math.floor(Math.random() * practiceSet.length)
+  for (let i = indices.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[indices[i], indices[j]] = [indices[j], indices[i]]
   }
-  return nextIndex
+
+  return indices
 }
 
 function App() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [, setQueue] = useState<number[]>(() => shuffleIndices(0))
   const [input, setInput] = useState('')
   const [startedAt, setStartedAt] = useState<number | null>(null)
   const [finishedCount, setFinishedCount] = useState(0)
@@ -268,7 +270,18 @@ function App() {
 
   const goNext = () => {
     setFinishedCount((count) => count + 1)
-    setCurrentIndex((index) => getRandomNextIndex(index))
+    setQueue((currentQueue) => {
+      if (currentQueue.length > 0) {
+        const [nextIndex, ...rest] = currentQueue
+        setCurrentIndex(nextIndex)
+        return rest
+      }
+
+      const reshuffledQueue = shuffleIndices(currentIndex)
+      const [nextIndex, ...rest] = reshuffledQueue
+      setCurrentIndex(nextIndex)
+      return rest
+    })
     setInput('')
     setStartedAt(null)
     setShowAnswer(false)
