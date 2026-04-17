@@ -253,6 +253,12 @@
   color: #fca5a5;
 }
 
+.cheatsheet-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
 .trainer-grid {
   display: grid;
   grid-template-columns: 1.05fr 1fr;

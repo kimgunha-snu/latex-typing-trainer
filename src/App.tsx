@@ -101,6 +101,7 @@ const symbolQuizItems: SymbolQuizItem[] = cheatsheetSymbols.map((latex) => ({
   symbol: latex,
   latex,
 }))
+const cheatsheetPageSize = 48
 
 type UploadedItem = {
   title: string
@@ -169,6 +170,7 @@ function App() {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false)
   const [isSymbolQuizOpen, setIsSymbolQuizOpen] = useState(false)
+  const [cheatsheetVisibleCount, setCheatsheetVisibleCount] = useState(cheatsheetPageSize)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [category, setCategory] = useState<PracticeCategory | string>('전체')
   const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedSets.flatMap((set) => set.items)], [uploadedSets])
@@ -192,6 +194,7 @@ function App() {
       : allPracticeItems.filter((item) => item.category === category)
   const current = visibleSet[currentIndex] ?? visibleSet[0] ?? practiceSet[0]
   const currentSymbolQuiz = symbolQuizItems[symbolQuizIndex] ?? symbolQuizItems[0]
+  const visibleCheatsheetSymbols = cheatsheetSymbols.slice(0, cheatsheetVisibleCount)
   const target = current.latex
   const comparison = useMemo(() => compareLatex(input, target), [input, target])
   const { normalizedInput, normalizedTarget, isComplete, mismatchIndex, correctChars, targetDisplayStates } = comparison
@@ -351,7 +354,14 @@ function App() {
           <h1>LaTeX 타자연습기</h1>
         </div>
         <div className="hero-actions">
-          <button type="button" className="secondary" onClick={() => setIsCheatsheetOpen(true)}>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => {
+              setCheatsheetVisibleCount(cheatsheetPageSize)
+              setIsCheatsheetOpen(true)
+            }}
+          >
             LaTeX 치트시트
           </button>
           <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(true)}>
@@ -477,7 +487,7 @@ function App() {
             </div>
 
             <div className="cheatsheet-table" role="table" aria-label="LaTeX 기호 치트시트 표">
-              {cheatsheetSymbols.map((latex) => (
+              {visibleCheatsheetSymbols.map((latex) => (
                 <div key={latex} className="cheatsheet-row" role="row">
                   <div className="cheatsheet-render" role="cell">
                     <MathJax inline dynamic>{`\\(${latex}\\)`}</MathJax>
@@ -486,6 +496,18 @@ function App() {
                 </div>
               ))}
             </div>
+
+            {cheatsheetVisibleCount < cheatsheetSymbols.length ? (
+              <div className="cheatsheet-actions">
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => setCheatsheetVisibleCount((count) => Math.min(count + cheatsheetPageSize, cheatsheetSymbols.length))}
+                >
+                  더 보기 ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
+                </button>
+              </div>
+            ) : null}
 
           </div>
         </div>
