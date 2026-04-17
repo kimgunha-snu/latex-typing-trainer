@@ -98,21 +98,9 @@ const calculus = makeCategory('미적분', [
   { id: 131, title: '로피탈', latex: String.raw`\lim_{x\to 0}\frac{1-\cos x}{x^2}=\frac{1}{2}`, note: '극한' },
   { id: 132, title: '미분방정식 1', latex: String.raw`\frac{dy}{dx}=ky`, note: '성장모형' },
   { id: 133, title: '미분방정식 2', latex: String.raw`\frac{dy}{dx}+y=e^x`, note: '선형 ODE' },
-  { id: 134, title: '미분방정식 3', latex: String.raw`\frac{
-partial u}{
-partial t}=\alpha \frac{
-partial^2 u}{
-partial x^2}`, note: '열방정식' },
-  { id: 135, title: '미분방정식 4', latex: String.raw`\frac{
-partial^2 u}{
-partial t^2}=c^2\frac{
-partial^2 u}{
-partial x^2}`, note: '파동방정식' },
-  { id: 136, title: '벡터미적분 1', latex: String.raw`\nabla \cdot \mathbf{F}=\frac{
-partial F_x}{
-partial x}+\frac{
-partial F_y}{
-partial y}`, note: '발산' },
+  { id: 134, title: '미분방정식 3', latex: String.raw`\frac{\partial u}{\partial t}=\alpha \frac{\partial^2 u}{\partial x^2}`, note: '열방정식' },
+  { id: 135, title: '미분방정식 4', latex: String.raw`\frac{\partial^2 u}{\partial t^2}=c^2\frac{\partial^2 u}{\partial x^2}`, note: '파동방정식' },
+  { id: 136, title: '벡터미적분 1', latex: String.raw`\nabla \cdot \mathbf{F}=\frac{\partial F_x}{\partial x}+\frac{\partial F_y}{\partial y}`, note: '발산' },
   { id: 137, title: '벡터미적분 2', latex: String.raw`\nabla \times \mathbf{F}`, note: '회전' },
   { id: 138, title: '벡터미적분 3', latex: String.raw`\oint_C P \, dx+Q \, dy`, note: '선적분' },
   { id: 139, title: '정적분4', latex: String.raw`\int_{0}^{\pi} \sin^2 x \, dx=\frac{\pi}{2}`, note: '삼각적분' },
