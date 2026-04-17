@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent, type UIEvent } from 'react'
 import { MathJax } from 'better-react-mathjax'
 import './App.css'
 
@@ -171,6 +171,7 @@ function App() {
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false)
   const [isSymbolQuizOpen, setIsSymbolQuizOpen] = useState(false)
   const [cheatsheetVisibleCount, setCheatsheetVisibleCount] = useState(cheatsheetPageSize)
+  const [isCheatsheetLoading, setIsCheatsheetLoading] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [category, setCategory] = useState<PracticeCategory | string>('전체')
   const allPracticeItems = useMemo(() => [...practiceSet, ...uploadedSets.flatMap((set) => set.items)], [uploadedSets])
@@ -335,6 +336,23 @@ function App() {
     inputRef.current?.focus()
   }
 
+  const loadMoreCheatsheetSymbols = () => {
+    if (isCheatsheetLoading || cheatsheetVisibleCount >= cheatsheetSymbols.length) return
+    setIsCheatsheetLoading(true)
+    window.setTimeout(() => {
+      setCheatsheetVisibleCount((count) => Math.min(count + cheatsheetPageSize, cheatsheetSymbols.length))
+      setIsCheatsheetLoading(false)
+    }, 250)
+  }
+
+  const handleCheatsheetScroll = (event: UIEvent<HTMLDivElement>) => {
+    const element = event.currentTarget
+    const remaining = element.scrollHeight - element.scrollTop - element.clientHeight
+    if (remaining < 120) {
+      loadMoreCheatsheetSymbols()
+    }
+  }
+
   const nextSymbolQuiz = () => {
     let nextIndex = Math.floor(Math.random() * symbolQuizItems.length)
     if (symbolQuizItems.length > 1 && nextIndex === symbolQuizIndex) {
@@ -490,7 +508,7 @@ function App() {
 
       {isCheatsheetOpen ? (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="LaTeX 치트시트 창">
-          <div className="modal-card panel">
+          <div className="modal-card panel" onScroll={handleCheatsheetScroll}>
             <div className="panel-head">
               <div>
                 <p className="label">치트시트</p>
@@ -514,13 +532,16 @@ function App() {
 
             {cheatsheetVisibleCount < cheatsheetSymbols.length ? (
               <div className="cheatsheet-actions">
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => setCheatsheetVisibleCount((count) => Math.min(count + cheatsheetPageSize, cheatsheetSymbols.length))}
-                >
-                  더 보기 ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
-                </button>
+                {isCheatsheetLoading ? (
+                  <div className="cheatsheet-loading">
+                    <span className="spinner" aria-hidden="true" />
+                    불러오는 중... ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
+                  </div>
+                ) : (
+                  <div className="cheatsheet-loading cheatsheet-loading-idle">
+                    아래로 스크롤하면 자동으로 더 불러와. ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
+                  </div>
+                )}
               </div>
             ) : null}
 
