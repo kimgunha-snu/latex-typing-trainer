@@ -331,9 +331,6 @@ function App() {
               ))}
             </div>
 
-            <div className="upload-help">
-              JSON 업로드 예시처럼 문자열 안에 LaTeX를 넣을 땐 역슬래시를 두 번 써야 해. 예: <code>{String.raw`\\frac{a}{b}`}</code>
-            </div>
           </div>
         </div>
       ) : null}
@@ -384,6 +381,8 @@ function App() {
                 필수 필드, category, items[].title, items[].latex
                 <br />
                 선택 필드, items[].note, items[].meaning
+                <br />
+                JSON 문자열 안에 LaTeX를 넣을 땐 역슬래시를 두 번 써야 해. 예: <code>{String.raw`\\frac{a}{b}`}</code>
                 <br />
                 같은 category 이름으로 다시 올리면 기존 업로드 세트를 새 파일 내용으로 교체해.
               </div>
