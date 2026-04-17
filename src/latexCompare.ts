@@ -60,7 +60,7 @@ function comparePrefix(input: string, target: string) {
   for (let i = 0; i < minLength; i += 1) {
     if (input[i] !== target[i]) return i
   }
-  return -1
+  return input.length > target.length ? target.length : -1
 }
 
 function buildDisplayStates(target: string, input: string, mismatchIndex: number, correctChars: number) {
@@ -95,12 +95,13 @@ export function compareLatex(input: string, target: string): ComparisonResult {
   const astEquivalent = Boolean(inputAst && targetAst && inputAst === targetAst)
 
   const mismatchIndex = astEquivalent ? -1 : comparePrefix(normalizedInput, normalizedTarget)
-  const correctChars = astEquivalent
+  const isExactStringMatch = normalizedInput === normalizedTarget
+  const isComplete = astEquivalent || isExactStringMatch
+  const correctChars = isComplete
     ? normalizedTarget.length
     : mismatchIndex === -1
       ? Math.min(normalizedInput.length, normalizedTarget.length)
       : mismatchIndex
-  const isComplete = astEquivalent || normalizedInput === normalizedTarget
 
   return {
     normalizedInput: inputAst ?? normalizedInput,
