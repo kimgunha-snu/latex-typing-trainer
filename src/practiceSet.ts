@@ -478,6 +478,60 @@ const economics = makeCategory('경제학', [
   { id: 850, title: '경제학 종합', latex: String.raw`Y=C+I+G+NX`, note: '거시 종합', meaning: '거시경제에서 총생산을 구성 요소로 나누는 가장 기본적인 항등식이야.' },
 ])
 
-export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics]
-export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학'] as const
+
+const theoreticalComputerScience = makeCategory('컴퓨터과학 이론', [
+  { id: 901, title: '빅오 표기', latex: String.raw`f(n)=O(g(n))`, note: '점근 표기', meaning: '함수 f의 성장률이 g를 상수배 이내로 넘지 않는다는 뜻이야.' },
+  { id: 902, title: '빅오메가', latex: String.raw`f(n)=\Omega(g(n))`, note: '하한', meaning: '함수 f의 성장률이 g보다 본질적으로 작지 않다는 하한 표기야.' },
+  { id: 903, title: '빅세타', latex: String.raw`f(n)=\Theta(g(n))`, note: '타이트 바운드', meaning: '함수 f의 성장률이 g와 같은 차수라는 뜻이야.' },
+  { id: 904, title: '로그 시간', latex: String.raw`T(n)=O(\log n)`, note: '시간복잡도', meaning: '입력 크기가 커져도 로그 속도로만 늘어나는 매우 빠른 복잡도야.' },
+  { id: 905, title: '선형 시간', latex: String.raw`T(n)=O(n)`, note: '시간복잡도', meaning: '입력 크기에 비례해서 시간이 늘어나는 선형 시간복잡도야.' },
+  { id: 906, title: '이차 시간', latex: String.raw`T(n)=O(n^2)`, note: '시간복잡도', meaning: '중첩 반복문처럼 입력 크기의 제곱에 비례하는 복잡도야.' },
+  { id: 907, title: '점화식 1', latex: String.raw`T(n)=T(n-1)+1`, note: '점화식', meaning: '문제를 하나씩 줄이며 푸는 간단한 재귀 시간 점화식이야.' },
+  { id: 908, title: '점화식 2', latex: String.raw`T(n)=2T\left(\frac{n}{2}\right)+n`, note: '분할정복', meaning: '병합정렬 같은 분할정복 알고리즘의 대표 점화식이야.' },
+  { id: 909, title: '마스터 정리 꼴', latex: String.raw`T(n)=aT\left(\frac{n}{b}\right)+f(n)`, note: '마스터 정리', meaning: '분할정복 점화식 해석에 쓰이는 가장 표준적인 형태야.' },
+  { id: 910, title: '집합 포함', latex: String.raw`A\subseteq B`, note: '집합', meaning: '집합 A의 모든 원소가 B에도 들어 있다는 뜻이야.' },
+  { id: 911, title: '집합 원소', latex: String.raw`x\in A`, note: '원소 관계', meaning: '원소 x가 집합 A에 속한다는 가장 기본적인 표기야.' },
+  { id: 912, title: '합집합', latex: String.raw`A\cup B`, note: '집합 연산', meaning: 'A 또는 B에 속하는 원소들을 모은 집합이야.' },
+  { id: 913, title: '교집합', latex: String.raw`A\cap B`, note: '집합 연산', meaning: 'A와 B에 공통으로 들어 있는 원소들만 모은 집합이야.' },
+  { id: 914, title: '멱집합', latex: String.raw`\mathcal{P}(A)`, note: '멱집합', meaning: '집합 A의 모든 부분집합을 모아 놓은 집합이야.' },
+  { id: 915, title: '함수 사상', latex: String.raw`f:A\to B`, note: '함수', meaning: '집합 A에서 집합 B로 가는 함수를 나타내는 표기야.' },
+  { id: 916, title: '전사', latex: String.raw`f:A\twoheadrightarrow B`, note: 'surjective', meaning: '공역 B의 모든 원소가 적어도 하나의 원상에 대응되는 전사함수야.' },
+  { id: 917, title: '단사', latex: String.raw`f:A\hookrightarrow B`, note: 'injective', meaning: '서로 다른 입력이 항상 서로 다른 출력으로 가는 단사함수야.' },
+  { id: 918, title: '논리곱', latex: String.raw`P\land Q`, note: '논리식', meaning: '명제 P와 Q가 둘 다 참일 때만 참이 되는 논리곱이야.' },
+  { id: 919, title: '논리합', latex: String.raw`P\lor Q`, note: '논리식', meaning: '명제 둘 중 하나라도 참이면 참이 되는 논리합이야.' },
+  { id: 920, title: '부정', latex: String.raw`\lnot P`, note: '논리 부정', meaning: '명제 P가 참이 아님을 나타내는 부정 연산이야.' },
+  { id: 921, title: '함의', latex: String.raw`P\Rightarrow Q`, note: '함의', meaning: 'P가 참이면 Q도 참이어야 한다는 논리적 함의야.' },
+  { id: 922, title: '동치', latex: String.raw`P\Leftrightarrow Q`, note: '논리 동치', meaning: 'P와 Q가 항상 같은 진릿값을 갖는다는 뜻이야.' },
+  { id: 923, title: '전칭기호', latex: String.raw`\forall x\in A`, note: '전칭', meaning: '집합 A의 모든 x에 대해 명제가 성립함을 뜻해.' },
+  { id: 924, title: '존재기호', latex: String.raw`\exists x\in A`, note: '존재', meaning: '집합 A 안에 조건을 만족하는 x가 적어도 하나 있다는 뜻이야.' },
+  { id: 925, title: '정규언어', latex: String.raw`L\subseteq \Sigma^*`, note: '형식언어', meaning: '알파벳 Σ로 만든 모든 문자열 집합 중 하나의 언어 L을 뜻해.' },
+  { id: 926, title: '클레이니 스타', latex: String.raw`\Sigma^*`, note: '문자열 집합', meaning: '알파벳 Σ로 만들 수 있는 모든 유한 길이 문자열들의 집합이야.' },
+  { id: 927, title: '공집합 문자열', latex: String.raw`\varepsilon`, note: '빈 문자열', meaning: '아무 문자도 없는 길이 0 문자열을 뜻해.' },
+  { id: 928, title: '문맥자유문법', latex: String.raw`G=(V,\Sigma,R,S)`, note: 'CFG', meaning: '문맥자유문법을 구성하는 비단말, 단말, 규칙, 시작기호의 묶음이야.' },
+  { id: 929, title: '유도 규칙', latex: String.raw`S\to aSb`, note: '생성규칙', meaning: '문법에서 문자열을 생성하는 한 개의 규칙을 나타내.' },
+  { id: 930, title: '오토마타', latex: String.raw`M=(Q,\Sigma,\delta,q_0,F)`, note: 'DFA/NFA', meaning: '유한오토마타를 정의하는 상태, 입력, 전이, 시작상태, 종료상태 집합이야.' },
+  { id: 931, title: '전이함수', latex: String.raw`\delta:Q\times\Sigma\to Q`, note: '전이함수', meaning: '현재 상태와 입력 기호를 다음 상태로 보내는 함수야.' },
+  { id: 932, title: '튜링기계', latex: String.raw`M=(Q,\Sigma,\Gamma,\delta,q_0,q_{acc},q_{rej})`, note: '튜링기계', meaning: '튜링기계를 형식적으로 정의하는 기본 구성요소들이야.' },
+  { id: 933, title: '언어 인식', latex: String.raw`L(M)=\{w\mid M \text{ accepts } w\}`, note: '인식언어', meaning: '기계 M이 받아들이는 모든 문자열들의 집합이야.' },
+  { id: 934, title: '결정가능', latex: String.raw`L\in \mathbf{DECIDABLE}`, note: '결정가능성', meaning: '항상 멈추면서 언어 L의 소속 여부를 판별할 수 있다는 뜻이야.' },
+  { id: 935, title: 'P 클래스', latex: String.raw`\mathbf{P}`, note: '복잡도 클래스', meaning: '다항시간에 풀 수 있는 결정문제들의 복잡도 클래스야.' },
+  { id: 936, title: 'NP 클래스', latex: String.raw`\mathbf{NP}`, note: '복잡도 클래스', meaning: '해답을 다항시간에 검증할 수 있는 문제들의 클래스야.' },
+  { id: 937, title: 'NP-완전', latex: String.raw`L\in \mathbf{NPC}`, note: 'NP-complete', meaning: 'NP에 속하면서 NP의 모든 문제가 환원되는 가장 어려운 문제군이야.' },
+  { id: 938, title: '환원', latex: String.raw`A\leq_p B`, note: '다항시간 환원', meaning: '문제 A를 다항시간 안에 문제 B로 바꿀 수 있다는 뜻이야.' },
+  { id: 939, title: 'SAT', latex: String.raw`\varphi\in \mathrm{SAT}`, note: '만족가능성', meaning: '논리식 φ를 참으로 만드는 변수 배정이 존재하는지 묻는 문제야.' },
+  { id: 940, title: '그래프', latex: String.raw`G=(V,E)`, note: '그래프 정의', meaning: '정점 집합 V와 간선 집합 E로 이루어진 그래프의 기본 정의야.' },
+  { id: 941, title: '정점 차수', latex: String.raw`\deg(v)`, note: '차수', meaning: '정점 v에 연결된 간선 수를 나타내는 값이야.' },
+  { id: 942, title: '경로', latex: String.raw`v_0\to v_1\to \cdots \to v_k`, note: '그래프 경로', meaning: '정점들을 간선을 따라 차례로 잇는 경로를 나타내.' },
+  { id: 943, title: '인접행렬', latex: String.raw`A_{ij}`, note: '인접행렬', meaning: '정점 i와 j 사이 연결 여부를 행렬 성분으로 담는 표기야.' },
+  { id: 944, title: '부분그래프', latex: String.raw`H\subseteq G`, note: '부분그래프', meaning: '그래프 G의 일부 정점과 간선으로 이루어진 부분그래프야.' },
+  { id: 945, title: '확률 알고리즘', latex: String.raw`\Pr[A(x)=1]`, note: '확률', meaning: '확률 알고리즘 A가 입력 x에서 1을 출력할 확률을 뜻해.' },
+  { id: 946, title: '해밍거리', latex: String.raw`d_H(x,y)`, note: '거리', meaning: '두 문자열에서 서로 다른 위치의 개수를 재는 거리야.' },
+  { id: 947, title: '정보량', latex: String.raw`I(x)=-\log p(x)`, note: '정보이론 연결', meaning: '사건 x가 드물수록 더 큰 정보를 준다는 식이야.' },
+  { id: 948, title: '불변식', latex: String.raw`I_k`, note: '루프 불변식', meaning: '알고리즘 반복 과정에서 계속 유지되는 성질을 나타내는 표기야.' },
+  { id: 949, title: '귀납기초', latex: String.raw`P(0)`, note: '수학적 귀납법', meaning: '귀납법에서 가장 먼저 확인하는 시작 단계 명제야.' },
+  { id: 950, title: '컴퓨터과학 이론 종합', latex: String.raw`A\leq_p B`, note: '종합', meaning: '문제 난이도 비교와 NP-완전성 증명에서 핵심이 되는 환원 표기야.' },
+])
+
+export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience]
+export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론'] as const
 export type PracticeCategory = (typeof practiceCategories)[number]
