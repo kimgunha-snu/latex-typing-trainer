@@ -14,12 +14,23 @@
 }
 
 .hero-card {
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  display: flex;
+  justify-content: space-between;
   gap: 16px;
   padding: 16px 18px;
   margin-bottom: 16px;
   align-items: center;
+}
+
+.hero-left,
+.hero-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-right {
+  margin-left: auto;
 }
 
 .hero-card.compact {
@@ -44,6 +55,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
 .language-toggle {

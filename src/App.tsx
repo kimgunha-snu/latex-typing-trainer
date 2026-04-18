@@ -472,49 +472,54 @@ function App() {
   return (
     <main className="app-shell">
       <section className="hero-card compact">
-        <div className="hero-copy">
-          <p className="eyebrow">Web LaTeX Typing Trainer</p>
-          <h1>{t.appTitle}</h1>
-        </div>
-        <div className="hero-actions">
-          <button
-            type="button"
-            className="secondary"
-            onClick={() => {
-              setCheatsheetVisibleCount(cheatsheetPageSize)
-              setIsCheatsheetOpen(true)
-            }}
-          >
-            {t.cheatsheet}
-          </button>
-          <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(true)}>
-            {t.symbolQuiz}
-          </button>
-          <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(true)}>
-            {t.uploadManager}
-          </button>
-        </div>
-        <div className="hero-language">
-          <button type="button" className="secondary language-toggle" onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}>
-            {language === 'ko' ? 'EN' : 'KO'}
-          </button>
-        </div>
-        <div className="hero-stats compact">
-          <div>
-            <span>{t.problem}</span>
-            <strong>{current.title}</strong>
+        <div className="hero-left">
+          <div className="hero-copy">
+            <p className="eyebrow">Web LaTeX Typing Trainer</p>
+            <h1>{t.appTitle}</h1>
           </div>
-          <div>
-            <span>{t.completed}</span>
-            <strong>{finishedCount}</strong>
+          <div className="hero-actions">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                setCheatsheetVisibleCount(cheatsheetPageSize)
+                setIsCheatsheetOpen(true)
+              }}
+            >
+              {t.cheatsheet}
+            </button>
+            <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(true)}>
+              {t.symbolQuiz}
+            </button>
+            <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(true)}>
+              {t.uploadManager}
+            </button>
           </div>
-          <div>
-            <span>{t.total}</span>
-            <strong>{allPracticeItems.length}</strong>
+        </div>
+
+        <div className="hero-right">
+          <div className="hero-stats compact">
+            <div>
+              <span>{t.problem}</span>
+              <strong>{current.title}</strong>
+            </div>
+            <div>
+              <span>{t.completed}</span>
+              <strong>{finishedCount}</strong>
+            </div>
+            <div>
+              <span>{t.total}</span>
+              <strong>{allPracticeItems.length}</strong>
+            </div>
+            <div>
+              <span>CPM</span>
+              <strong>{cpm}</strong>
+            </div>
           </div>
-          <div>
-            <span>CPM</span>
-            <strong>{cpm}</strong>
+          <div className="hero-language">
+            <button type="button" className="secondary language-toggle" onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}>
+              {language === 'ko' ? 'EN' : 'KO'}
+            </button>
           </div>
         </div>
       </section>
