@@ -193,6 +193,8 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\int_\{?([^{}]+)\}?\^\{?([^{}_]+)\}?/g, '\\int_{$1}^{$2}')
   normalized = normalized.replace(/([A-Za-z0-9]+)_\{?([^{}]+)\}?\^\{?([^{}]+)\}?/g, '$1_{$2}^{$3}')
   normalized = normalized.replace(/([A-Za-z0-9]+)\^\{?([^{}]+)\}?_\{?([^{}]+)\}?/g, '$1_{$3}^{$2}')
+  normalized = normalized.replace(/_([^{}\\\s])/g, '_{$1}')
+  normalized = normalized.replace(/\^([^{}\\\s])/g, '^{$1}')
   normalized = normalized.replace(/\s+/g, '')
   return normalized
 }

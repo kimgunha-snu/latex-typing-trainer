@@ -15,6 +15,7 @@ describe('compareLatex', () => {
     [String.raw`P\vee Q`, String.raw`P\lor Q`],
     [String.raw`\Gamma^\rho_{\nu\sigma}`, String.raw`\Gamma_{\nu\sigma}^\rho`],
     [String.raw`\frac{\pi}{4}`, String.raw`\frac{\pi}4`],
+    [String.raw`[\hat x, \hat p]_{-} = i\hbar`, String.raw`[\hat{x},\hat{p}]_-=i\hbar`],
     [String.raw`R^\rho_{\sigma\mu\nu}=\partial_\mu\Gamma^\rho_{\nu\sigma}-\partial_\nu\Gamma^\rho_{\mu\sigma}+\cdots`, String.raw`R^\rho_{\sigma \mu\nu} = \partial_\mu\Gamma_{\nu\sigma}^\rho - \partial_\nu\Gamma^{\rho}_{\mu\sigma} + \cdots`],
   ]
 
