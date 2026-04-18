@@ -474,11 +474,14 @@ function App() {
   const goNext = () => {
     const currentCpm = startedAt ? Math.round(normalizedInput.length / elapsedMinutes) : 0
     const nextResults = [...recentResults, { title: current.title, cpm: currentCpm }]
+    const shouldOpenSummary = nextResults.length === 3
 
     setFinishedCount((count) => count + 1)
-    setRecentResults(nextResults.length >= 3 ? nextResults.slice(-3) : nextResults)
-    if (nextResults.length >= 3) {
+    if (shouldOpenSummary) {
+      setRecentResults(nextResults)
       setIsSessionSummaryOpen(true)
+    } else {
+      setRecentResults(nextResults)
     }
 
     if (queueRef.current.length > 0) {
