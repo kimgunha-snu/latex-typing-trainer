@@ -103,6 +103,36 @@ const symbolQuizItems: SymbolQuizItem[] = cheatsheetSymbols.map((latex) => ({
   latex,
 }))
 const cheatsheetPageSize = 48
+const categoryLabels = {
+  ko: {
+    전체: '전체',
+    대수: '대수',
+    미적분: '미적분',
+    선형대수: '선형대수',
+    전자기학: '전자기학',
+    양자역학: '양자역학',
+    확률통계: '확률통계',
+    미분기하: '미분기하',
+    머신러닝: '머신러닝',
+    경제학: '경제학',
+    '컴퓨터과학 이론': '컴퓨터과학 이론',
+    금융수학: '금융수학',
+  },
+  en: {
+    전체: 'All',
+    대수: 'Algebra',
+    미적분: 'Calculus',
+    선형대수: 'Linear Algebra',
+    전자기학: 'Electromagnetism',
+    양자역학: 'Quantum Mechanics',
+    확률통계: 'Probability & Statistics',
+    미분기하: 'Differential Geometry',
+    머신러닝: 'Machine Learning',
+    경제학: 'Economics',
+    '컴퓨터과학 이론': 'Theoretical Computer Science',
+    금융수학: 'Financial Mathematics',
+  },
+} as const
 
 type UploadedItem = {
   title: string
@@ -301,6 +331,13 @@ function App() {
   const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong' | 'revealed'>('idle')
 
   const t = messages[language]
+  const localizedCategoryLabels = categoryLabels[language]
+  const getCategoryLabel = (item: string) => {
+    if (item.startsWith(customCategoryPrefix)) {
+      return item.replace(customCategoryPrefix, '')
+    }
+    return localizedCategoryLabels[item as keyof typeof localizedCategoryLabels] ?? item
+  }
 
   const visibleSet =
     category === '전체'
@@ -598,7 +635,7 @@ function App() {
               className={category === item ? 'primary' : 'secondary'}
               onClick={() => selectCategory(item)}
             >
-              {item.startsWith(customCategoryPrefix) ? item.replace(customCategoryPrefix, '') : item}
+              {getCategoryLabel(item)}
             </button>
           ))}
         </div>
