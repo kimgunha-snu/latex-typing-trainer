@@ -533,6 +533,59 @@ const theoreticalComputerScience = makeCategory('컴퓨터과학 이론', [
 ])
 
 
+const quantumFieldTheory = makeCategory('양자장론', [
+  { id: 1201, title: '작용', latex: String.raw`S=\int d^4x\,\mathcal{L}`, note: 'action', meaning: '장론에서 동역학을 요약하는 작용의 기본 정의야.' },
+  { id: 1202, title: '오일러-라그랑주', latex: String.raw`\partial_\mu\frac{\partial\mathcal{L}}{\partial(\partial_\mu\phi)}-\frac{\partial\mathcal{L}}{\partial\phi}=0`, note: 'Euler-Lagrange', meaning: '장에 대한 운동방정식을 주는 오일러-라그랑주 방정식이야.' },
+  { id: 1203, title: '클라인-고든', latex: String.raw`(\Box+m^2)\phi=0`, note: 'Klein-Gordon equation', meaning: '스핀 0 자유장의 대표적인 운동방정식이야.' },
+  { id: 1204, title: '디락 방정식', latex: String.raw`(i\gamma^\mu\partial_\mu-m)\psi=0`, note: 'Dirac equation', meaning: '스핀 1/2 자유 페르미온의 운동방정식이야.' },
+  { id: 1205, title: '맥스웰 장강도', latex: String.raw`F_{\mu\nu}=\partial_\mu A_\nu-\partial_\nu A_\mu`, note: 'field strength', meaning: '게이지장으로부터 전자기장 세기 텐서를 만드는 식이야.' },
+  { id: 1206, title: 'QED 라그랑지안', latex: String.raw`\mathcal{L}=\bar\psi(i\gamma^\mu D_\mu-m)\psi-\frac{1}{4}F_{\mu\nu}F^{\mu\nu}`, note: 'QED', meaning: '전자기장과 디락장을 포함한 양자전기역학 라그랑지안이야.' },
+  { id: 1207, title: '공변도함수', latex: String.raw`D_\mu=\partial_\mu+ieA_\mu`, note: 'covariant derivative', meaning: '게이지대칭을 보존하도록 만든 공변도함수야.' },
+  { id: 1208, title: '게이지변환', latex: String.raw`A_\mu\to A_\mu+\partial_\mu\alpha`, note: 'gauge transformation', meaning: '아벨 게이지장에서의 기본 게이지변환이야.' },
+  { id: 1209, title: '파인만 전파자', latex: String.raw`\Delta_F(x-y)=\int\frac{d^4p}{(2\pi)^4}\frac{ie^{-ip\cdot(x-y)}}{p^2-m^2+i\epsilon}`, note: 'Feynman propagator', meaning: '스칼라장의 파인만 전파자를 운동량공간 적분으로 쓴 식이야.' },
+  { id: 1210, title: '시간정렬', latex: String.raw`T\{\phi(x)\phi(y)\}`, note: 'time ordering', meaning: '시간순서에 따라 장연산자를 배열하는 시간정렬 기호야.' },
+  { id: 1211, title: '진공기대값', latex: String.raw`\langle 0|T\{\phi(x)\phi(y)\}|0\rangle`, note: 'vacuum expectation', meaning: '두 점 함수의 진공기대값을 나타내는 기본 표기야.' },
+  { id: 1212, title: '생성함수', latex: String.raw`Z[J]=\int\mathcal{D}\phi\,e^{iS[\phi]+i\int d^4x\,J\phi}`, note: 'generating functional', meaning: '경로적분 형식의 생성함수로 상관함수를 만들 수 있어.' },
+  { id: 1213, title: '경로적분', latex: String.raw`\int\mathcal{D}\phi\,e^{iS[\phi]}`, note: 'path integral', meaning: '모든 장배치를 합해 진폭을 계산하는 경로적분의 핵심 형태야.' },
+  { id: 1214, title: '분배함수', latex: String.raw`Z=\int\mathcal{D}\phi\,e^{-S_E[\phi]}`, note: 'Euclidean path integral', meaning: '유클리드 서명에서의 경로적분 분배함수야.' },
+  { id: 1215, title: '윅 회전', latex: String.raw`t\to -i\tau`, note: 'Wick rotation', meaning: '민코프스키 시간을 유클리드 시간으로 바꾸는 윅 회전이야.' },
+  { id: 1216, title: '정준 운동량', latex: String.raw`\pi(x)=\frac{\partial\mathcal{L}}{\partial \dot\phi(x)}`, note: 'canonical momentum', meaning: '장 \phi에 대응하는 정준 운동량의 정의야.' },
+  { id: 1217, title: '정준 교환관계', latex: String.raw`[\phi(\mathbf{x},t),\pi(\mathbf{y},t)]=i\delta^{(3)}(\mathbf{x}-\mathbf{y})`, note: 'canonical commutation', meaning: '장과 정준 운동량의 같은 시각 교환관계야.' },
+  { id: 1218, title: '모드 전개', latex: String.raw`\phi(x)=\int\frac{d^3p}{(2\pi)^3}\frac{1}{\sqrt{2E_{\mathbf p}}}\left(a_{\mathbf p}e^{-ipx}+a_{\mathbf p}^\dagger e^{ipx}\right)`, note: 'mode expansion', meaning: '자유 스칼라장을 생성소멸연산자로 전개한 식이야.' },
+  { id: 1219, title: '보손 교환관계', latex: String.raw`[a_{\mathbf p},a_{\mathbf q}^\dagger]=(2\pi)^3\delta^{(3)}(\mathbf p-\mathbf q)`, note: 'bosonic commutator', meaning: '보손 생성소멸연산자의 기본 교환관계야.' },
+  { id: 1220, title: '페르미온 반교환', latex: String.raw`\{b_s(\mathbf p),b_r^\dagger(\mathbf q)\}=(2\pi)^3\delta_{sr}\delta^{(3)}(\mathbf p-\mathbf q)`, note: 'fermionic anticommutator', meaning: '페르미온 생성소멸연산자의 기본 반교환관계야.' },
+  { id: 1221, title: '해밀토니안 밀도', latex: String.raw`\mathcal{H}=\pi\dot\phi-\mathcal{L}`, note: 'Hamiltonian density', meaning: '라그랑지안으로부터 해밀토니안 밀도를 만드는 식이야.' },
+  { id: 1222, title: '운동량 연산자', latex: String.raw`P^\mu=\int d^3x\,T^{0\mu}`, note: 'four-momentum', meaning: '에너지-운동량 텐서로부터 4-운동량을 정의한 식이야.' },
+  { id: 1223, title: '에너지-운동량 텐서', latex: String.raw`T^{\mu\nu}=\frac{\partial\mathcal{L}}{\partial(\partial_\mu\phi)}\partial^\nu\phi-\eta^{\mu\nu}\mathcal{L}`, note: 'stress-energy tensor', meaning: '평행이동 대칭에 대응하는 노에터 전류인 에너지-운동량 텐서야.' },
+  { id: 1224, title: '노에터 전류', latex: String.raw`j^\mu=\frac{\partial\mathcal{L}}{\partial(\partial_\mu\phi)}\delta\phi`, note: 'Noether current', meaning: '연속대칭에 대응해 보존되는 노에터 전류의 기본 형태야.' },
+  { id: 1225, title: '전류보존', latex: String.raw`\partial_\mu j^\mu=0`, note: 'current conservation', meaning: '보존전류는 4차원 발산이 0이야.' },
+  { id: 1226, title: '클라인-고든 전파자', latex: String.raw`\frac{i}{p^2-m^2+i\epsilon}`, note: 'momentum-space propagator', meaning: '운동량공간에서 자유 스칼라장의 전파자야.' },
+  { id: 1227, title: '디락 전파자', latex: String.raw`\frac{i(\slashed p+m)}{p^2-m^2+i\epsilon}`, note: 'Dirac propagator', meaning: '운동량공간에서 디락장의 전파자야.' },
+  { id: 1228, title: '광자 전파자', latex: String.raw`\frac{-ig_{\mu\nu}}{p^2+i\epsilon}`, note: 'photon propagator', meaning: '페인만 게이지에서의 광자 전파자야.' },
+  { id: 1229, title: '슬래시 표기', latex: String.raw`\slashed p=\gamma^\mu p_\mu`, note: 'slash notation', meaning: '감마행렬과 4-벡터 수축을 간단히 쓰는 슬래시 표기야.' },
+  { id: 1230, title: '감마대수', latex: String.raw`\{\gamma^\mu,\gamma^\nu\}=2\eta^{\mu\nu}`, note: 'gamma algebra', meaning: '디락 감마행렬이 만족하는 기본 클리퍼드 대수 관계야.' },
+  { id: 1231, title: '파인만 규칙 vertex', latex: String.raw`-ie\gamma^\mu`, note: 'QED vertex', meaning: 'QED에서 전자-광자 상호작용 꼭짓점 인자야.' },
+  { id: 1232, title: '란다우 게이지 조건', latex: String.raw`\partial_\mu A^\mu=0`, note: 'gauge fixing', meaning: '게이지 자유도를 고정하는 로런츠형 조건이야.' },
+  { id: 1233, title: '비가환 장강도', latex: String.raw`F^a_{\mu\nu}=\partial_\mu A^a_\nu-\partial_\nu A^a_\mu+gf^{abc}A^b_\mu A^c_\nu`, note: 'nonabelian field strength', meaning: '비가환 게이지이론의 장강도 텐서는 자기상호작용 항을 가져.' },
+  { id: 1234, title: '양-밀스 라그랑지안', latex: String.raw`\mathcal{L}=-\frac{1}{4}F^a_{\mu\nu}F^{a\mu\nu}`, note: 'Yang-Mills', meaning: '비가환 게이지장의 기본 라그랑지안이야.' },
+  { id: 1235, title: '유카와 항', latex: String.raw`\mathcal{L}_{\text{int}}=-g\phi\bar\psi\psi`, note: 'Yukawa interaction', meaning: '스칼라장과 페르미온장을 결합하는 대표 상호작용항이야.' },
+  { id: 1236, title: '파이포 상호작용', latex: String.raw`\mathcal{L}_{\text{int}}=-\frac{\lambda}{4!}\phi^4`, note: 'phi-four theory', meaning: '스칼라장의 가장 대표적인 자기상호작용 이론이야.' },
+  { id: 1237, title: '질량차원', latex: String.raw`[\phi]=\frac{d-2}{2}`, note: 'mass dimension', meaning: 'd차원 시공간에서 스칼라장의 질량차원이야.' },
+  { id: 1238, title: '재규격화 상수', latex: String.raw`\phi_0=Z_\phi^{1/2}\phi`, note: 'field renormalization', meaning: 'bare 장과 renormalized 장을 연결하는 재규격화 식이야.' },
+  { id: 1239, title: '결합상수 재규격화', latex: String.raw`g_0=Z_g g`, note: 'coupling renormalization', meaning: 'bare 결합상수와 renormalized 결합상수의 관계를 나타내.' },
+  { id: 1240, title: '베타함수', latex: String.raw`\beta(g)=\mu\frac{dg}{d\mu}`, note: 'beta function', meaning: '에너지 스케일에 따라 결합상수가 어떻게 흐르는지 나타내는 함수야.' },
+  { id: 1241, title: '러닝 커플링', latex: String.raw`\alpha(\mu)`, note: 'running coupling', meaning: '재규격화군 흐름에 따라 스케일 의존적으로 변하는 결합상수야.' },
+  { id: 1242, title: '딤레그', latex: String.raw`d=4-\epsilon`, note: 'dimensional regularization', meaning: '차원을 연속적으로 바꿔 발산을 조절하는 정규화 기법이야.' },
+  { id: 1243, title: 'LSZ', latex: String.raw`\langle f|i\rangle`, note: 'scattering amplitude', meaning: '산란 진폭을 나타내는 가장 기본적인 브라켓 표기야.' },
+  { id: 1244, title: 'S-행렬', latex: String.raw`S=1+iT`, note: 'S-matrix', meaning: '산란행렬을 항등연산자와 상호작용 부분으로 나눈 표기야.' },
+  { id: 1245, title: '단면적', latex: String.raw`d\sigma`, note: 'cross section', meaning: '산란 과정의 확률을 면적 단위로 표현하는 미소 단면적이야.' },
+  { id: 1246, title: '위상공간 요소', latex: String.raw`d\Pi_n`, note: 'phase space', meaning: 'n체 최종상태를 적분할 때 쓰는 위상공간 요소 표기야.' },
+  { id: 1247, title: '만델스탐 s', latex: String.raw`s=(p_1+p_2)^2`, note: 'Mandelstam variable', meaning: '산란에서 중심질량에너지 정보를 담는 만델스탐 변수야.' },
+  { id: 1248, title: '만델스탐 t', latex: String.raw`t=(p_1-p_3)^2`, note: 'Mandelstam variable', meaning: '운동량 전달을 나타내는 만델스탐 변수야.' },
+  { id: 1249, title: '만델스탐 u', latex: String.raw`u=(p_1-p_4)^2`, note: 'Mandelstam variable', meaning: '산란 운동학에서 쓰이는 세 번째 만델스탐 변수야.' },
+  { id: 1250, title: '양자장론 종합', latex: String.raw`Z[J]=\int\mathcal{D}\phi\,e^{iS[\phi]+i\int d^4x\,J\phi}`, note: 'review', meaning: '양자장론의 많은 상관함수와 섭동전개가 여기서 출발하는 생성함수야.' },
+])
+
 const homologicalAlgebra = makeCategory('호몰로지 대수', [
   { id: 1101, title: '체인 복합체', latex: String.raw`\cdots \to C_{n+1} \xrightarrow{\partial_{n+1}} C_n \xrightarrow{\partial_n} C_{n-1} \to \cdots`, note: 'chain complex', meaning: '경계사상들이 연속으로 이어진 체인 복합체의 기본 형태야.' },
   { id: 1102, title: '경계의 제곱', latex: String.raw`\partial_n \circ \partial_{n+1}=0`, note: 'boundary squared zero', meaning: '연속된 두 경계사상을 합성하면 항상 0이 되는 핵심 성질이야.' },
@@ -639,6 +692,6 @@ const financialMathematics = makeCategory('금융수학', [
   { id: 1050, title: '금융수학 종합', latex: String.raw`V_0=e^{-rT}E^Q[X]`, note: '종합', meaning: '파생상품 가격결정의 핵심 아이디어인 위험중립 기대값 공식을 나타내.' },
 ])
 
-export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra]
-export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수'] as const
+export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra, ...quantumFieldTheory]
+export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수', '양자장론'] as const
 export type PracticeCategory = (typeof practiceCategories)[number]
