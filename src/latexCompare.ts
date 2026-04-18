@@ -12,7 +12,7 @@ export type ComparisonResult = {
 }
 
 const ce = new ComputeEngine()
-const styleCommands = 'vec|hat|bar|tilde|dot|ddot|overline|underline|mathbf|mathit|mathrm|mathsf|mathtt|mathcal|mathbb|boldsymbol'
+const styleCommands = 'vec|hat|bar|tilde|widetilde|dot|ddot|overline|underline|mathbf|mathit|mathrm|mathsf|mathtt|mathcal|mathbb|boldsymbol'
 
 function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, ' ').trim()
@@ -160,6 +160,7 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
   normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
   normalized = normalized.replace(/\\not\s+\\in/g, '\\notin')
+  normalized = normalized.replace(/\\ast/g, '*')
   normalized = normalizeMidRelations(normalized)
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s*((?:\\\\[A-Za-z]+)|[A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
@@ -181,6 +182,7 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
   normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
   normalized = normalized.replace(/\\not\s+\\in/g, '\\notin')
+  normalized = normalized.replace(/\\ast/g, '*')
   normalized = normalizeMidRelations(normalized)
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s*((?:\\\\[A-Za-z]+)|[A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)

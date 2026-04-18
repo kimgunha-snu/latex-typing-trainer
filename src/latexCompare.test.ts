@@ -15,6 +15,7 @@ describe('compareLatex', () => {
     [String.raw`P\vee Q`, String.raw`P\lor Q`],
     [String.raw`x\ge y`, String.raw`x\geq y`],
     [String.raw`x\notin A`, String.raw`x\not \in A`],
+    [String.raw`\widetilde H_n (*)= 0`, String.raw`\widetilde{H}_n(\ast)=0`],
     [String.raw`\Gamma^\rho_{\nu\sigma}`, String.raw`\Gamma_{\nu\sigma}^\rho`],
     [String.raw`\frac{\pi}{4}`, String.raw`\frac{\pi}4`],
     [String.raw`[\hat x, \hat p]_{-} = i\hbar`, String.raw`[\hat{x},\hat{p}]_-=i\hbar`],
