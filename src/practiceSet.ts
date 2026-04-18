@@ -593,6 +593,59 @@ const latexStructures = makeCategory('LaTeX 구조 훈련', [
   { id: 1353, title: '언더브레이스 합', latex: String.raw`\underbrace{1+1+\cdots+1}_{n}=n`, note: 'underbrace', meaning: '반복된 합을 underbrace로 묶어 아래에 개수를 붙인 예제야.' },
 ])
 
+const nightmareLatex = makeCategory('괴랄한 LaTeX', [
+  { id: 1401, title: '다중 첨자 합', latex: String.raw`\sum_{\substack{1\le i\le n \\ 1\le j\le m}} a_{ij}x_i y_j`, note: 'nested sums', meaning: '여러 인덱스 조건과 첨자가 한꺼번에 몰린 괴랄한 합 표기야.' },
+  { id: 1402, title: '중첩 분수', latex: String.raw`\frac{\frac{a+b}{c+d}}{\sqrt{\frac{e+f}{g+h}}}`, note: 'nested fractions', meaning: '분수 안에 분수와 루트가 다시 들어간 전형적인 중첩 구조야.' },
+  { id: 1403, title: '다중 적분', latex: String.raw`\int_0^1\int_0^{1-x}\int_0^{1-x-y} f(x,y,z)\,dz\,dy\,dx`, note: 'iterated integrals', meaning: '적분 경계가 서로 얽힌 다중적분 형태야.' },
+  { id: 1404, title: '복합 지수', latex: String.raw`e^{-\left(\sum_{i=1}^{n} x_i^2\right)^{1/2}}`, note: 'nested exponent', meaning: '합, 거듭제곱, 지수가 한 번에 섞인 형태야.' },
+  { id: 1405, title: '대형 cases', latex: String.raw`f(x)=\begin{cases}\frac{\sin x}{x} & x\ne 0 \\ 1 & x=0\end{cases}`, note: 'piecewise singularity', meaning: '특이점을 cases로 보정한 고전적인 형태야.' },
+  { id: 1406, title: '행렬식 안의 행렬', latex: String.raw`\begin{vmatrix}\begin{matrix} a & b \\ c & d \end{matrix}\end{vmatrix}`, note: 'nested matrix', meaning: '행렬식 기호 안에 다시 matrix를 넣은 중첩 구조야.' },
+  { id: 1407, title: '정렬된 전개', latex: String.raw`\begin{align}\left(\sum_{i=1}^n x_i\right)^2 &= \sum_{i=1}^n x_i^2 + 2\sum_{1\le i<j\le n}x_i x_j \\ &= \sum_{i,j=1}^n x_i x_j\end{align}`, note: 'aligned expansion', meaning: '괄호, 합, 정렬이 한꺼번에 들어간 전개식이야.' },
+  { id: 1408, title: '브라켓 지옥', latex: String.raw`\left\langle \psi \middle| \hat{H} \middle| \psi \right\rangle=\int \psi^*(x)\hat{H}\psi(x)\,dx`, note: 'bra-ket integral', meaning: '브라켓과 적분 표현을 같이 묶은 양자역학식이야.' },
+  { id: 1409, title: '편미분 폭탄', latex: String.raw`\frac{\partial^2 u}{\partial x^2}+2\frac{\partial^2 u}{\partial x\partial y}+\frac{\partial^2 u}{\partial y^2}=0`, note: 'mixed partials', meaning: '편미분 항이 연달아 붙는 PDE 스타일 식이야.' },
+  { id: 1410, title: '함수공간 노름', latex: String.raw`\|f\|_{L^p(\Omega)}=\left(\int_{\Omega}|f(x)|^p\,dx\right)^{1/p}`, note: 'Lp norm', meaning: '노름, 적분, 절댓값, 지수가 한꺼번에 들어가는 함수해석 표기야.' },
+  { id: 1411, title: '약한 수렴', latex: String.raw`u_n\rightharpoonup u\quad\text{in }H^1_0(\Omega)`, note: 'weak convergence', meaning: '화살표와 함수공간 첨자가 함께 붙는 약한 수렴 표기야.' },
+  { id: 1412, title: '리만 곡률 full', latex: String.raw`R^\rho_{\ \sigma\mu\nu}=\partial_\mu\Gamma^\rho_{\nu\sigma}-\partial_\nu\Gamma^\rho_{\mu\sigma}+\Gamma^\rho_{\mu\lambda}\Gamma^\lambda_{\nu\sigma}-\Gamma^\rho_{\nu\lambda}\Gamma^\lambda_{\mu\sigma}`, note: 'full curvature tensor', meaning: '인덱스와 감마 기호가 빽빽하게 들어간 리만 곡률 전체 식이야.' },
+  { id: 1413, title: '생성함수 괴물', latex: String.raw`Z[J]=\int\mathcal{D}\phi\,\exp\left(i\int d^4x\left(\mathcal{L}(\phi)+J(x)\phi(x)\right)\right)`, note: 'generating functional', meaning: '경로적분, 지수, 함수형이 한 번에 몰린 장론식이야.' },
+  { id: 1414, title: '스펙트럴 시퀀스 느낌', latex: String.raw`E^{p,q}_2\cong H^p\left(X;\mathcal{H}^q(F)\right)\Rightarrow H^{p+q}(E)`, note: 'spectral sequence style', meaning: '위첨자, 아래첨자, 함자, 이중지표가 한 줄에 몰리는 형태야.' },
+  { id: 1415, title: '토르와 Ext', latex: String.raw`\operatorname{Ext}_R^n(M,N)\cong H^n\left(\operatorname{Hom}_R(P_\bullet,N)\right)`, note: 'derived functors', meaning: 'derived functor 표기와 복합체 표기가 결합된 식이야.' },
+  { id: 1416, title: '쿠네스 공포', latex: String.raw`H_n(X\times Y)\cong \bigoplus_{p+q=n}H_p(X)\otimes H_q(Y)\oplus\bigoplus_{p+q=n-1}\operatorname{Tor}(H_p(X),H_q(Y))`, note: 'Kunneth formula', meaning: '직합, 텐서곱, Tor가 한 줄에 몰린 진짜 긴 식이야.' },
+  { id: 1417, title: '푸리에 급수', latex: String.raw`f(x)\sim \frac{a_0}{2}+\sum_{n=1}^{\infty}\left(a_n\cos\frac{n\pi x}{L}+b_n\sin\frac{n\pi x}{L}\right)`, note: 'Fourier series', meaning: '무한합 안에 삼각함수와 분수가 섞인 전형적인 긴 식이야.' },
+  { id: 1418, title: '푸리에 변환', latex: String.raw`\hat{f}(\xi)=\int_{\mathbb{R}^n} f(x)e^{-2\pi i x\cdot \xi}\,dx`, note: 'Fourier transform', meaning: '적분, 지수, 내적, 다변수 표기가 한 줄에 들어간 식이야.' },
+  { id: 1419, title: '소볼레프 내적', latex: String.raw`\langle u,v\rangle_{H^1}=\int_{\Omega}uv\,dx+\int_{\Omega}\nabla u\cdot\nabla v\,dx`, note: 'Sobolev inner product', meaning: '내적과 적분이 두 번 나오는 함수공간 표현이야.' },
+  { id: 1420, title: '라플라스-벨트라미', latex: String.raw`\Delta_g f=\frac{1}{\sqrt{|g|}}\partial_i\left(\sqrt{|g|}g^{ij}\partial_j f\right)`, note: 'Laplace-Beltrami', meaning: '루트, 절댓값, 계량, 편미분이 같이 나오는 미분기하 연산자야.' },
+  { id: 1421, title: '평균장 자유에너지', latex: String.raw`F[m]=\int_{\Omega}\left(\frac{\kappa}{2}|\nabla m|^2+V(m)\right)dx`, note: 'free energy functional', meaning: '함수형과 기울기 노름이 섞인 물리식이야.' },
+  { id: 1422, title: '편미분 약한형식', latex: String.raw`\int_{\Omega}\nabla u\cdot\nabla v\,dx=\int_{\Omega}fv\,dx`, note: 'weak formulation', meaning: 'PDE 약한형식의 가장 전형적인 적분식이야.' },
+  { id: 1423, title: '기대값 nested', latex: String.raw`E\left[\left(\sum_{i=1}^{n}X_i\right)^2\middle|\mathcal{F}_{t-1}\right]`, note: 'conditional expectation', meaning: '대괄호, 조건부, 합, 제곱이 모두 섞인 확률표기야.' },
+  { id: 1424, title: 'KL 폭탄', latex: String.raw`D_{\mathrm{KL}}\left(p_\theta(x\mid z)\,\middle\|\,q_\phi(z\mid x)\right)`, note: 'KL divergence', meaning: '아래첨자와 조건부 확률이 겹치는 괴랄한 정보이론 표기야.' },
+  { id: 1425, title: 'ELBO', latex: String.raw`\mathcal{L}(\theta,\phi;x)=E_{q_\phi(z\mid x)}[\log p_\theta(x\mid z)]-D_{\mathrm{KL}}(q_\phi(z\mid x)\|p(z))`, note: 'variational inference', meaning: '기댓값과 KL 발산이 한 줄에 같이 있는 변분추론 식이야.' },
+  { id: 1426, title: '텐서 수축', latex: String.raw`T^{\mu\nu}_{\ \ \rho\sigma}S^{\rho\sigma}_{\ \ \alpha\beta}`, note: 'tensor contraction', meaning: '위아래 인덱스가 여러 층으로 붙은 텐서 수축 표기야.' },
+  { id: 1427, title: '공변도함수 폭탄', latex: String.raw`\nabla_\mu T^{\alpha_1\cdots\alpha_r}_{\beta_1\cdots\beta_s}`, note: 'covariant derivative', meaning: '많은 위아래 인덱스를 가진 텐서의 공변도함수 표기야.' },
+  { id: 1428, title: '패스오더링', latex: String.raw`\mathcal{P}\exp\left(ig\int_\gamma A_\mu\,dx^\mu\right)`, note: 'path ordered exponential', meaning: '패스오더링과 지수, 선적분이 합쳐진 게이지이론 표기야.' },
+  { id: 1429, title: '윌슨 루프', latex: String.raw`W(C)=\operatorname{Tr}\,\mathcal{P}\exp\left(i\oint_C A_\mu\,dx^\mu\right)`, note: 'Wilson loop', meaning: '자취, 패스오더링, 폐곡선 적분이 들어간 식이야.' },
+  { id: 1430, title: '브라켓 nested', latex: String.raw`\left\langle \left\langle X,Y\right\rangle_{H^1},Z\right\rangle_{L^2}`, note: 'nested inner products', meaning: '내적 안에 다시 내적이 들어가는 중첩 브라켓 구조야.' },
+  { id: 1431, title: '카테고리풍 표기', latex: String.raw`\operatorname{Hom}_{D^b(\mathcal{A})}(X^\bullet,Y^\bullet[n])`, note: 'derived category style', meaning: 'derived category 스타일의 범주론적 표기야.' },
+  { id: 1432, title: '삼각함자', latex: String.raw`X^\bullet\to Y^\bullet\to Z^\bullet\to X^\bullet[1]`, note: 'distinguished triangle', meaning: 'derived category의 distinguished triangle 표기야.' },
+  { id: 1433, title: '정규화 상수', latex: String.raw`\left(\int_{-\infty}^{\infty} e^{-x^2}\,dx\right)^{-1}`, note: 'normalization constant', meaning: '적분 전체를 역수로 올린 정규화 상수 식이야.' },
+  { id: 1434, title: '무한 곱', latex: String.raw`\prod_{n=1}^{\infty}\left(1+\frac{x^2}{n^2\pi^2}\right)`, note: 'infinite product', meaning: '무한곱 안에 분수와 제곱이 겹쳐 있는 식이야.' },
+  { id: 1435, title: '복소적분', latex: String.raw`\oint_{|z|=1}\frac{f(z)}{(z-z_0)^{n+1}}\,dz`, note: 'complex contour integral', meaning: '분모 거듭제곱과 폐적분이 들어간 복소해석 식이야.' },
+  { id: 1436, title: '잔여정리 스타일', latex: String.raw`\oint_C f(z)\,dz=2\pi i\sum_{k=1}^{n}\operatorname{Res}(f,a_k)`, note: 'residue theorem', meaning: '폐적분과 잔여 합이 같이 나오는 복소해석 대표식이야.' },
+  { id: 1437, title: '가중 평균', latex: String.raw`\frac{\sum_{i=1}^n w_i x_i}{\sum_{i=1}^n w_i}`, note: 'weighted average', meaning: '분자와 분모에 각각 합이 들어가는 복합 분수야.' },
+  { id: 1438, title: '행렬 미분', latex: String.raw`\frac{\partial}{\partial X}\operatorname{tr}(X^TAX)`, note: 'matrix calculus', meaning: '전치행렬과 trace가 같이 붙은 행렬미분 표기야.' },
+  { id: 1439, title: '행렬 지수', latex: String.raw`e^{At}=\sum_{n=0}^{\infty}\frac{(At)^n}{n!}`, note: 'matrix exponential', meaning: '행렬과 무한급수를 동시에 다루는 식이야.' },
+  { id: 1440, title: '분산 폭탄', latex: String.raw`\operatorname{Var}\left(\sum_{i=1}^{n}a_iX_i\right)=\sum_{i=1}^{n}\sum_{j=1}^{n}a_i a_j\operatorname{Cov}(X_i,X_j)`, note: 'variance expansion', meaning: '이중합과 공분산이 한 줄에 전개된 식이야.' },
+  { id: 1441, title: '조건부 확률 nested', latex: String.raw`P\left(\bigcap_{i=1}^{n}A_i\middle|\mathcal{F}\right)`, note: 'conditional probability', meaning: '교집합과 조건부 확률이 섞인 표기야.' },
+  { id: 1442, title: '대각화 monster', latex: String.raw`A=P\begin{bmatrix}\lambda_1 & 0 & \cdots & 0 \\ 0 & \lambda_2 & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & \lambda_n\end{bmatrix}P^{-1}`, note: 'diagonalization', meaning: '큰 대각행렬과 역행렬이 같이 붙은 선형대수 monster 식이야.' },
+  { id: 1443, title: '연립방정식 array', latex: String.raw`\left\{\begin{aligned} a_{11}x_1+\cdots+a_{1n}x_n &= b_1 \\ a_{21}x_1+\cdots+a_{2n}x_n &= b_2 \end{aligned}\right.`, note: 'aligned system', meaning: '중괄호와 aligned가 합쳐진 연립방정식이야.' },
+  { id: 1444, title: '브레이스 주석', latex: String.raw`\underbrace{x_1+\cdots+x_n}_{n\text{ terms}}`, note: 'underbrace annotation', meaning: 'underbrace 아래에 텍스트 주석까지 붙인 구조야.' },
+  { id: 1445, title: '오버브레이스 주석', latex: String.raw`(\overbrace{0,\ldots,0}^{i-1},1,0,\ldots,0)`, note: 'overbrace annotation', meaning: '앞부분 0의 개수를 overbrace로 표시한 튜플이야.' },
+  { id: 1446, title: '혼합 구조 1', latex: String.raw`\begin{cases}\begin{bmatrix}x \\ y\end{bmatrix} & x\ge 0 \\ \begin{pmatrix}x+y \\ x-y\end{pmatrix} & x<0\end{cases}`, note: 'cases plus matrices', meaning: 'cases 안에 두 종류의 행렬 환경을 섞은 식이야.' },
+  { id: 1447, title: '혼합 구조 2', latex: String.raw`\left\lVert\begin{bmatrix}x_1 \\ \vdots \\ x_n\end{bmatrix}\right\rVert_2=\left(\sum_{i=1}^{n}x_i^2\right)^{1/2}`, note: 'norm with matrix', meaning: '벡터를 행렬로 쓰고 노름과 합을 같이 붙인 식이야.' },
+  { id: 1448, title: '혼합 구조 3', latex: String.raw`\begin{align}\mathcal{L}(\theta)&=-\sum_{i=1}^{n}y_i\log\hat y_i \\ &\quad +\lambda\|\theta\|_2^2\end{align}`, note: 'loss with regularization', meaning: 'align과 합, 로그, 노름이 같이 들어간 머신러닝 loss 식이야.' },
+  { id: 1449, title: '혼합 구조 4', latex: String.raw`\begin{bmatrix}\partial_x & \partial_y \\ -\partial_y & \partial_x\end{bmatrix}\begin{pmatrix}u \\ v\end{pmatrix}`, note: 'operator matrix', meaning: '연산자 행렬과 벡터를 곱한 형태야.' },
+  { id: 1450, title: '괴랄한 LaTeX 종합', latex: String.raw`\mathcal{Z}=\sum_{n=0}^{\infty}\frac{1}{n!}\left(\int_{\Omega}\begin{bmatrix}f_n(x) \\ g_n(x)\end{bmatrix}\cdot\begin{pmatrix}\phi_n(x) \\ \psi_n(x)\end{pmatrix}dx\right)^2`, note: 'nightmare review', meaning: '합, 적분, 행렬, 벡터, 내적, 제곱이 한 줄에 다 들어간 정말 괴랄한 종합 문제야.' },
+])
+
 const quantumFieldTheory = makeCategory('양자장론', [
   { id: 1201, title: '작용', latex: String.raw`S=\int d^4x\,\mathcal{L}`, note: 'action', meaning: '장론에서 동역학을 요약하는 작용의 기본 정의야.' },
   { id: 1202, title: '오일러-라그랑주', latex: String.raw`\partial_\mu\frac{\partial\mathcal{L}}{\partial(\partial_\mu\phi)}-\frac{\partial\mathcal{L}}{\partial\phi}=0`, note: 'Euler-Lagrange', meaning: '장에 대한 운동방정식을 주는 오일러-라그랑주 방정식이야.' },
@@ -753,6 +806,6 @@ const financialMathematics = makeCategory('금융수학', [
   { id: 1050, title: '금융수학 종합', latex: String.raw`V_0=e^{-rT}E^Q[X]`, note: '종합', meaning: '파생상품 가격결정의 핵심 아이디어인 위험중립 기대값 공식을 나타내.' },
 ])
 
-export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra, ...quantumFieldTheory, ...latexStructures]
-export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수', '양자장론', 'LaTeX 구조 훈련'] as const
+export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra, ...quantumFieldTheory, ...latexStructures, ...nightmareLatex]
+export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수', '양자장론', 'LaTeX 구조 훈련', '괴랄한 LaTeX'] as const
 export type PracticeCategory = (typeof practiceCategories)[number]

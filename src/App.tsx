@@ -121,6 +121,7 @@ const categoryLabels = {
     '호몰로지 대수': '호몰로지 대수',
     양자장론: '양자장론',
     'LaTeX 구조 훈련': 'LaTeX 구조 훈련',
+    '괴랄한 LaTeX': '괴랄한 LaTeX',
   },
   en: {
     전체: 'All',
@@ -138,6 +139,7 @@ const categoryLabels = {
     '호몰로지 대수': 'Homological Algebra',
     양자장론: 'Quantum Field Theory',
     'LaTeX 구조 훈련': 'LaTeX Structure Drills',
+    '괴랄한 LaTeX': 'Nightmare LaTeX',
   },
 } as const
 
