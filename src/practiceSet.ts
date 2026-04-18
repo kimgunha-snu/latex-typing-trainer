@@ -537,6 +537,59 @@ const theoreticalComputerScience = makeCategory('컴퓨터과학 이론', [
 ])
 
 
+const latexStructures = makeCategory('LaTeX 구조 훈련', [
+  { id: 1301, title: '행렬 1', latex: String.raw`\begin{matrix} a & b \\ c & d \end{matrix}`, note: 'matrix', meaning: '가장 기본적인 matrix 환경의 2x2 배열이야.' },
+  { id: 1302, title: '행렬 2', latex: String.raw`\begin{pmatrix} a & b \\ c & d \end{pmatrix}`, note: 'pmatrix', meaning: '괄호가 붙는 pmatrix 환경의 기본 2x2 행렬이야.' },
+  { id: 1303, title: '행렬 3', latex: String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}`, note: 'bmatrix', meaning: '대괄호가 붙는 bmatrix 환경의 기본 2x2 행렬이야.' },
+  { id: 1304, title: '행렬 4', latex: String.raw`\begin{vmatrix} a & b \\ c & d \end{vmatrix}`, note: 'vmatrix', meaning: '세로 막대가 붙는 vmatrix 환경이야.' },
+  { id: 1305, title: '행렬 5', latex: String.raw`\begin{Bmatrix} a & b \\ c & d \end{Bmatrix}`, note: 'Bmatrix', meaning: '중괄호가 붙는 Bmatrix 환경이야.' },
+  { id: 1306, title: '열벡터', latex: String.raw`\begin{pmatrix} x \\ y \\ z \end{pmatrix}`, note: 'column vector', meaning: 'pmatrix로 쓴 기본적인 3차원 열벡터야.' },
+  { id: 1307, title: '행벡터', latex: String.raw`\begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}`, note: 'row vector', meaning: 'bmatrix로 쓴 가로 벡터 예제야.' },
+  { id: 1308, title: '3x3 행렬', latex: String.raw`\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}`, note: 'identity matrix', meaning: 'bmatrix 환경의 3x3 단위행렬이야.' },
+  { id: 1309, title: '증분행렬', latex: String.raw`\left[\begin{array}{cc|c} 1 & 2 & 3 \\ 4 & 5 & 6 \end{array}\right]`, note: 'augmented matrix', meaning: 'array와 구분선을 이용한 증분행렬이야.' },
+  { id: 1310, title: '배열 1', latex: String.raw`\begin{array}{cc} a & b \\ c & d \end{array}`, note: 'array', meaning: '정렬 형식을 직접 지정하는 array 환경이야.' },
+  { id: 1311, title: 'cases 1', latex: String.raw`f(x)=\begin{cases} x^2 & x\ge 0 \\ -x & x<0 \end{cases}`, note: 'cases', meaning: '조건에 따라 식이 달라지는 cases 환경의 대표 예제야.' },
+  { id: 1312, title: 'cases 2', latex: String.raw`|x|=\begin{cases} x & x\ge 0 \\ -x & x<0 \end{cases}`, note: 'absolute value', meaning: '절댓값을 cases로 정의한 고전적인 예제야.' },
+  { id: 1313, title: 'cases 3', latex: String.raw`\delta_{i,j}=\begin{cases} 1 & i=j \\ 0 & i\ne j \end{cases}`, note: 'Kronecker delta', meaning: '크로네커 델타의 cases 정의야.' },
+  { id: 1314, title: 'cases 4', latex: String.raw`H(x)=\begin{cases} 0 & x<0 \\ 1 & x\ge 0 \end{cases}`, note: 'Heaviside', meaning: '계단함수를 cases로 쓴 예제야.' },
+  { id: 1315, title: 'cases 5', latex: String.raw`\mathbf{1}_A(x)=\begin{cases} 1 & x\in A \\ 0 & x\notin A \end{cases}`, note: 'indicator', meaning: '지시함수의 cases 정의야.' },
+  { id: 1316, title: 'piecewise density', latex: String.raw`f_X(x)=\begin{cases} \lambda e^{-\lambda x} & x\ge 0 \\ 0 & x<0 \end{cases}`, note: 'piecewise density', meaning: '확률밀도함수를 cases로 표현한 예제야.' },
+  { id: 1317, title: 'align 1', latex: String.raw`\begin{align} a+b &= c \\ a-b &= d \end{align}`, note: 'align', meaning: '등호를 기준으로 줄맞춤하는 align 환경의 기본 예제야.' },
+  { id: 1318, title: 'align 2', latex: String.raw`\begin{align} x^2+y^2 &= z^2 \\ x^2 &= z^2-y^2 \end{align}`, note: 'aligned equations', meaning: '두 줄짜리 식 전개를 align으로 표현한 예제야.' },
+  { id: 1319, title: 'align 3', latex: String.raw`\begin{align} f(x) &= x^2+1 \\ f'(x) &= 2x \end{align}`, note: 'function and derivative', meaning: '함수와 도함수를 align으로 정렬한 예제야.' },
+  { id: 1320, title: 'align 4', latex: String.raw`\begin{align} \nabla\cdot\mathbf{E} &= \frac{\rho}{\varepsilon_0} \\ \nabla\cdot\mathbf{B} &= 0 \end{align}`, note: 'Maxwell equations', meaning: '맥스웰 방정식 일부를 align으로 정렬한 예제야.' },
+  { id: 1321, title: 'align 5', latex: String.raw`\begin{align} H_n(X) &= \ker \partial_n / \operatorname{im}\partial_{n+1} \\ H^n(X) &= \ker \delta^n / \operatorname{im}\delta^{n-1} \end{align}`, note: 'homology and cohomology', meaning: '호몰로지와 코호몰로지 정의를 align으로 나란히 쓴 예제야.' },
+  { id: 1322, title: 'aligned 1', latex: String.raw`\left(\begin{aligned} a+b &= c \\ a-b &= d \end{aligned}\right)`, note: 'aligned', meaning: '큰 괄호 안에 aligned 환경을 넣은 형태야.' },
+  { id: 1323, title: 'pmatrix with fractions', latex: String.raw`\begin{pmatrix} \frac{1}{2} & \frac{1}{3} \\ \frac{2}{3} & \frac{3}{4} \end{pmatrix}`, note: 'fraction matrix', meaning: '분수가 들어간 pmatrix 예제야.' },
+  { id: 1324, title: 'bmatrix with subscripts', latex: String.raw`\begin{bmatrix} x_1 & x_2 \\ x_3 & x_4 \end{bmatrix}`, note: 'indexed matrix', meaning: '첨자가 들어간 bmatrix 예제야.' },
+  { id: 1325, title: 'matrix with dots', latex: String.raw`\begin{bmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{n1} & \cdots & a_{nn} \end{bmatrix}`, note: 'general matrix', meaning: '점 표기를 포함한 일반 n×n 행렬의 전형적인 표현이야.' },
+  { id: 1326, title: 'determinant form', latex: String.raw`\begin{vmatrix} a & b \\ c & d \end{vmatrix}=ad-bc`, note: 'determinant', meaning: 'vmatrix 환경과 행렬식 값을 같이 쓴 예제야.' },
+  { id: 1327, title: 'block matrix', latex: String.raw`\begin{bmatrix} A & B \\ C & D \end{bmatrix}`, note: 'block matrix', meaning: '블록행렬을 bmatrix로 나타낸 기본 예제야.' },
+  { id: 1328, title: 'piecewise polynomial', latex: String.raw`p(x)=\begin{cases} x+1 & x<0 \\ x^2 & x\ge 0 \end{cases}`, note: 'piecewise polynomial', meaning: '구간에 따라 선형식과 이차식이 바뀌는 piecewise 함수야.' },
+  { id: 1329, title: 'piecewise trigonometric', latex: String.raw`g(x)=\begin{cases} \sin x & x<\pi \\ \cos x & x\ge \pi \end{cases}`, note: 'piecewise trigonometric', meaning: '삼각함수를 cases로 나눈 예제야.' },
+  { id: 1330, title: 'aligned integral', latex: String.raw`\begin{align} \int_0^1 x\,dx &= \frac{1}{2} \\ \int_0^1 x^2\,dx &= \frac{1}{3} \end{align}`, note: 'integral alignment', meaning: '적분 결과를 줄맞춤한 align 예제야.' },
+  { id: 1331, title: 'aligned sum', latex: String.raw`\begin{align} \sum_{i=1}^n i &= \frac{n(n+1)}{2} \\ \sum_{i=1}^n i^2 &= \frac{n(n+1)(2n+1)}{6} \end{align}`, note: 'sum alignment', meaning: '합 공식을 align으로 정렬한 예제야.' },
+  { id: 1332, title: 'cases with text', latex: String.raw`f(n)=\begin{cases} 0 & \text{if } n \text{ is even} \\ 1 & \text{if } n \text{ is odd} \end{cases}`, note: 'cases with text', meaning: '조건 부분에 텍스트가 들어가는 cases 예제야.' },
+  { id: 1333, title: 'array with parentheses', latex: String.raw`\left(\begin{array}{cc} a & b \\ c & d \end{array}\right)`, note: 'array with delimiters', meaning: 'array를 직접 큰 괄호로 감싼 형태야.' },
+  { id: 1334, title: 'array with braces', latex: String.raw`\left\{\begin{array}{ll} x+y=1 \\ x-y=0 \end{array}\right.`, note: 'system of equations', meaning: '연립방정식을 왼쪽 중괄호와 array로 표현한 형태야.' },
+  { id: 1335, title: 'small matrix', latex: String.raw`\bigl(\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\bigr)`, note: 'smallmatrix', meaning: '문장 안에 넣기 좋은 작은 행렬 환경이야.' },
+  { id: 1336, title: 'aligned derivation', latex: String.raw`\begin{align} (x+1)^2 &= x^2+2x+1 \\ &= x(x+2)+1 \end{align}`, note: 'derivation', meaning: '계산 과정을 여러 줄로 맞춰 쓰는 align 예제야.' },
+  { id: 1337, title: 'cases expectation', latex: String.raw`E[X]=\begin{cases} 0 & X=0 \\ 1 & X=1 \end{cases}`, note: 'discrete cases', meaning: '이산적인 값을 cases로 쓴 간단한 예제야.' },
+  { id: 1338, title: 'pmatrix with greek', latex: String.raw`\begin{pmatrix} \alpha & \beta \\ \gamma & \delta \end{pmatrix}`, note: 'Greek matrix', meaning: '그리스 문자가 들어간 pmatrix 예제야.' },
+  { id: 1339, title: 'bmatrix with operators', latex: String.raw`\begin{bmatrix} \partial_x & 0 \\ 0 & \partial_y \end{bmatrix}`, note: 'operator matrix', meaning: '미분연산자가 들어간 bmatrix 예제야.' },
+  { id: 1340, title: 'cases probability', latex: String.raw`P(X=x)=\begin{cases} p & x=1 \\ 1-p & x=0 \end{cases}`, note: 'Bernoulli pmf', meaning: '베르누이 분포를 cases로 쓴 예제야.' },
+  { id: 1341, title: 'piecewise sign', latex: String.raw`\operatorname{sgn}(x)=\begin{cases} -1 & x<0 \\ 0 & x=0 \\ 1 & x>0 \end{cases}`, note: 'sign function', meaning: '부호함수의 3갈래 cases 정의야.' },
+  { id: 1342, title: 'align with implication', latex: String.raw`\begin{align} a=b \\ &\Rightarrow a+c=b+c \end{align}`, note: 'aligned implication', meaning: 'align 안에서 함의 기호를 같이 쓰는 예제야.' },
+  { id: 1343, title: 'matrix inverse', latex: String.raw`\begin{pmatrix} a & b \\ c & d \end{pmatrix}^{-1}=\frac{1}{ad-bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}`, note: 'inverse matrix', meaning: '2x2 역행렬 공식을 pmatrix로 표현한 예제야.' },
+  { id: 1344, title: 'matrix product display', latex: String.raw`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix}=\begin{bmatrix} ax+by \\ cx+dy \end{bmatrix}`, note: 'matrix multiplication', meaning: '행렬과 벡터 곱을 bmatrix로 쓴 예제야.' },
+  { id: 1345, title: 'cases modulo', latex: String.raw`n\equiv\begin{cases}0 & \pmod 2 \\ 1 & \pmod 2\end{cases}`, note: 'modulo cases', meaning: '짝수/홀수를 cases로 나눈 예제야.' },
+  { id: 1346, title: 'align with braces', latex: String.raw`\begin{align} f(x) &= x^2 \\ g(x) &= x^3 \end{align}`, note: 'two functions', meaning: '두 함수를 나란히 비교하는 align 예제야.' },
+  { id: 1347, title: 'block augmented matrix', latex: String.raw`\left[\begin{array}{cc|cc} 1 & 0 & a & b \\ 0 & 1 & c & d \end{array}\right]`, note: 'block augmented matrix', meaning: '구분선이 들어간 조금 더 큰 증분행렬 예제야.' },
+  { id: 1348, title: 'cases with fractions', latex: String.raw`h(x)=\begin{cases} \frac{1}{x} & x\ne 0 \\ 0 & x=0 \end{cases}`, note: 'piecewise fraction', meaning: '분수가 들어간 cases 함수 예제야.' },
+  { id: 1349, title: 'aligned logarithms', latex: String.raw`\begin{align} \log(xy) &= \log x+\log y \\ \log\left(\frac{x}{y}\right) &= \log x-\log y \end{align}`, note: 'log identities', meaning: '로그 항등식을 align으로 배치한 예제야.' },
+  { id: 1350, title: 'LaTeX 구조 훈련 종합', latex: String.raw`f(x)=\begin{cases}\begin{bmatrix}x \\ x^2\end{bmatrix} & x\ge 0 \\ \begin{pmatrix}x \\ -x\end{pmatrix} & x<0\end{cases}`, note: 'mixed structures', meaning: 'cases 안에 bmatrix와 pmatrix까지 섞은 구조 훈련용 종합 예제야.' },
+])
+
 const quantumFieldTheory = makeCategory('양자장론', [
   { id: 1201, title: '작용', latex: String.raw`S=\int d^4x\,\mathcal{L}`, note: 'action', meaning: '장론에서 동역학을 요약하는 작용의 기본 정의야.' },
   { id: 1202, title: '오일러-라그랑주', latex: String.raw`\partial_\mu\frac{\partial\mathcal{L}}{\partial(\partial_\mu\phi)}-\frac{\partial\mathcal{L}}{\partial\phi}=0`, note: 'Euler-Lagrange', meaning: '장에 대한 운동방정식을 주는 오일러-라그랑주 방정식이야.' },
@@ -697,6 +750,6 @@ const financialMathematics = makeCategory('금융수학', [
   { id: 1050, title: '금융수학 종합', latex: String.raw`V_0=e^{-rT}E^Q[X]`, note: '종합', meaning: '파생상품 가격결정의 핵심 아이디어인 위험중립 기대값 공식을 나타내.' },
 ])
 
-export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra, ...quantumFieldTheory]
-export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수', '양자장론'] as const
+export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra, ...quantumFieldTheory, ...latexStructures]
+export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수', '양자장론', 'LaTeX 구조 훈련'] as const
 export type PracticeCategory = (typeof practiceCategories)[number]

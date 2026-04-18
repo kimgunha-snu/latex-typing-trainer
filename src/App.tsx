@@ -120,6 +120,7 @@ const categoryLabels = {
     금융수학: '금융수학',
     '호몰로지 대수': '호몰로지 대수',
     양자장론: '양자장론',
+    'LaTeX 구조 훈련': 'LaTeX 구조 훈련',
   },
   en: {
     전체: 'All',
@@ -136,6 +137,7 @@ const categoryLabels = {
     금융수학: 'Financial Mathematics',
     '호몰로지 대수': 'Homological Algebra',
     양자장론: 'Quantum Field Theory',
+    'LaTeX 구조 훈련': 'LaTeX Structure Drills',
   },
 } as const
 
