@@ -118,6 +118,7 @@ const categoryLabels = {
     경제학: '경제학',
     '컴퓨터과학 이론': '컴퓨터과학 이론',
     금융수학: '금융수학',
+    '호몰로지 대수': '호몰로지 대수',
   },
   en: {
     전체: 'All',
@@ -132,6 +133,7 @@ const categoryLabels = {
     경제학: 'Economics',
     '컴퓨터과학 이론': 'Theoretical Computer Science',
     금융수학: 'Financial Mathematics',
+    '호몰로지 대수': 'Homological Algebra',
   },
 } as const
 

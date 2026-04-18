@@ -533,6 +533,59 @@ const theoreticalComputerScience = makeCategory('컴퓨터과학 이론', [
 ])
 
 
+const homologicalAlgebra = makeCategory('호몰로지 대수', [
+  { id: 1101, title: '체인 복합체', latex: String.raw`\cdots \to C_{n+1} \xrightarrow{\partial_{n+1}} C_n \xrightarrow{\partial_n} C_{n-1} \to \cdots`, note: 'chain complex', meaning: '경계사상들이 연속으로 이어진 체인 복합체의 기본 형태야.' },
+  { id: 1102, title: '경계의 제곱', latex: String.raw`\partial_n \circ \partial_{n+1}=0`, note: 'boundary squared zero', meaning: '연속된 두 경계사상을 합성하면 항상 0이 되는 핵심 성질이야.' },
+  { id: 1103, title: 'n-사이클', latex: String.raw`Z_n=\ker \partial_n`, note: 'cycles', meaning: '경계가 0이 되는 n-체인들의 집합이 n-사이클이야.' },
+  { id: 1104, title: 'n-경계', latex: String.raw`B_n=\operatorname{im}\partial_{n+1}`, note: 'boundaries', meaning: '바로 위 차수에서 내려온 경계들의 집합이 n-경계야.' },
+  { id: 1105, title: '호몰로지군', latex: String.raw`H_n(C)=Z_n/B_n`, note: 'homology group', meaning: '사이클에서 경계를 나눈 몫으로 호몰로지군을 정의해.' },
+  { id: 1106, title: '공간의 호몰로지', latex: String.raw`H_n(X)=\ker \partial_n / \operatorname{im}\partial_{n+1}`, note: 'singular homology', meaning: '공간 X의 n차 호몰로지를 커널과 상으로 나타낸 식이야.' },
+  { id: 1107, title: '축약 호몰로지', latex: String.raw`\widetilde{H}_n(X)`, note: 'reduced homology', meaning: '연결성 정보를 조금 조정한 축약 호몰로지 표기야.' },
+  { id: 1108, title: '상대 체인군', latex: String.raw`C_n(X,A)=C_n(X)/C_n(A)`, note: 'relative chains', meaning: '부분공간 A를 나눈 상대 체인군의 정의야.' },
+  { id: 1109, title: '상대 호몰로지', latex: String.raw`H_n(X,A)`, note: 'relative homology', meaning: '쌍 (X,A)에 대한 상대 호몰로지를 나타내는 표기야.' },
+  { id: 1110, title: '짧은 완전열', latex: String.raw`0\to A\xrightarrow{i}B\xrightarrow{p}C\to 0`, note: 'short exact sequence', meaning: '단사와 전사를 포함한 가장 기본적인 완전열 형태야.' },
+  { id: 1111, title: '정확성 1', latex: String.raw`\operatorname{im} i=\ker p`, note: 'exactness', meaning: '중간 자리의 정확성은 앞 사상의 상과 뒤 사상의 커널이 같다는 뜻이야.' },
+  { id: 1112, title: '사슬사상', latex: String.raw`f_n:C_n\to D_n`, note: 'chain map component', meaning: '차수 n에서 체인 복합체 사이를 잇는 사상의 성분이야.' },
+  { id: 1113, title: '사슬사상 조건', latex: String.raw`d_n\circ f_n=f_{n-1}\circ \partial_n`, note: 'chain map', meaning: '사슬사상은 경계사상과 서로 교환되어야 해.' },
+  { id: 1114, title: '유도사상', latex: String.raw`f_*:H_n(C)\to H_n(D)`, note: 'induced map', meaning: '사슬사상은 호몰로지 위에서 유도사상을 만든다.' },
+  { id: 1115, title: '연결사상', latex: String.raw`\delta_n:H_n(C'')\to H_{n-1}(C')`, note: 'connecting homomorphism', meaning: '짧은 완전열에서 긴 완전열을 만드는 연결사상이야.' },
+  { id: 1116, title: '긴 완전열 1', latex: String.raw`\cdots \to H_n(A)\to H_n(X)\to H_n(X,A)\xrightarrow{\partial}H_{n-1}(A)\to \cdots`, note: 'long exact sequence', meaning: '상대 호몰로지에서 나오는 대표적인 긴 완전열이야.' },
+  { id: 1117, title: '포함사상', latex: String.raw`i_*:H_n(A)\to H_n(X)`, note: 'inclusion-induced map', meaning: '포함사상은 호몰로지에서도 자연스럽게 사상을 유도해.' },
+  { id: 1118, title: '몫사상', latex: String.raw`j_*:H_n(X)\to H_n(X,A)`, note: 'quotient-induced map', meaning: '절대 호몰로지에서 상대 호몰로지로 가는 유도사상이야.' },
+  { id: 1119, title: '정확성 2', latex: String.raw`\operatorname{im} i_*=\ker j_*`, note: 'exactness', meaning: '긴 완전열에서도 인접한 두 사상 사이 정확성이 유지돼.' },
+  { id: 1120, title: '0차 호몰로지', latex: String.raw`H_0(X)`, note: 'connected components', meaning: '공간의 연결 성분 정보를 담는 가장 기초적인 호몰로지야.' },
+  { id: 1121, title: '점의 호몰로지', latex: String.raw`H_n(\ast)=0\quad (n>0)`, note: 'point', meaning: '점 하나의 고차 호몰로지는 모두 0이야.' },
+  { id: 1122, title: '점의 0차 호몰로지', latex: String.raw`H_0(\ast)\cong \mathbb{Z}`, note: 'point', meaning: '점 하나의 0차 호몰로지는 정수군과 동형이야.' },
+  { id: 1123, title: '원의 1차 호몰로지', latex: String.raw`H_1(S^1)\cong \mathbb{Z}`, note: 'circle', meaning: '원은 1차원 구멍 하나를 가지므로 1차 호몰로지가 정수군이야.' },
+  { id: 1124, title: '원의 0차 호몰로지', latex: String.raw`H_0(S^1)\cong \mathbb{Z}`, note: 'circle', meaning: '원은 연결공간이므로 0차 호몰로지도 정수군 하나야.' },
+  { id: 1125, title: '구의 호몰로지', latex: String.raw`H_n(S^n)\cong \mathbb{Z}`, note: 'sphere top homology', meaning: 'n차 구면의 꼭대기 차수 호몰로지는 정수군이야.' },
+  { id: 1126, title: '구의 중간 호몰로지', latex: String.raw`H_k(S^n)=0\quad (0<k<n)`, note: 'sphere vanishing', meaning: '구면의 중간 차수 호몰로지는 0이야.' },
+  { id: 1127, title: '축약 호몰로지의 점', latex: String.raw`\widetilde{H}_n(\ast)=0`, note: 'reduced homology', meaning: '점의 축약 호몰로지는 모든 차수에서 0이야.' },
+  { id: 1128, title: '사슬 호모토피', latex: String.raw`f-g=ds+sd`, note: 'chain homotopy', meaning: '두 사슬사상이 사슬 호모토피일 때 만족하는 관계식이야.' },
+  { id: 1129, title: '호모토피 불변성', latex: String.raw`f\simeq g \Rightarrow f_*=g_*`, note: 'homotopy invariance', meaning: '호모토픽한 사상은 같은 호몰로지 유도사상을 준다.' },
+  { id: 1130, title: '엑시전', latex: String.raw`H_n(X\setminus U,A\setminus U)\cong H_n(X,A)`, note: 'excision', meaning: '적절한 부분 U를 도려내도 상대 호몰로지는 변하지 않는다는 정리야.' },
+  { id: 1131, title: '마이어-비토리스 1', latex: String.raw`\cdots \to H_n(U\cap V)\to H_n(U)\oplus H_n(V)\to H_n(X)\to \cdots`, note: 'Mayer-Vietoris', meaning: '공간을 두 부분으로 나눠 호몰로지를 계산할 때 쓰는 긴 완전열이야.' },
+  { id: 1132, title: '자연성', latex: String.raw`f_*\circ \partial=\partial\circ f_*`, note: 'naturality', meaning: '연결사상은 적절한 사상들과 자연스럽게 교환돼.' },
+  { id: 1133, title: '자유 아벨군', latex: String.raw`C_n(X)=\bigoplus_{\sigma:\Delta^n\to X}\mathbb{Z}\sigma`, note: 'singular chains', meaning: '특이 n-체인군은 특이 단체들을 생성원으로 하는 자유 아벨군이야.' },
+  { id: 1134, title: '특이 단체', latex: String.raw`\sigma:\Delta^n\to X`, note: 'singular simplex', meaning: '표준 n-단체에서 X로 가는 연속사상이 특이 단체야.' },
+  { id: 1135, title: '경계 공식', latex: String.raw`\partial_n\sigma=\sum_{i=0}^{n}(-1)^i\sigma\circ \delta_i`, note: 'boundary formula', meaning: '특이 단체의 경계는 면들의 교대합으로 주어져.' },
+  { id: 1136, title: '코체인군', latex: String.raw`C^n(X;G)=\operatorname{Hom}(C_n(X),G)`, note: 'cochains', meaning: '코체인군은 체인군에서 계수군 G로 가는 준동형들의 집합이야.' },
+  { id: 1137, title: '코경계', latex: String.raw`\delta^n:C^n\to C^{n+1}`, note: 'coboundary', meaning: '코체인 복합체에서 차수를 하나 올리는 사상이 코경계야.' },
+  { id: 1138, title: '코호몰로지군', latex: String.raw`H^n(X;G)=\ker \delta^n / \operatorname{im}\delta^{n-1}`, note: 'cohomology', meaning: '코호몰로지는 cocycle을 coboundary로 나눈 몫으로 정의돼.' },
+  { id: 1139, title: '유니버설 계수 정리', latex: String.raw`H^n(X;G)\cong \operatorname{Hom}(H_n(X),G)\oplus \operatorname{Ext}(H_{n-1}(X),G)`, note: 'universal coefficient', meaning: '호몰로지와 코호몰로지를 연결해 주는 대표 정리야.' },
+  { id: 1140, title: '쿠네스 공식 꼴', latex: String.raw`H_n(X\times Y)\cong \bigoplus_{p+q=n} H_p(X)\otimes H_q(Y)`, note: 'Kunneth formula', meaning: '곱공간의 호몰로지를 각 공간의 호몰로지로부터 계산하는 기본 꼴이야.' },
+  { id: 1141, title: '토르 항', latex: String.raw`\operatorname{Tor}(H_p(X),H_q(Y))`, note: 'torsion term', meaning: '쿠네스 정리나 텐서 계산에서 나타나는 비틀림 정보야.' },
+  { id: 1142, title: '프로젝티브 해석', latex: String.raw`\cdots \to P_1\to P_0\to M\to 0`, note: 'projective resolution', meaning: '가군 M을 프로젝트브 가군들로 해석한 긴 열이야.' },
+  { id: 1143, title: '인젝티브 해석', latex: String.raw`0\to M\to I^0\to I^1\to \cdots`, note: 'injective resolution', meaning: '가군 M을 인젝티브 가군들로 해석한 열이야.' },
+  { id: 1144, title: 'Ext', latex: String.raw`\operatorname{Ext}_R^n(M,N)`, note: 'derived functor', meaning: 'Hom 함자의 유도함자로 나타나는 중요한 호몰로지 대수 대상이야.' },
+  { id: 1145, title: 'Tor', latex: String.raw`\operatorname{Tor}_n^R(M,N)`, note: 'derived functor', meaning: '텐서곱 함자의 유도함자로 나타나는 대상이야.' },
+  { id: 1146, title: 'Derived category arrow', latex: String.raw`A^{\bullet}\to B^{\bullet}`, note: 'complex morphism', meaning: '복합체들 사이의 사상을 간단히 나타낸 표기야.' },
+  { id: 1147, title: '코호몰로지 복합체', latex: String.raw`\cdots \to C^{n-1} \xrightarrow{\delta^{n-1}} C^n \xrightarrow{\delta^n} C^{n+1} \to \cdots`, note: 'cochain complex', meaning: '코경계가 차수를 올리며 이어지는 코체인 복합체야.' },
+  { id: 1148, title: '코경계의 제곱', latex: String.raw`\delta^{n+1}\circ\delta^n=0`, note: 'coboundary squared zero', meaning: '연속된 두 코경계의 합성도 0이 되어야 해.' },
+  { id: 1149, title: '오일러 지표', latex: String.raw`\chi(X)=\sum_{n\ge 0}(-1)^n\operatorname{rank} H_n(X)`, note: 'Euler characteristic', meaning: '호몰로지군들의 랭크를 교대합해 오일러 지표를 얻어.' },
+  { id: 1150, title: '호몰로지 대수 종합', latex: String.raw`H_n(X)=\ker \partial_n / \operatorname{im}\partial_{n+1}`, note: 'review', meaning: '호몰로지 대수와 대수적 위상수학에서 가장 핵심적인 호몰로지 정의 식이야.' },
+])
+
 const financialMathematics = makeCategory('금융수학', [
   { id: 1001, title: '현재가치', latex: String.raw`PV=\frac{FV}{(1+r)^t}`, note: '할인', meaning: '미래 금액을 이자율 r로 할인해 현재 가치로 바꾼 식이야.' },
   { id: 1002, title: '미래가치', latex: String.raw`FV=PV(1+r)^t`, note: '복리', meaning: '현재 금액이 시간이 지나며 복리로 얼마나 커지는지 나타내.' },
@@ -586,6 +639,6 @@ const financialMathematics = makeCategory('금융수학', [
   { id: 1050, title: '금융수학 종합', latex: String.raw`V_0=e^{-rT}E^Q[X]`, note: '종합', meaning: '파생상품 가격결정의 핵심 아이디어인 위험중립 기대값 공식을 나타내.' },
 ])
 
-export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics]
-export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학'] as const
+export const practiceSet = [...algebra, ...calculus, ...linearAlgebra, ...electromagnetism, ...quantum, ...statistics, ...differentialGeometry, ...machineLearning, ...economics, ...theoreticalComputerScience, ...financialMathematics, ...homologicalAlgebra]
+export const practiceCategories = ['전체', '대수', '미적분', '선형대수', '전자기학', '양자역학', '확률통계', '미분기하', '머신러닝', '경제학', '컴퓨터과학 이론', '금융수학', '호몰로지 대수'] as const
 export type PracticeCategory = (typeof practiceCategories)[number]
