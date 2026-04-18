@@ -77,7 +77,16 @@
 }
 
 .language-toggle {
-  min-width: 56px;
+  min-width: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.language-flag {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .eyebrow,

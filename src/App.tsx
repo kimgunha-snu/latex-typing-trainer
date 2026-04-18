@@ -660,7 +660,8 @@ function App() {
           </div>
           <div className="hero-language">
             <button type="button" className="secondary language-toggle" onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}>
-              {language === 'ko' ? 'EN' : 'KO'}
+              <span className="language-flag" aria-hidden="true">{language === 'ko' ? '🇺🇸' : '🇰🇷'}</span>
+              <span>{language === 'ko' ? 'EN' : 'KO'}</span>
             </button>
           </div>
         </div>
