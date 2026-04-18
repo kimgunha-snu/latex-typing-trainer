@@ -145,14 +145,35 @@ const messages = {
     miniGame: '미니 게임',
     symbolQuizTitle: '기호 보고 명령어 맞히기',
     symbolQuizPrompt: '이 기호의 LaTeX 명령어는?',
+    symbolQuizPlaceholder: '예: \\subseteq',
     grade: '채점',
     revealAnswer: '정답 보기',
     nextProblem: '다음 문제',
+    quizCorrect: '정답! Enter를 누르거나 다음 문제 버튼으로 계속 갈 수 있어.',
+    quizWrong: '아직 아니야. 다시 입력해보거나 정답 보기를 눌러봐.',
+    quizRevealed: '정답을 입력창에 채워뒀어.',
     summaryTitle: '최근 3문제 결과',
     summaryLabel: '세션 요약',
+    summaryCount: '문제 수',
+    summaryAvgCpm: '평균 CPM',
+    summarySlot: '추가 영역',
+    summaryProblem: '문제',
     adSlot: '광고 / 추천 / 보상 자리',
     uploadLabel: '업로드',
     uploadTitle: '사용자 문제셋 관리',
+    uploadJson: 'JSON 파일 업로드',
+    uploadFormat: '형식 안내',
+    uploadRequired: '필수 필드, category, items[].title, items[].latex',
+    uploadOptional: '선택 필드, items[].note, items[].meaning',
+    uploadEscape: 'JSON 문자열 안에 LaTeX를 넣을 땐 역슬래시를 두 번 써야 해. 예:',
+    uploadReplace: '같은 category 이름으로 다시 올리면 기존 업로드 세트를 새 파일 내용으로 교체해.',
+    uploadedSets: '업로드된 문제셋',
+    noUploadedSets: '아직 업로드된 사용자 문제셋이 없어.',
+    itemCount: '문항 수',
+    startNow: '바로 풀기',
+    delete: '삭제',
+    cheatsheetLoading: '불러오는 중...',
+    cheatsheetScrollHint: '아래로 스크롤하면 자동으로 더 불러와.',
   },
   en: {
     appTitle: 'LaTeX Typing Trainer',
@@ -169,14 +190,35 @@ const messages = {
     miniGame: 'Mini Game',
     symbolQuizTitle: 'Guess the command from the symbol',
     symbolQuizPrompt: 'What is the LaTeX command for this symbol?',
+    symbolQuizPlaceholder: 'e.g. \\subseteq',
     grade: 'Check',
     revealAnswer: 'Show Answer',
     nextProblem: 'Next',
+    quizCorrect: 'Correct! Press Enter or click next to continue.',
+    quizWrong: 'Not yet. Try again or press show answer.',
+    quizRevealed: 'Filled the correct answer into the input box.',
     summaryTitle: 'Last 3 Problems Summary',
     summaryLabel: 'Session Summary',
+    summaryCount: 'Problems',
+    summaryAvgCpm: 'Average CPM',
+    summarySlot: 'Extra Slot',
+    summaryProblem: 'Problem',
     adSlot: 'Ad / recommendation / reward slot',
     uploadLabel: 'Upload',
     uploadTitle: 'Custom Practice Sets',
+    uploadJson: 'Upload JSON File',
+    uploadFormat: 'Format Guide',
+    uploadRequired: 'Required fields: category, items[].title, items[].latex',
+    uploadOptional: 'Optional fields: items[].note, items[].meaning',
+    uploadEscape: 'Inside JSON strings, LaTeX backslashes must be escaped twice. Example:',
+    uploadReplace: 'Uploading again with the same category name replaces the previous uploaded set.',
+    uploadedSets: 'Uploaded Practice Sets',
+    noUploadedSets: 'There are no uploaded custom practice sets yet.',
+    itemCount: 'Items',
+    startNow: 'Start Now',
+    delete: 'Delete',
+    cheatsheetLoading: 'Loading...',
+    cheatsheetScrollHint: 'Scroll down to load more automatically.',
   },
 } as const
 
@@ -289,6 +331,11 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem(languageStorageKey, language)
     document.documentElement.lang = language
+    setUploadMessage(
+      language === 'en'
+        ? 'Upload a JSON file to add a custom practice set right away.'
+        : 'JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.',
+    )
   }, [language])
 
   useEffect(() => {
@@ -368,7 +415,11 @@ function App() {
       const parsed = JSON.parse(raw) as unknown
 
       if (!isUploadedPracticeFile(parsed)) {
-        setUploadMessage('형식이 맞지 않아. category 문자열과 items 배열이 있는 JSON이어야 해.')
+        setUploadMessage(
+          language === 'en'
+            ? 'Invalid format. The JSON must include a category string and an items array.'
+            : '형식이 맞지 않아. category 문자열과 items 배열이 있는 JSON이어야 해.',
+        )
         return
       }
 
@@ -384,14 +435,22 @@ function App() {
       }))
 
       setUploadedSets((prev) => [...prev.filter((set) => set.key !== key), { key, label, items: nextUploadedItems }])
-      setUploadMessage(`업로드 완료, ${label} 카테고리 ${nextUploadedItems.length}문항 추가됨.`)
+      setUploadMessage(
+        language === 'en'
+          ? `Upload complete. Added ${nextUploadedItems.length} items to ${label}.`
+          : `업로드 완료, ${label} 카테고리 ${nextUploadedItems.length}문항 추가됨.`,
+      )
       setIsUploadModalOpen(false)
       setCategory(key)
       setCurrentIndex(0)
       queueRef.current = shuffleIndices(nextUploadedItems.map((_, index) => index), 0)
       resetSessionState()
     } catch {
-      setUploadMessage('파일을 읽지 못했어. JSON 문법이 맞는지 확인해줘.')
+      setUploadMessage(
+        language === 'en'
+          ? 'Could not read the file. Please check whether the JSON syntax is valid.'
+          : '파일을 읽지 못했어. JSON 문법이 맞는지 확인해줘.',
+      )
     } finally {
       event.target.value = ''
     }
@@ -579,7 +638,7 @@ function App() {
                     else checkSymbolQuizAnswer()
                   }
                 }}
-                placeholder="예: \\subseteq"
+                placeholder={t.symbolQuizPlaceholder}
               />
               <div className="button-row">
                 <button type="button" className="primary" onClick={checkSymbolQuizAnswer}>
@@ -594,11 +653,11 @@ function App() {
               </div>
               <div className={`symbol-quiz-feedback ${symbolQuizResult}`}>
                 {symbolQuizResult === 'correct'
-                  ? '정답! Enter를 누르거나 다음 문제 버튼으로 계속 갈 수 있어.'
+                  ? t.quizCorrect
                   : symbolQuizResult === 'wrong'
-                    ? '아직 아니야. 다시 입력해보거나 정답 보기를 눌러봐.'
+                    ? t.quizWrong
                     : symbolQuizResult === 'revealed'
-                      ? '정답을 입력창에 채워뒀어.'
+                      ? t.quizRevealed
                       : ''}
               </div>
             </div>
@@ -635,11 +694,11 @@ function App() {
                 {isCheatsheetLoading ? (
                   <div className="cheatsheet-loading">
                     <span className="spinner" aria-hidden="true" />
-                    불러오는 중... ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
+                    {t.cheatsheetLoading} ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
                   </div>
                 ) : (
                   <div className="cheatsheet-loading cheatsheet-loading-idle">
-                    아래로 스크롤하면 자동으로 더 불러와. ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
+                    {t.cheatsheetScrollHint} ({visibleCheatsheetSymbols.length}/{cheatsheetSymbols.length})
                   </div>
                 )}
               </div>
@@ -664,11 +723,11 @@ function App() {
 
             <div className="summary-stats-grid">
               <div className="summary-stat-card">
-                <span>문제 수</span>
+                <span>{t.summaryCount}</span>
                 <strong>{recentResults.length}</strong>
               </div>
               <div className="summary-stat-card">
-                <span>평균 CPM</span>
+                <span>{t.summaryAvgCpm}</span>
                 <strong>
                   {recentResults.length > 0
                     ? Math.round(recentResults.reduce((sum, item) => sum + item.cpm, 0) / recentResults.length)
@@ -676,7 +735,7 @@ function App() {
                 </strong>
               </div>
               <div className="summary-stat-card ad-slot-card">
-                <span>Slot</span>
+                <span>{t.summarySlot}</span>
                 <strong>{t.adSlot}</strong>
               </div>
             </div>
@@ -685,7 +744,7 @@ function App() {
               {recentResults.map((item, index) => (
                 <div key={`${item.title}-${index}`} className="summary-result-item">
                   <div>
-                    <div className="summary-result-index">문제 {index + 1}</div>
+                    <div className="summary-result-index">{t.summaryProblem} {index + 1}</div>
                     <strong>{item.title}</strong>
                   </div>
                   <div className="summary-result-cpm">{item.cpm} CPM</div>
@@ -711,14 +770,14 @@ function App() {
 
             <div className="upload-section">
               <label className="upload-label" htmlFor="practice-upload">
-                JSON 파일 업로드
+                {t.uploadJson}
               </label>
               <input id="practice-upload" type="file" accept="application/json,.json" onChange={handleUpload} />
               <div className="upload-help">{uploadMessage}</div>
             </div>
 
             <div className="upload-section">
-              <p className="label">형식 안내</p>
+              <p className="label">{t.uploadFormat}</p>
               <div className="format-box">
                 <pre>{`{
   "category": "사용자문제",
@@ -739,34 +798,34 @@ function App() {
 }`}</pre>
               </div>
               <div className="upload-help">
-                필수 필드, category, items[].title, items[].latex
+                {t.uploadRequired}
                 <br />
-                선택 필드, items[].note, items[].meaning
+                {t.uploadOptional}
                 <br />
-                JSON 문자열 안에 LaTeX를 넣을 땐 역슬래시를 두 번 써야 해. 예: <code>{String.raw`\\frac{a}{b}`}</code>
+                {t.uploadEscape} <code>{String.raw`\\frac{a}{b}`}</code>
                 <br />
-                같은 category 이름으로 다시 올리면 기존 업로드 세트를 새 파일 내용으로 교체해.
+                {t.uploadReplace}
               </div>
             </div>
 
             <div className="upload-section">
-              <p className="label">업로드된 문제셋</p>
+              <p className="label">{t.uploadedSets}</p>
               {uploadedSets.length === 0 ? (
-                <div className="empty-uploaded">아직 업로드된 사용자 문제셋이 없어.</div>
+                <div className="empty-uploaded">{t.noUploadedSets}</div>
               ) : (
                 <div className="uploaded-set-list">
                   {uploadedSets.map((set) => (
                     <div key={set.key} className="uploaded-set-item">
                       <div>
                         <strong>{set.label}</strong>
-                        <div className="upload-help">문항 수, {set.items.length}개</div>
+                        <div className="upload-help">{t.itemCount}, {set.items.length}</div>
                       </div>
                       <div className="button-row">
                         <button type="button" className="secondary" onClick={() => selectCategory(set.key)}>
-                          바로 풀기
+                          {t.startNow}
                         </button>
                         <button type="button" className="secondary" onClick={() => removeUploadedSet(set.key)}>
-                          삭제
+                          {t.delete}
                         </button>
                       </div>
                     </div>
