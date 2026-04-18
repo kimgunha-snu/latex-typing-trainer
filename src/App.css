@@ -14,8 +14,8 @@
 }
 
 .hero-card {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
   gap: 16px;
   padding: 16px 18px;
   margin-bottom: 16px;
@@ -41,9 +41,9 @@
 }
 
 .hero-language {
-  margin-left: auto;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .language-toggle {
@@ -61,7 +61,7 @@
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(5, minmax(72px, 1fr));
+  grid-template-columns: repeat(4, minmax(72px, 1fr));
   gap: 8px;
   min-width: min(620px, 100%);
 }
