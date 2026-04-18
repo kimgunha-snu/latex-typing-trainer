@@ -204,6 +204,21 @@ const messages = {
     delete: '삭제',
     cheatsheetLoading: '불러오는 중...',
     cheatsheetScrollHint: '아래로 스크롤하면 자동으로 더 불러와.',
+    referenceLabel: '문제',
+    hideAnswer: '정답 가리기',
+    showAnswer: '정답 보기',
+    answerHidden: '정답은 숨겨져 있어. 필요하면 버튼 눌러서 확인해.',
+    inputLabel: '입력',
+    inputTitle: '그대로 입력해봐',
+    progress: '진행률',
+    inputPlaceholder: '여기에 LaTeX를 입력',
+    helperText: '공백, 간격 명령, 일부 큰 연산자 표기 순서, 단일 토큰 중괄호, left/right, 함수 인자 중괄호, dx 표기 차이는 판정에서 완화됨',
+    statusCorrect: '좋아, 동치 처리까지 반영해서 정답이야.',
+    statusContinue: '좋아, 그대로 이어서 입력하면 돼.',
+    statusMismatchSuffix: '번째 유효 문자부터 다름',
+    retry: '다시 입력',
+    livePreview: '실시간 렌더 미리보기',
+    previewEmpty: '입력한 LaTeX가 여기 렌더링돼.',
   },
   en: {
     appTitle: 'LaTeX Typing Trainer',
@@ -249,6 +264,21 @@ const messages = {
     delete: 'Delete',
     cheatsheetLoading: 'Loading...',
     cheatsheetScrollHint: 'Scroll down to load more automatically.',
+    referenceLabel: 'Problem',
+    hideAnswer: 'Hide Answer',
+    showAnswer: 'Show Answer',
+    answerHidden: 'The answer is hidden. Press the button if you want to reveal it.',
+    inputLabel: 'Input',
+    inputTitle: 'Type it as shown',
+    progress: 'Progress',
+    inputPlaceholder: 'Type LaTeX here',
+    helperText: 'Whitespace, spacing commands, some large-operator script order, single-token braces, left/right, function-argument braces, and dx notation differences are tolerated in matching.',
+    statusCorrect: 'Nice, this counts as correct including equivalence handling.',
+    statusContinue: 'Looks good. Keep typing as shown.',
+    statusMismatchSuffix: 'th significant character is different',
+    retry: 'Retry',
+    livePreview: 'Live Render Preview',
+    previewEmpty: 'Your typed LaTeX will render here.',
   },
 } as const
 
@@ -878,7 +908,7 @@ function App() {
         <article className="panel reference-panel">
           <div className="panel-head">
             <div>
-              <p className="label">문제</p>
+              <p className="label">{t.referenceLabel}</p>
               <h2>{current.title}</h2>
             </div>
             <span className="hint">{current.note}</span>
@@ -892,7 +922,7 @@ function App() {
 
           <div className="answer-toggle-row">
             <button type="button" className="secondary" onClick={() => setShowAnswer((value) => !value)}>
-              {showAnswer ? '정답 가리기' : '정답 보기'}
+              {showAnswer ? t.hideAnswer : t.showAnswer}
             </button>
           </div>
 
@@ -920,17 +950,17 @@ function App() {
               })}
             </div>
           ) : (
-            <div className="answer-hidden">정답은 숨겨져 있어. 필요하면 버튼 눌러서 확인해.</div>
+            <div className="answer-hidden">{t.answerHidden}</div>
           )}
         </article>
 
         <article className="panel input-panel">
           <div className="panel-head">
             <div>
-              <p className="label">입력</p>
-              <h2>그대로 입력해봐</h2>
+              <p className="label">{t.inputLabel}</p>
+              <h2>{t.inputTitle}</h2>
             </div>
-            <div className="progress-badge">진행률 {Math.round(progress)}%</div>
+            <div className="progress-badge">{t.progress} {Math.round(progress)}%</div>
           </div>
 
           <textarea
@@ -943,35 +973,35 @@ function App() {
             autoCapitalize="off"
             autoCorrect="off"
             autoComplete="off"
-            placeholder="여기에 LaTeX를 입력"
+            placeholder={t.inputPlaceholder}
           />
 
           <div className="helper-text">
-            공백, 간격 명령, 일부 큰 연산자 표기 순서, 단일 토큰 중괄호, left/right, 함수 인자 중괄호, dx 표기 차이는 판정에서 완화됨
+            {t.helperText}
           </div>
 
           <div className="status-row">
             <div className={`status ${isComplete ? 'success' : mismatchIndex >= 0 ? 'error' : 'idle'}`}>
               {isComplete
-                ? '좋아, 동치 처리까지 반영해서 정답이야.'
+                ? t.statusCorrect
                 : mismatchIndex >= 0
-                  ? `${mismatchIndex + 1}번째 유효 문자부터 다름`
-                  : '좋아, 그대로 이어서 입력하면 돼.'}
+                  ? `${mismatchIndex + 1}${t.statusMismatchSuffix}`
+                  : t.statusContinue}
             </div>
             <div className="button-row">
               <button type="button" className="secondary" onClick={resetCurrent}>
-                다시 입력
+                {t.retry}
               </button>
               <button type="button" className="primary" onClick={goNext} disabled={!isComplete}>
-                다음 문제
+                {t.nextProblem}
               </button>
             </div>
           </div>
 
           <div className="live-preview">
-            <p className="label">실시간 렌더 미리보기</p>
+            <p className="label">{t.livePreview}</p>
             <div className="preview-box">
-              {input ? <MathJax inline dynamic>{`\\(${input}\\)`}</MathJax> : <span>입력한 LaTeX가 여기 렌더링돼.</span>}
+              {input ? <MathJax inline dynamic>{`\\(${input}\\)`}</MathJax> : <span>{t.previewEmpty}</span>}
             </div>
           </div>
         </article>
