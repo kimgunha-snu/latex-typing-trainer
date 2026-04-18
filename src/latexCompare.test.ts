@@ -13,6 +13,7 @@ describe('compareLatex', () => {
     [String.raw`\vec{v}=\begin{bmatrix} x \\ y \\ z \end{bmatrix}`, String.raw`\vec v = \begin{bmatrix} x \\ y \\ z \end{bmatrix}`],
     [String.raw`P\wedge Q`, String.raw`P\land Q`],
     [String.raw`P\vee Q`, String.raw`P\lor Q`],
+    [String.raw`x\ge y`, String.raw`x\geq y`],
     [String.raw`\Gamma^\rho_{\nu\sigma}`, String.raw`\Gamma_{\nu\sigma}^\rho`],
     [String.raw`\frac{\pi}{4}`, String.raw`\frac{\pi}4`],
     [String.raw`[\hat x, \hat p]_{-} = i\hbar`, String.raw`[\hat{x},\hat{p}]_-=i\hbar`],
