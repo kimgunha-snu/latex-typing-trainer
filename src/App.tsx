@@ -408,7 +408,24 @@ function App() {
   const currentSymbolQuiz = symbolQuizItems[symbolQuizIndex] ?? symbolQuizItems[0]
   const visibleCheatsheetSymbols = cheatsheetSymbols.slice(0, cheatsheetVisibleCount)
   const target = current.latex
-  const comparison = useMemo(() => compareLatex(input, target), [input, target])
+  const acceptedTargets = current.acceptedLatex ?? []
+  const comparison = useMemo(() => {
+    const primary = compareLatex(input, target)
+    if (primary.isComplete) return primary
+
+    for (const candidate of acceptedTargets) {
+      const candidateComparison = compareLatex(input, candidate)
+      if (candidateComparison.isComplete) {
+        return {
+          ...candidateComparison,
+          normalizedTarget: primary.normalizedTarget,
+          targetDisplayStates: primary.targetDisplayStates,
+        }
+      }
+    }
+
+    return primary
+  }, [acceptedTargets, input, target])
   const { normalizedInput, normalizedTarget, isComplete, mismatchIndex, correctChars, targetDisplayStates } = comparison
   const progress = normalizedTarget.length === 0 ? 0 : (correctChars / normalizedTarget.length) * 100
 

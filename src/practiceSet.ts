@@ -3,6 +3,7 @@ export type PracticeItem = {
   category: string
   title: string
   latex: string
+  acceptedLatex?: string[]
   note: string
   meaning?: string
 }
@@ -640,7 +641,7 @@ const nightmareLatex = makeCategory('괴랄한 LaTeX', [
   { id: 1444, title: '브레이스 주석', latex: String.raw`\underbrace{x_1+\cdots+x_n}_{n\text{ terms}}`, note: 'underbrace annotation', meaning: 'underbrace 아래에 텍스트 주석까지 붙인 구조야.' },
   { id: 1445, title: '오버브레이스 주석', latex: String.raw`(\overbrace{0,\ldots,0}^{i-1},1,0,\ldots,0)`, note: 'overbrace annotation', meaning: '앞부분 0의 개수를 overbrace로 표시한 튜플이야.' },
   { id: 1446, title: '혼합 구조 1', latex: String.raw`\begin{cases}\begin{bmatrix}x \\ y\end{bmatrix} & x\ge 0 \\ \begin{pmatrix}x+y \\ x-y\end{pmatrix} & x<0\end{cases}`, note: 'cases plus matrices', meaning: 'cases 안에 두 종류의 행렬 환경을 섞은 식이야.' },
-  { id: 1447, title: '혼합 구조 2', latex: String.raw`\left\lVert\begin{bmatrix}x_1 \\ \vdots \\ x_n\end{bmatrix}\right\rVert_2=\left(\sum_{i=1}^{n}x_i^2\right)^{1/2}`, note: 'norm with matrix', meaning: '벡터를 행렬로 쓰고 노름과 합을 같이 붙인 식이야.' },
+  { id: 1447, title: '혼합 구조 2', latex: String.raw`\left\lVert\begin{bmatrix}x_1 \\ \vdots \\ x_n\end{bmatrix}\right\rVert_2=\left(\sum_{i=1}^{n}x_i^2\right)^{1/2}`, acceptedLatex: [String.raw`\left \|\begin {bmatrix}x_1 \\ \vdots \\x_n\end{bmatrix}\right \| _2 = (\sum^n_{i=1} x^2_i)^{1/2}`], note: 'norm with matrix', meaning: '벡터를 행렬로 쓰고 노름과 합을 같이 붙인 식이야.' },
   { id: 1448, title: '혼합 구조 3', latex: String.raw`\begin{align}\mathcal{L}(\theta)&=-\sum_{i=1}^{n}y_i\log\hat y_i \\ &\quad +\lambda\|\theta\|_2^2\end{align}`, note: 'loss with regularization', meaning: 'align과 합, 로그, 노름이 같이 들어간 머신러닝 loss 식이야.' },
   { id: 1449, title: '혼합 구조 4', latex: String.raw`\begin{bmatrix}\partial_x & \partial_y \\ -\partial_y & \partial_x\end{bmatrix}\begin{pmatrix}u \\ v\end{pmatrix}`, note: 'operator matrix', meaning: '연산자 행렬과 벡터를 곱한 형태야.' },
   { id: 1450, title: '괴랄한 LaTeX 종합', latex: String.raw`\mathcal{Z}=\sum_{n=0}^{\infty}\frac{1}{n!}\left(\int_{\Omega}\begin{bmatrix}f_n(x) \\ g_n(x)\end{bmatrix}\cdot\begin{pmatrix}\phi_n(x) \\ \psi_n(x)\end{pmatrix}dx\right)^2`, note: 'nightmare review', meaning: '합, 적분, 행렬, 벡터, 내적, 제곱이 한 줄에 다 들어간 정말 괴랄한 종합 문제야.' },
@@ -744,7 +745,7 @@ const homologicalAlgebra = makeCategory('호몰로지 대수', [
   { id: 1141, title: '토르 항', latex: String.raw`\operatorname{Tor}(H_p(X),H_q(Y))`, note: 'torsion term', meaning: '쿠네스 정리나 텐서 계산에서 나타나는 비틀림 정보야.' },
   { id: 1142, title: '프로젝티브 해석', latex: String.raw`\cdots \to P_1\to P_0\to M\to 0`, note: 'projective resolution', meaning: '가군 M을 프로젝트브 가군들로 해석한 긴 열이야.' },
   { id: 1143, title: '인젝티브 해석', latex: String.raw`0\to M\to I^0\to I^1\to \cdots`, note: 'injective resolution', meaning: '가군 M을 인젝티브 가군들로 해석한 열이야.' },
-  { id: 1144, title: 'Ext', latex: String.raw`\operatorname{Ext}_R^n(M,N)`, note: 'derived functor', meaning: 'Hom 함자의 유도함자로 나타나는 중요한 호몰로지 대수 대상이야.' },
+  { id: 1144, title: 'Ext', latex: String.raw`\operatorname{Ext}_R^n(M,N)`, acceptedLatex: [String.raw`\operatorname{Ext}^n_R(M,N)`], note: 'derived functor', meaning: 'Hom 함자의 유도함자로 나타나는 중요한 호몰로지 대수 대상이야.' },
   { id: 1145, title: 'Tor', latex: String.raw`\operatorname{Tor}_n^R(M,N)`, note: 'derived functor', meaning: '텐서곱 함자의 유도함자로 나타나는 대상이야.' },
   { id: 1146, title: 'Derived category arrow', latex: String.raw`A^{\bullet}\to B^{\bullet}`, note: 'complex morphism', meaning: '복합체들 사이의 사상을 간단히 나타낸 표기야.' },
   { id: 1147, title: '코호몰로지 복합체', latex: String.raw`\cdots \to C^{n-1} \xrightarrow{\delta^{n-1}} C^n \xrightarrow{\delta^n} C^{n+1} \to \cdots`, note: 'cochain complex', meaning: '코경계가 차수를 올리며 이어지는 코체인 복합체야.' },
