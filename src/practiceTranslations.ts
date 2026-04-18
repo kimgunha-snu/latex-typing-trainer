@@ -709,6 +709,9 @@ export const practiceTranslationsEn: Record<number, PracticeTranslation> = {
   1348: { title: 'Cases with Fractions', note: 'piecewise fraction', meaning: 'This is a piecewise function containing a fraction in one branch.' },
   1349: { title: 'Aligned Logarithms', note: 'log identities', meaning: 'This aligns two logarithm identities across multiple lines.' },
   1350: { title: 'LaTeX Structure Drill Review', note: 'mixed structures', meaning: 'This is a mixed-structure drill combining cases with bmatrix and pmatrix.' },
+  1351: { title: 'Overbrace Sum', note: 'overbrace', meaning: 'This uses an overbrace to show that the same term is repeated n times.' },
+  1352: { title: 'Basis Vector with Overbrace', note: 'basis vector', meaning: 'This uses an overbrace to indicate how many leading zeros appear in the standard basis vector.' },
+  1353: { title: 'Underbrace Sum', note: 'underbrace', meaning: 'This uses an underbrace to label the number of repeated terms in a sum.' },
 
   551: { title: 'Indicator Function', note: 'indicator function', meaning: 'This function returns 1 when x belongs to set A and 0 otherwise.' },
   552: { title: 'Exponential Density', note: 'piecewise density', meaning: 'This is the piecewise probability density function of the exponential distribution.' },

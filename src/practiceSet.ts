@@ -588,6 +588,9 @@ const latexStructures = makeCategory('LaTeX 구조 훈련', [
   { id: 1348, title: 'cases with fractions', latex: String.raw`h(x)=\begin{cases} \frac{1}{x} & x\ne 0 \\ 0 & x=0 \end{cases}`, note: 'piecewise fraction', meaning: '분수가 들어간 cases 함수 예제야.' },
   { id: 1349, title: 'aligned logarithms', latex: String.raw`\begin{align} \log(xy) &= \log x+\log y \\ \log\left(\frac{x}{y}\right) &= \log x-\log y \end{align}`, note: 'log identities', meaning: '로그 항등식을 align으로 배치한 예제야.' },
   { id: 1350, title: 'LaTeX 구조 훈련 종합', latex: String.raw`f(x)=\begin{cases}\begin{bmatrix}x \\ x^2\end{bmatrix} & x\ge 0 \\ \begin{pmatrix}x \\ -x\end{pmatrix} & x<0\end{cases}`, note: 'mixed structures', meaning: 'cases 안에 bmatrix와 pmatrix까지 섞은 구조 훈련용 종합 예제야.' },
+  { id: 1351, title: '오버브레이스 합', latex: String.raw`\overbrace{1+1+\cdots+1}^{n}=n`, note: 'overbrace', meaning: '같은 항이 n번 반복된 합을 overbrace로 묶은 예제야.' },
+  { id: 1352, title: '기저벡터와 오버브레이스', latex: String.raw`e_i=(\overbrace{0,\ldots,0}^{i-1},1,0,\ldots,0)`, note: 'basis vector', meaning: '표준기저벡터에서 앞쪽 0들의 개수를 overbrace로 나타낸 예제야.' },
+  { id: 1353, title: '언더브레이스 합', latex: String.raw`\underbrace{1+1+\cdots+1}_{n}=n`, note: 'underbrace', meaning: '반복된 합을 underbrace로 묶어 아래에 개수를 붙인 예제야.' },
 ])
 
 const quantumFieldTheory = makeCategory('양자장론', [
