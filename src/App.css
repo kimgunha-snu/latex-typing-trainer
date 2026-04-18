@@ -24,7 +24,7 @@
 
 .hero-card-with-language {
   position: relative;
-  padding-right: 96px;
+  padding-right: 124px;
 }
 
 .hero-left,
@@ -77,7 +77,7 @@
 }
 
 .language-toggle {
-  min-width: 72px;
+  min-width: 88px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
