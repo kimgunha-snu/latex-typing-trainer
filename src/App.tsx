@@ -362,6 +362,7 @@ function App() {
   const [showAnswer, setShowAnswer] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const [recentResults, setRecentResults] = useState<RecentResult[]>([])
+  const [batchResults, setBatchResults] = useState<RecentResult[]>([])
   const [isSessionSummaryOpen, setIsSessionSummaryOpen] = useState(false)
   const [symbolQuizIndex, setSymbolQuizIndex] = useState(() => Math.floor(Math.random() * symbolQuizItems.length))
   const [symbolQuizInput, setSymbolQuizInput] = useState('\\')
@@ -473,15 +474,14 @@ function App() {
 
   const goNext = () => {
     const currentCpm = startedAt ? Math.round(normalizedInput.length / elapsedMinutes) : 0
-    const nextResults = [...recentResults, { title: current.title, cpm: currentCpm }]
-    const shouldOpenSummary = nextResults.length === 3
+    const nextBatchResults = [...batchResults, { title: current.title, cpm: currentCpm }]
+    const shouldOpenSummary = nextBatchResults.length === 3
 
     setFinishedCount((count) => count + 1)
+    setBatchResults(shouldOpenSummary ? [] : nextBatchResults)
     if (shouldOpenSummary) {
-      setRecentResults(nextResults)
+      setRecentResults(nextBatchResults)
       setIsSessionSummaryOpen(true)
-    } else {
-      setRecentResults(nextResults)
     }
 
     if (queueRef.current.length > 0) {
