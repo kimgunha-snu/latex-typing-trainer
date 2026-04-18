@@ -26,6 +26,7 @@ describe('compareLatex', () => {
   const nonEquivalentCases = [
     [String.raw`\{ x \in \mathbb{R} \mid x^2 < 2 \}`, String.raw`\{ x \in \}`],
     [String.raw`|x|`, String.raw`\mid x \mid`],
+    [String.raw`\mathcal{H}=\pi\dot\phi-\mathcal{L}`, String.raw`\mathcal H = \pi \dot \phi`],
     [String.raw`\oint_C f(z) \, dz = 2\pi i \sum \operatorname{Res}(f,a_k)`, String.raw`\oint_C f(z)dz = 2\pi i`],
   ]
 

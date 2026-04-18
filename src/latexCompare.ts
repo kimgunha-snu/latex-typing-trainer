@@ -236,6 +236,29 @@ function canonicalFromAst(value: string) {
   }
 }
 
+function hasTopLevelEquality(value: string) {
+  let depthBrace = 0
+  let depthBracket = 0
+  let depthParen = 0
+
+  for (let i = 0; i < value.length; i += 1) {
+    const char = value[i]
+    if (char === '\\') {
+      i += 1
+      continue
+    }
+    if (char === '{') depthBrace += 1
+    else if (char === '}') depthBrace = Math.max(0, depthBrace - 1)
+    else if (char === '[') depthBracket += 1
+    else if (char === ']') depthBracket = Math.max(0, depthBracket - 1)
+    else if (char === '(') depthParen += 1
+    else if (char === ')') depthParen = Math.max(0, depthParen - 1)
+    else if (char === '=' && depthBrace === 0 && depthBracket === 0 && depthParen === 0) return true
+  }
+
+  return false
+}
+
 function comparePrefix(input: string, target: string) {
   const minLength = Math.min(input.length, target.length)
   for (let i = 0; i < minLength; i += 1) {
@@ -276,8 +299,14 @@ export function compareLatex(input: string, target: string): ComparisonResult {
   const normalizedInput = normalizeForFallback(input)
   const normalizedTarget = normalizeForFallback(target)
   const fallbackEquivalent = normalizedInput === normalizedTarget
+  const suspiciousParserMatch = astEquivalent
+    && hasTopLevelEquality(parserTarget)
+    && hasTopLevelEquality(parserInput)
+    && normalizedTarget.includes('=')
+    && normalizedInput.includes('=')
+    && normalizedInput.length + 3 < normalizedTarget.length
 
-  const isComplete = astEquivalent || fallbackEquivalent
+  const isComplete = fallbackEquivalent || (astEquivalent && !suspiciousParserMatch)
   const mismatchIndex = isComplete ? -1 : comparePrefix(normalizedInput, normalizedTarget)
   const correctChars = isComplete
     ? normalizedTarget.length
