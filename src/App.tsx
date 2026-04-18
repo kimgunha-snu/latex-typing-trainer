@@ -220,6 +220,9 @@ const messages = {
     retry: '다시 입력',
     livePreview: '실시간 렌더 미리보기',
     previewEmpty: '입력한 LaTeX가 여기 렌더링돼.',
+    bugReportTitle: '버그를 발견했나요?',
+    bugReportBody: '문제가 있으면 아래 버튼으로 이슈를 남겨줘. 재현 방법이나 화면 캡처를 같이 적어주면 더 빨리 고칠 수 있어.',
+    bugReportButton: '버그 리포트하기',
   },
   en: {
     appTitle: 'LaTeX Typing Trainer',
@@ -280,6 +283,9 @@ const messages = {
     retry: 'Retry',
     livePreview: 'Live Render Preview',
     previewEmpty: 'Your typed LaTeX will render here.',
+    bugReportTitle: 'Found a bug?',
+    bugReportBody: 'If something is broken, use the button below to open an issue. Including reproduction steps or a screenshot helps a lot.',
+    bugReportButton: 'Report a Bug',
   },
 } as const
 
@@ -1022,6 +1028,26 @@ function App() {
             </div>
           </div>
         </article>
+      </section>
+
+      <section className="panel bug-report-panel">
+        <div className="panel-head">
+          <div>
+            <p className="label">Feedback</p>
+            <h2>{t.bugReportTitle}</h2>
+          </div>
+        </div>
+        <p className="bug-report-copy">{t.bugReportBody}</p>
+        <div className="button-row">
+          <a
+            className="primary bug-report-link"
+            href="https://github.com/kimgunha-snu/latex-typing-trainer/issues/new"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t.bugReportButton}
+          </a>
+        </div>
       </section>
     </main>
   )

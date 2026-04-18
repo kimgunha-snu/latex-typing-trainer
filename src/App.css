@@ -388,6 +388,21 @@
   display: grid;
   grid-template-columns: 1.05fr 1fr;
   gap: 24px;
+  margin-bottom: 24px;
+}
+
+.bug-report-panel {
+  margin-bottom: 24px;
+}
+
+.bug-report-copy {
+  margin: 0 0 14px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.bug-report-link {
+  text-decoration: none;
 }
 
 .panel {
