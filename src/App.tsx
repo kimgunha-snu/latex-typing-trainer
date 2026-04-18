@@ -7,6 +7,7 @@ import { practiceCategories, practiceSet, type PracticeCategory, type PracticeIt
 
 const customCategoryPrefix = '업로드:'
 const uploadedSetsStorageKey = 'latex-typing-trainer-uploaded-sets'
+const languageStorageKey = 'latex-typing-trainer-language'
 const cheatsheetSymbols = [
   String.raw`\pm`, String.raw`\mp`, String.raw`\dotplus`,
   String.raw`\times`, String.raw`\div`, String.raw`\divideontimes`, String.raw`\backslash`,
@@ -126,6 +127,59 @@ type RecentResult = {
   cpm: number
 }
 
+type Language = 'ko' | 'en'
+
+const messages = {
+  ko: {
+    appTitle: 'LaTeX 타자연습기',
+    cheatsheet: 'LaTeX 치트시트',
+    symbolQuiz: '기호 퀴즈',
+    uploadManager: '문제 업로드 관리',
+    problem: '문제',
+    completed: '완료',
+    total: '전체',
+    categoryLabel: '분야',
+    categoryTitle: '문제 범위 선택',
+    currentCategoryCount: '현재 선택된 분야 문제 수',
+    close: '닫기',
+    miniGame: '미니 게임',
+    symbolQuizTitle: '기호 보고 명령어 맞히기',
+    symbolQuizPrompt: '이 기호의 LaTeX 명령어는?',
+    grade: '채점',
+    revealAnswer: '정답 보기',
+    nextProblem: '다음 문제',
+    summaryTitle: '최근 3문제 결과',
+    summaryLabel: '세션 요약',
+    adSlot: '광고 / 추천 / 보상 자리',
+    uploadLabel: '업로드',
+    uploadTitle: '사용자 문제셋 관리',
+  },
+  en: {
+    appTitle: 'LaTeX Typing Trainer',
+    cheatsheet: 'LaTeX Cheatsheet',
+    symbolQuiz: 'Symbol Quiz',
+    uploadManager: 'Upload Sets',
+    problem: 'Problem',
+    completed: 'Done',
+    total: 'Total',
+    categoryLabel: 'Category',
+    categoryTitle: 'Choose Practice Scope',
+    currentCategoryCount: 'Problems in current selection',
+    close: 'Close',
+    miniGame: 'Mini Game',
+    symbolQuizTitle: 'Guess the command from the symbol',
+    symbolQuizPrompt: 'What is the LaTeX command for this symbol?',
+    grade: 'Check',
+    revealAnswer: 'Show Answer',
+    nextProblem: 'Next',
+    summaryTitle: 'Last 3 Problems Summary',
+    summaryLabel: 'Session Summary',
+    adSlot: 'Ad / recommendation / reward slot',
+    uploadLabel: 'Upload',
+    uploadTitle: 'Custom Practice Sets',
+  },
+} as const
+
 function isUploadedPracticeFile(value: unknown): value is UploadedPracticeFile {
   if (!value || typeof value !== 'object') return false
 
@@ -171,6 +225,14 @@ function App() {
       return []
     }
   })
+  const [language, setLanguage] = useState<Language>(() => {
+    try {
+      const stored = window.localStorage.getItem(languageStorageKey)
+      return stored === 'en' ? 'en' : 'ko'
+    } catch {
+      return 'ko'
+    }
+  })
   const [uploadMessage, setUploadMessage] = useState('JSON 파일을 올리면 사용자 문제셋을 바로 추가할 수 있어.')
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false)
@@ -195,6 +257,8 @@ function App() {
   const [symbolQuizIndex, setSymbolQuizIndex] = useState(() => Math.floor(Math.random() * symbolQuizItems.length))
   const [symbolQuizInput, setSymbolQuizInput] = useState('\\')
   const [symbolQuizResult, setSymbolQuizResult] = useState<'idle' | 'correct' | 'wrong' | 'revealed'>('idle')
+
+  const t = messages[language]
 
   const visibleSet =
     category === '전체'
@@ -221,6 +285,11 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem(uploadedSetsStorageKey, JSON.stringify(uploadedSets))
   }, [uploadedSets])
+
+  useEffect(() => {
+    window.localStorage.setItem(languageStorageKey, language)
+    document.documentElement.lang = language
+  }, [language])
 
   useEffect(() => {
     const hasOpenModal = isCheatsheetOpen || isSymbolQuizOpen || isUploadModalOpen || isSessionSummaryOpen
@@ -405,9 +474,12 @@ function App() {
       <section className="hero-card compact">
         <div className="hero-copy">
           <p className="eyebrow">Web LaTeX Typing Trainer</p>
-          <h1>LaTeX 타자연습기</h1>
+          <h1>{t.appTitle}</h1>
         </div>
         <div className="hero-actions">
+          <button type="button" className="secondary language-toggle" onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}>
+            {language === 'ko' ? 'EN' : 'KO'}
+          </button>
           <button
             type="button"
             className="secondary"
@@ -416,26 +488,26 @@ function App() {
               setIsCheatsheetOpen(true)
             }}
           >
-            LaTeX 치트시트
+            {t.cheatsheet}
           </button>
           <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(true)}>
-            기호 퀴즈
+            {t.symbolQuiz}
           </button>
           <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(true)}>
-            문제 업로드 관리
+            {t.uploadManager}
           </button>
         </div>
         <div className="hero-stats compact">
           <div>
-            <span>문제</span>
+            <span>{t.problem}</span>
             <strong>{current.title}</strong>
           </div>
           <div>
-            <span>완료</span>
+            <span>{t.completed}</span>
             <strong>{finishedCount}</strong>
           </div>
           <div>
-            <span>전체</span>
+            <span>{t.total}</span>
             <strong>{allPracticeItems.length}</strong>
           </div>
           <div>
@@ -448,8 +520,8 @@ function App() {
       <section className="panel category-panel">
         <div className="panel-head">
           <div>
-            <p className="label">분야</p>
-            <h2>문제 범위 선택</h2>
+            <p className="label">{t.categoryLabel}</p>
+            <h2>{t.categoryTitle}</h2>
           </div>
         </div>
         <div className="category-row">
@@ -464,7 +536,7 @@ function App() {
             </button>
           ))}
         </div>
-        <div className="category-meta">현재 선택된 분야 문제 수, {visibleSet.length}개</div>
+        <div className="category-meta">{t.currentCategoryCount}, {visibleSet.length}</div>
       </section>
 
       {isSymbolQuizOpen ? (
@@ -472,16 +544,16 @@ function App() {
           <div className="modal-card panel symbol-quiz-modal">
             <div className="panel-head">
               <div>
-                <p className="label">미니 게임</p>
-                <h2>기호 보고 명령어 맞히기</h2>
+                <p className="label">{t.miniGame}</p>
+                <h2>{t.symbolQuizTitle}</h2>
               </div>
               <button type="button" className="secondary" onClick={() => setIsSymbolQuizOpen(false)}>
-                닫기
+                {t.close}
               </button>
             </div>
 
             <div className="symbol-quiz-card">
-              <p className="symbol-quiz-label">이 기호의 LaTeX 명령어는?</p>
+              <p className="symbol-quiz-label">{t.symbolQuizPrompt}</p>
               <div className="symbol-quiz-symbol">
                 <MathJax inline dynamic>{`\\(${currentSymbolQuiz.symbol}\\)`}</MathJax>
               </div>
@@ -504,13 +576,13 @@ function App() {
               />
               <div className="button-row">
                 <button type="button" className="primary" onClick={checkSymbolQuizAnswer}>
-                  채점
+                  {t.grade}
                 </button>
                 <button type="button" className="secondary" onClick={revealSymbolQuizAnswer}>
-                  정답 보기
+                  {t.revealAnswer}
                 </button>
                 <button type="button" className="secondary" onClick={nextSymbolQuiz}>
-                  다음 문제
+                  {t.nextProblem}
                 </button>
               </div>
               <div className={`symbol-quiz-feedback ${symbolQuizResult}`}>
@@ -532,11 +604,11 @@ function App() {
           <div className="modal-card panel" onScroll={handleCheatsheetScroll}>
             <div className="panel-head">
               <div>
-                <p className="label">치트시트</p>
-                <h2>자주 쓰는 LaTeX 문법</h2>
+                <p className="label">{t.cheatsheet}</p>
+                <h2>{t.cheatsheet}</h2>
               </div>
               <button type="button" className="secondary" onClick={() => setIsCheatsheetOpen(false)}>
-                닫기
+                {t.close}
               </button>
             </div>
 
@@ -575,11 +647,11 @@ function App() {
           <div className="modal-card panel summary-modal">
             <div className="panel-head">
               <div>
-                <p className="label">세션 요약</p>
-                <h2>최근 3문제 결과</h2>
+                <p className="label">{t.summaryLabel}</p>
+                <h2>{t.summaryTitle}</h2>
               </div>
               <button type="button" className="secondary" onClick={closeSessionSummary}>
-                닫기
+                {t.close}
               </button>
             </div>
 
@@ -597,8 +669,8 @@ function App() {
                 </strong>
               </div>
               <div className="summary-stat-card ad-slot-card">
-                <span>추가 영역</span>
-                <strong>광고 / 추천 / 보상 자리</strong>
+                <span>Slot</span>
+                <strong>{t.adSlot}</strong>
               </div>
             </div>
 
@@ -622,11 +694,11 @@ function App() {
           <div className="modal-card panel">
             <div className="panel-head">
               <div>
-                <p className="label">업로드</p>
-                <h2>사용자 문제셋 관리</h2>
+                <p className="label">{t.uploadLabel}</p>
+                <h2>{t.uploadTitle}</h2>
               </div>
               <button type="button" className="secondary" onClick={() => setIsUploadModalOpen(false)}>
-                닫기
+                {t.close}
               </button>
             </div>
 
