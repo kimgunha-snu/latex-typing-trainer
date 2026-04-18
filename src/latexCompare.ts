@@ -18,6 +18,10 @@ function normalizeWhitespace(value: string) {
   return value.replace(/[\t\n\r ]+/g, ' ').trim()
 }
 
+function normalizeMidRelations(value: string) {
+  return value.replace(/([A-Za-z0-9\\}\]])\s*\|\s*([A-Za-z0-9\\{\[])/g, '$1 \\mid $2')
+}
+
 function normalizeScriptSpacing(value: string) {
   return value
     .replace(/_\s*\{\s*/g, '_{')
@@ -155,6 +159,7 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
   normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
+  normalized = normalizeMidRelations(normalized)
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s*((?:\\\\[A-Za-z]+)|[A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
   normalized = normalizeScriptSpacing(normalized)
@@ -174,6 +179,7 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\limits/g, '').replace(/\\nolimits/g, '')
   normalized = normalized.replace(/\\operatorname\{([^{}]*)\}/g, '\\mathrm{$1}')
   normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
+  normalized = normalizeMidRelations(normalized)
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s*((?:\\\\[A-Za-z]+)|[A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalizeScriptSpacing(normalized)

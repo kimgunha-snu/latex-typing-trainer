@@ -17,11 +17,14 @@ describe('compareLatex', () => {
     [String.raw`\frac{\pi}{4}`, String.raw`\frac{\pi}4`],
     [String.raw`[\hat x, \hat p]_{-} = i\hbar`, String.raw`[\hat{x},\hat{p}]_-=i\hbar`],
     [String.raw`\hat{\beta}=(X^TX)^{-1}X^Ty`, String.raw`\hat\beta = (X^TX)^{-1} X^T y`],
+    [String.raw`P(A \mid B)`, String.raw`P(A | B)`],
+    [String.raw`\{x \in \mathbb{R} \mid x > 0\}`, String.raw`\{x \in \mathbb{R} | x > 0\}`],
     [String.raw`R^\rho_{\sigma\mu\nu}=\partial_\mu\Gamma^\rho_{\nu\sigma}-\partial_\nu\Gamma^\rho_{\mu\sigma}+\cdots`, String.raw`R^\rho_{\sigma \mu\nu} = \partial_\mu\Gamma_{\nu\sigma}^\rho - \partial_\nu\Gamma^{\rho}_{\mu\sigma} + \cdots`],
   ]
 
   const nonEquivalentCases = [
     [String.raw`\{ x \in \mathbb{R} \mid x^2 < 2 \}`, String.raw`\{ x \in \}`],
+    [String.raw`|x|`, String.raw`\mid x \mid`],
     [String.raw`\oint_C f(z) \, dz = 2\pi i \sum \operatorname{Res}(f,a_k)`, String.raw`\oint_C f(z)dz = 2\pi i`],
   ]
 
