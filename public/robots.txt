@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://latex-typing-trainer.vercel.app/sitemap.xml
