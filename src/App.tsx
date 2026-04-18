@@ -4,6 +4,7 @@ import './App.css'
 
 import { compareLatex } from './latexCompare'
 import { practiceCategories, practiceSet, type PracticeCategory, type PracticeItem } from './practiceSet'
+import { practiceTranslationsEn } from './practiceTranslations'
 
 const customCategoryPrefix = '업로드:'
 const uploadedSetsStorageKey = 'latex-typing-trainer-uploaded-sets'
@@ -362,6 +363,21 @@ function App() {
 
   const t = messages[language]
   const localizedCategoryLabels = categoryLabels[language]
+  const localizedPracticeItems = useMemo(
+    () =>
+      allPracticeItems.map((item) => {
+        if (language !== 'en' || item.category.startsWith(customCategoryPrefix)) return item
+        const translation = practiceTranslationsEn[item.id]
+        if (!translation) return item
+        return {
+          ...item,
+          title: translation.title ?? item.title,
+          note: translation.note ?? item.note,
+          meaning: translation.meaning ?? item.meaning,
+        }
+      }),
+    [allPracticeItems, language],
+  )
   const getCategoryLabel = (item: string) => {
     if (item.startsWith(customCategoryPrefix)) {
       return item.replace(customCategoryPrefix, '')
@@ -371,8 +387,8 @@ function App() {
 
   const visibleSet =
     category === '전체'
-      ? allPracticeItems
-      : allPracticeItems.filter((item) => item.category === category)
+      ? localizedPracticeItems
+      : localizedPracticeItems.filter((item) => item.category === category)
   const current = visibleSet[currentIndex] ?? visibleSet[0] ?? practiceSet[0]
   const currentSymbolQuiz = symbolQuizItems[symbolQuizIndex] ?? symbolQuizItems[0]
   const visibleCheatsheetSymbols = cheatsheetSymbols.slice(0, cheatsheetVisibleCount)
