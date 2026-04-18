@@ -471,7 +471,7 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="hero-card compact">
+      <section className="hero-card compact hero-card-with-language">
         <div className="hero-left">
           <div className="hero-copy">
             <p className="eyebrow">Web LaTeX Typing Trainer</p>
