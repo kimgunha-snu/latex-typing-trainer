@@ -327,6 +327,8 @@ const statistics = makeCategory('확률통계', [
   { id: 548, title: '포아송 분산', latex: String.raw`\operatorname{Var}(X)=\lambda`, note: '포아송 분산', meaning: '포아송분포는 평균과 분산이 둘 다 λ라는 특징이 있어.' },
   { id: 549, title: '기하분포', latex: String.raw`P(X=k)=(1-p)^{k-1}p`, note: '기하분포', meaning: '첫 성공이 k번째 시행에서 나올 확률을 나타내는 분포야.' },
   { id: 550, title: '확률통계 종합', latex: String.raw`P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)}`, note: '종합', meaning: '사전확률과 관측정보를 결합해 확률을 업데이트하는 대표 공식이야.' },
+  { id: 551, title: '지시함수', latex: String.raw`\mathbf{1}_A(x)=\begin{cases}1 & x\in A \\ 0 & x\notin A\end{cases}`, note: 'indicator function', meaning: '입력 x가 집합 A에 속하면 1, 아니면 0을 반환하는 지시함수야.' },
+  { id: 552, title: '지수분포 밀도', latex: String.raw`f_X(x)=\begin{cases}\lambda e^{-\lambda x} & x\ge 0 \\ 0 & x<0\end{cases}`, note: 'piecewise density', meaning: '조건에 따라 다른 값을 갖는 지수분포의 확률밀도함수야.' },
 ])
 
 const differentialGeometry = makeCategory('미분기하', [
@@ -370,6 +372,7 @@ const differentialGeometry = makeCategory('미분기하', [
   { id: 638, title: '레비-치비타', latex: String.raw`\nabla g=0`, note: '레비-치비타', meaning: '연결이 계량을 보존한다는 레비-치비타 연결의 핵심 조건이야.' },
   { id: 639, title: '곡률텐서', latex: String.raw`R(X,Y)Z`, note: '곡률 텐서', meaning: '벡터장들을 이용해 곡률 연산을 추상적으로 나타낸 표현이야.' },
   { id: 640, title: '미분기하 종합', latex: String.raw`\Gamma^k_{ij}=\frac{1}{2}g^{k\ell}(\partial_i g_{j\ell}+\partial_j g_{i\ell}-\partial_\ell g_{ij})`, note: '종합', meaning: '계량으로부터 연결계수를 만드는 미분기하의 대표 공식이야.' },
+  { id: 641, title: '크로네커 델타의 경우나눔', latex: String.raw`\delta_{i,j}=\begin{cases}1 & i=j \\ 0 & i\ne j\end{cases}`, note: 'Kronecker delta', meaning: '인덱스가 같을 때만 1이고 다를 때는 0인 크로네커 델타의 경우나눔 정의야.' },
 ])
 
 const machineLearning = makeCategory('머신러닝', [
@@ -530,6 +533,7 @@ const theoreticalComputerScience = makeCategory('컴퓨터과학 이론', [
   { id: 948, title: '불변식', latex: String.raw`I_k`, note: '루프 불변식', meaning: '알고리즘 반복 과정에서 계속 유지되는 성질을 나타내는 표기야.' },
   { id: 949, title: '귀납기초', latex: String.raw`P(0)`, note: '수학적 귀납법', meaning: '귀납법에서 가장 먼저 확인하는 시작 단계 명제야.' },
   { id: 950, title: '컴퓨터과학 이론 종합', latex: String.raw`A\leq_p B`, note: '종합', meaning: '문제 난이도 비교와 NP-완전성 증명에서 핵심이 되는 환원 표기야.' },
+  { id: 951, title: '헤비사이드 계단함수', latex: String.raw`H(x)=\begin{cases}0 & x<0 \\ 1 & x\ge 0\end{cases}`, note: 'step function', meaning: '입력 부호에 따라 값이 달라지는 계단함수의 대표적인 cases 표현이야.' },
 ])
 
 
@@ -584,6 +588,7 @@ const quantumFieldTheory = makeCategory('양자장론', [
   { id: 1248, title: '만델스탐 t', latex: String.raw`t=(p_1-p_3)^2`, note: 'Mandelstam variable', meaning: '운동량 전달을 나타내는 만델스탐 변수야.' },
   { id: 1249, title: '만델스탐 u', latex: String.raw`u=(p_1-p_4)^2`, note: 'Mandelstam variable', meaning: '산란 운동학에서 쓰이는 세 번째 만델스탐 변수야.' },
   { id: 1250, title: '양자장론 종합', latex: String.raw`Z[J]=\int\mathcal{D}\phi\,e^{iS[\phi]+i\int d^4x\,J\phi}`, note: 'review', meaning: '양자장론의 많은 상관함수와 섭동전개가 여기서 출발하는 생성함수야.' },
+  { id: 1251, title: '시간정렬의 경우나눔', latex: String.raw`T\{\phi(x)\phi(y)\}=\begin{cases}\phi(x)\phi(y) & x^0>y^0 \\ \phi(y)\phi(x) & y^0>x^0\end{cases}`, note: 'time ordering', meaning: '시간 좌표의 순서에 따라 장연산자 순서를 바꾸는 시간정렬의 경우나눔 정의야.' },
 ])
 
 const homologicalAlgebra = makeCategory('호몰로지 대수', [

@@ -657,4 +657,10 @@ export const practiceTranslationsEn: Record<number, PracticeTranslation> = {
   1248: { title: 'Mandelstam t', note: 'Mandelstam variable', meaning: 'This Mandelstam variable represents momentum transfer.' },
   1249: { title: 'Mandelstam u', note: 'Mandelstam variable', meaning: 'This is the third standard Mandelstam variable in scattering kinematics.' },
   1250: { title: 'Quantum Field Theory Review', note: 'review', meaning: 'This generating functional is the starting point for many correlators and perturbative expansions in quantum field theory.' },
+  1251: { title: 'Time Ordering as a Piecewise Definition', note: 'time ordering', meaning: 'This is the piecewise definition of time ordering, where operator order depends on which time coordinate is larger.' },
+
+  551: { title: 'Indicator Function', note: 'indicator function', meaning: 'This function returns 1 when x belongs to set A and 0 otherwise.' },
+  552: { title: 'Exponential Density', note: 'piecewise density', meaning: 'This is the piecewise probability density function of the exponential distribution.' },
+  641: { title: 'Kronecker Delta as a Piecewise Definition', note: 'Kronecker delta', meaning: 'This is the piecewise definition of the Kronecker delta, equal to 1 when the indices match and 0 otherwise.' },
+  951: { title: 'Heaviside Step Function', note: 'step function', meaning: 'This is the standard piecewise form of the step function, changing value at zero.' },
 }
