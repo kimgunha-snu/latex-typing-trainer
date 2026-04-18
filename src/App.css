@@ -40,8 +40,14 @@
   flex-wrap: wrap;
 }
 
-.language-toggle {
+.hero-language {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.language-toggle {
+  min-width: 56px;
 }
 
 .eyebrow,

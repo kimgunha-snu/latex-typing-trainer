@@ -477,9 +477,6 @@ function App() {
           <h1>{t.appTitle}</h1>
         </div>
         <div className="hero-actions">
-          <button type="button" className="secondary language-toggle" onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}>
-            {language === 'ko' ? 'EN' : 'KO'}
-          </button>
           <button
             type="button"
             className="secondary"
@@ -497,6 +494,11 @@ function App() {
             {t.uploadManager}
           </button>
         </div>
++        <div className="hero-language">
++          <button type="button" className="secondary language-toggle" onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}>
++            {language === 'ko' ? 'EN' : 'KO'}
++          </button>
++        </div>
         <div className="hero-stats compact">
           <div>
             <span>{t.problem}</span>
