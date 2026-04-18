@@ -28,6 +28,61 @@ function normalizeScriptSpacing(value: string) {
     .replace(/\^\{([^{}]+)\}/g, (_match: string, inner: string) => `^{${inner.replace(/\s+/g, '')}}`)
 }
 
+function normalizeCommandSingleTokenArgs(value: string, command: string, argCount: number) {
+  let result = ''
+  let i = 0
+
+  const readToken = (source: string, start: number) => {
+    if (source[start] === '{') {
+      let depth = 0
+      let end = start
+      while (end < source.length) {
+        if (source[end] === '{') depth += 1
+        if (source[end] === '}') {
+          depth -= 1
+          if (depth === 0) break
+        }
+        end += 1
+      }
+      return { token: source.slice(start, end + 1), next: end + 1 }
+    }
+
+    if (source[start] === '\\') {
+      let end = start + 1
+      while (end < source.length && /[A-Za-z]/.test(source[end])) end += 1
+      return { token: source.slice(start, end), next: end }
+    }
+
+    return { token: source[start], next: start + 1 }
+  }
+
+  while (i < value.length) {
+    if (value.startsWith(command, i)) {
+      let j = i + command.length
+      const tokens: string[] = []
+
+      for (let count = 0; count < argCount; count += 1) {
+        while (value[j] === ' ') j += 1
+        if (j >= value.length) break
+        const { token, next } = readToken(value, j)
+        tokens.push(token.startsWith('{') ? token : `{${token}}`)
+        j = next
+      }
+
+      if (tokens.length === argCount) {
+        result += `${command}${tokens.join('')}`
+        i = j
+        continue
+      }
+    }
+
+    result += value[i]
+    i += 1
+  }
+
+  return result
+}
+
 function normalizeGammaScripts(value: string) {
   let result = ''
   let i = 0
@@ -104,6 +159,7 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
   normalized = normalizeScriptSpacing(normalized)
   normalized = normalizeGammaScripts(normalized)
+  normalized = normalizeCommandSingleTokenArgs(normalized, '\\frac', 2)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
   return normalized
 }
@@ -122,6 +178,7 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalizeScriptSpacing(normalized)
   normalized = normalizeGammaScripts(normalized)
+  normalized = normalizeCommandSingleTokenArgs(normalized, '\\frac', 2)
   normalized = normalized.replace(/R\^\{?\\rho\}?_\{?([^{}]+)\}?/g, 'R_{$1}^{\\rho}')
   normalized = normalized.replace(/\\partial_\{?([^{}]+)\}?\\Gamma_\{?([^{}]+)\}?\^\{?\\rho\}?/g, '\\partial_{$1}\\Gamma_{$2}^{\\rho}')
   normalized = normalized.replace(/\\partial_\{?([^{}]+)\}?\\Gamma\^\{?\\rho\}?_\{?([^{}]+)\}?/g, '\\partial_{$1}\\Gamma_{$2}^{\\rho}')
