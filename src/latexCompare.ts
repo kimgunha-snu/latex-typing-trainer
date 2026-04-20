@@ -87,6 +87,71 @@ function normalizeCommandSingleTokenArgs(value: string, command: string, argCoun
   return result
 }
 
+function normalizeOperatorNameScripts(value: string) {
+  let result = ''
+  let i = 0
+
+  const readToken = (source: string, start: number) => {
+    if (source[start] === '{') {
+      let depth = 0
+      let end = start
+      while (end < source.length) {
+        if (source[end] === '{') depth += 1
+        if (source[end] === '}') {
+          depth -= 1
+          if (depth === 0) break
+        }
+        end += 1
+      }
+      return { token: source.slice(start, end + 1), next: end + 1 }
+    }
+
+    if (source[start] === '\\') {
+      let end = start + 1
+      while (end < source.length && /[A-Za-z]/.test(source[end])) end += 1
+      return { token: source.slice(start, end), next: end }
+    }
+
+    return { token: source[start], next: start + 1 }
+  }
+
+  while (i < value.length) {
+    if (value.startsWith('\\operatorname{', i)) {
+      let j = i + '\\operatorname{'.length
+      let depth = 1
+      while (j < value.length && depth > 0) {
+        if (value[j] === '{') depth += 1
+        else if (value[j] === '}') depth -= 1
+        j += 1
+      }
+
+      const base = value.slice(i, j)
+      let sub = ''
+      let sup = ''
+
+      for (let count = 0; count < 2; count += 1) {
+        while (value[j] === ' ') j += 1
+        const marker = value[j]
+        if (marker !== '_' && marker !== '^') break
+        while (value[j + 1] === ' ') j += 1
+        const { token, next } = readToken(value, j + 1)
+        if (marker === '_') sub = token.startsWith('{') ? token : `{${token}}`
+        else sup = token.startsWith('{') ? token : `{${token}}`
+        j = next
+      }
+
+      result += `${base}${sub ? `_${sub}` : ''}${sup ? `^${sup}` : ''}`
+      i = j
+      continue
+    }
+
+    result += value[i]
+    i += 1
+  }
+
+  return result
+}
+
 function normalizeGammaScripts(value: string) {
   let result = ''
   let i = 0
@@ -151,6 +216,7 @@ function normalizeGammaScripts(value: string) {
 
 function normalizeForParser(value: string) {
   let normalized = normalizeWhitespace(value)
+  normalized = normalized.replace(/\\lVert/g, '\\Vert').replace(/\\rVert/g, '\\Vert')
   normalized = normalized.replace(/\\\|/g, '\\Vert ')
   normalized = normalized.replace(/\\left/g, '').replace(/\\right/g, '')
   normalized = normalized.replace(/\\,/g, '').replace(/\\!/g, '').replace(/\\:/g, '')
@@ -161,11 +227,14 @@ function normalizeForParser(value: string) {
   normalized = normalized.replace(/\\ldots/g, '\\dots')
   normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
   normalized = normalized.replace(/\\not\s+\\in/g, '\\notin')
+  normalized = normalized.replace(/\\not\s*=/g, '\\ne')
+  normalized = normalized.replace(/\\neq/g, '\\ne')
   normalized = normalized.replace(/\\ast/g, '*')
   normalized = normalizeMidRelations(normalized)
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s*((?:\\\\[A-Za-z]+)|[A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn} ${arg}`)
   normalized = normalizeScriptSpacing(normalized)
+  normalized = normalizeOperatorNameScripts(normalized)
   normalized = normalizeGammaScripts(normalized)
   normalized = normalizeCommandSingleTokenArgs(normalized, '\\frac', 2)
   normalized = normalized.replace(/(?<!\\)d\s*([A-Za-z])/g, 'd$1')
@@ -174,6 +243,7 @@ function normalizeForParser(value: string) {
 
 function normalizeForFallback(value: string) {
   let normalized = normalizeWhitespace(value)
+  normalized = normalized.replace(/\\lVert/g, '\\Vert').replace(/\\rVert/g, '\\Vert')
   normalized = normalized.replace(/\\\|/g, '\\Vert')
   normalized = normalized.replace(/\\left/g, '').replace(/\\right/g, '')
   normalized = normalized.replace(/\\,/g, '').replace(/\\!/g, '').replace(/\\:/g, '')
@@ -184,11 +254,14 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\ldots/g, '\\dots')
   normalized = normalized.replace(/\\land/g, '\\wedge').replace(/\\lor/g, '\\vee')
   normalized = normalized.replace(/\\not\s+\\in/g, '\\notin')
+  normalized = normalized.replace(/\\not\s*=/g, '\\ne')
+  normalized = normalized.replace(/\\neq/g, '\\ne')
   normalized = normalized.replace(/\\ast/g, '*')
   normalized = normalizeMidRelations(normalized)
   normalized = normalized.replace(new RegExp(`\\\\(${styleCommands})\\s*((?:\\\\[A-Za-z]+)|[A-Za-z0-9])`, 'g'), (_, cmd: string, arg: string) => `\\${cmd}{${arg}}`)
   normalized = normalized.replace(/\\(sin|cos|tan|log|ln|exp|max|min)\{([A-Za-z0-9\\]+)\}/g, (_, fn: string, arg: string) => `\\${fn}${arg}`)
   normalized = normalizeScriptSpacing(normalized)
+  normalized = normalizeOperatorNameScripts(normalized)
   normalized = normalizeGammaScripts(normalized)
   normalized = normalizeCommandSingleTokenArgs(normalized, '\\frac', 2)
   normalized = normalized.replace(/R\^\{?\\rho\}?_\{?([^{}]+)\}?/g, 'R_{$1}^{\\rho}')
@@ -203,8 +276,8 @@ function normalizeForFallback(value: string) {
   normalized = normalized.replace(/\\sum_\{?([^{}]+)\}?\^\{?([^{}_]+)\}?/g, '\\sum_{$1}^{$2}')
   normalized = normalized.replace(/\\int\^\{?([^{}_]+)\}?_\{?([^{}]+)\}?/g, '\\int_{$2}^{$1}')
   normalized = normalized.replace(/\\int_\{?([^{}]+)\}?\^\{?([^{}_]+)\}?/g, '\\int_{$1}^{$2}')
-  normalized = normalized.replace(/([A-Za-z0-9]+)_\{?([^{}]+)\}?\^\{?([^{}]+)\}?/g, '$1_{$2}^{$3}')
-  normalized = normalized.replace(/([A-Za-z0-9]+)\^\{?([^{}]+)\}?_\{?([^{}]+)\}?/g, '$1_{$3}^{$2}')
+  normalized = normalized.replace(/([A-Za-z0-9]+|\\[A-Za-z]+)_\{?([^{}]+)\}?\^\{?([^{}]+)\}?/g, '$1_{$2}^{$3}')
+  normalized = normalized.replace(/([A-Za-z0-9]+|\\[A-Za-z]+)\^\{?([^{}]+)\}?_\{?([^{}]+)\}?/g, '$1_{$3}^{$2}')
   normalized = normalized.replace(/([A-Za-z])\^\{([A-Za-z])\}([A-Za-z])/g, '$1^{$2} $3')
   normalized = normalized.replace(/([A-Za-z])\^([A-Za-z])([A-Za-z])/g, '$1^{$2} $3')
   normalized = normalized.replace(/_([^{}\\\s])/g, '_{$1}')
