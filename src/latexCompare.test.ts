@@ -30,6 +30,7 @@ describe('compareLatex', () => {
     [String.raw`\{x \in \mathbb{R} \mid x > 0\}`, String.raw`\{x \in \mathbb{R} | x > 0\}`],
     [String.raw`Z = \int \mathcal D \phi e^{-S_E[\phi]}`, String.raw`Z = \int \mathcal D \phi e^{-S_{E}[\phi]}`],
     [String.raw`R^\rho_{\sigma\mu\nu}=\partial_\mu\Gamma^\rho_{\nu\sigma}-\partial_\nu\Gamma^\rho_{\mu\sigma}+\cdots`, String.raw`R^\rho_{\sigma \mu\nu} = \partial_\mu\Gamma_{\nu\sigma}^\rho - \partial_\nu\Gamma^{\rho}_{\mu\sigma} + \cdots`],
+    [String.raw`x \sim p_\theta (x)`, String.raw`x\sim p_{\theta}(x)`],
   ]
 
   const nonEquivalentCases = [
